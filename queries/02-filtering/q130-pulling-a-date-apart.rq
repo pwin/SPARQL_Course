@@ -1,0 +1,96 @@
+# ==========================================================================
+#  Q130  Pulling a date apart
+# ==========================================================================
+#
+#  ASKS
+#    Break every event date into its parts.
+#
+#  HOW IT WORKS
+#    A xsd:dateTime or xsd:date can be taken apart with YEAR, MONTH, DAY
+#    and, where there is a time, HOURS, MINUTES, SECONDS and TIMEZONE. They
+#    return plain numbers, which is what makes grouping by month possible
+#    at all -- there is no date arithmetic in SPARQL beyond this.
+#
+#  DIAGRAM
+#        "2024-06-15"^^xsd:date
+#
+#          YEAR   -> 2024        MONTH -> 6        DAY -> 15
+#
+#        and for a dateTime, three more:
+#
+#          HOURS  MINUTES  SECONDS      TIMEZONE / TZ
+#
+#        what you can do with them:
+#
+#          GROUP BY (MONTH(?d))         events per month
+#          FILTER( YEAR(?d) = 2024 )    a year's worth
+#          ?d < NOW()                   in the past
+#
+#        what you cannot do:
+#
+#          ?d + "P1M"^^xsd:duration     no duration arithmetic
+#          DATEDIFF(?a, ?b)             no such function
+#
+#        and one thing that is not portable, measured:
+#
+#          YEAR( "2025-03-08"^^xsd:date )       editor 2025  fuseki 2025
+#                                               holos  UNBOUND
+#          YEAR( "...T00:00:00"^^xsd:dateTime ) all three   2025
+#
+#        HOLOS implements the date functions for xsd:dateTime only, and
+#        returns the row with the variable unbound rather than raising --
+#        the failure mode module 15 keeps warning about. So this query
+#        promotes the date first:
+#
+#          STRDT( CONCAT( STR(?date), "T00:00:00" ), xsd:dateTime )
+#
+#        which is the portable way to widen a date, and incidentally the
+#        clearest use of STRDT there is.
+#
+#        Subtracting two xsd:dateTime values gives an xsd:duration on
+#        engines that support it and an error on those that do not, so
+#        q13 computes an age from YEAR() alone. That is the portable
+#        way, and it is off by up to a year -- which the query says.
+#
+#        +----------------------------------------------------------+
+#        |  MONTH returns 6, not "June" and not "06". Formatting a   |
+#        |  date for display is not something SPARQL does; do it in  |
+#        |  whatever consumes the results.                           |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS and TIMEZONE take a date
+#      apart into numbers -- reliably, on all three engines, only for
+#      xsd:dateTime. STRDT is how you widen an xsd:date to one.
+#    - There is no date arithmetic and no formatting. Grouping and
+#      comparison are what the parts are for.
+#    - NOW() is fixed for the whole query, so two calls in one query
+#      always agree -- which is what makes it usable at all.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
+#           SPARQL 1.2 Query §10.1 BIND
+#           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
+#  RETURNS  11 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:  <https://example.org/bookshop-trail/schema#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+
+SELECT ?year ?month (COUNT(*) AS ?events)
+WHERE {
+  ?event a           bs:Event ;
+         bs:eventDate ?date .
+  # xsd:date, promoted to xsd:dateTime so that every engine can read
+  # it -- see the diagram. STRDT builds a typed literal from a string.
+  BIND( STRDT( CONCAT( STR(?date), "T00:00:00" ), xsd:dateTime ) AS ?at )
+  BIND( YEAR(?at)  AS ?year )
+  BIND( MONTH(?at) AS ?month )
+  BIND( DAY(?at)   AS ?day )
+}
+GROUP BY ?year ?month
+ORDER BY ?year ?month

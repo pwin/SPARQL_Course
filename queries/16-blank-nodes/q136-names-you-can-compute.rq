@@ -1,0 +1,81 @@
+# ==========================================================================
+#  Q136  Names you can compute
+# ==========================================================================
+#
+#  ASKS
+#    Mint identifiers three ways -- a hash, a URI-safe string, and a fresh
+#    blank node -- and see which are stable.
+#
+#  HOW IT WORKS
+#    q114 skolemised by hand. These are the functions for doing it
+#    properly: MD5 and the SHA family hash a string to a fixed-length
+#    digest, ENCODE_FOR_URI makes an arbitrary string safe to put in an
+#    IRI, and BNODE() mints a fresh blank node. Only the first two are
+#    repeatable, and that is the entire lesson.
+#
+#  DIAGRAM
+#        "The Harbour Page"
+#
+#          MD5(?s)              d41d8cd9...  32 hex characters
+#          SHA256(?s)           e3b0c442...  64
+#          ENCODE_FOR_URI(?s)   The%20Harbour%20Page
+#          BNODE()              _:b0, _:b1, ...   a new one each solution
+#          STRUUID()            36 characters, random
+#          UUID()               a urn:uuid: IRI, 45 characters
+#
+#        +---------------------+------------+---------------------------+
+#        |                     | repeatable | good for                  |
+#        +---------------------+------------+---------------------------+
+#        | MD5 / SHA256        | yes        | an id derived from content|
+#        | ENCODE_FOR_URI      | yes        | a readable id from a label|
+#        | BNODE()             | NO         | structure in a template   |
+#        | UUID / STRUUID      | NO         | a genuinely new thing     |
+#        +---------------------+------------+---------------------------+
+#
+#        Repeatable is what makes a migration re-runnable (q121). Run
+#        the same INSERT twice with a hashed IRI and the second run
+#        changes nothing; run it with UUID() and you get a second copy
+#        of everything.
+#
+#        This query asks for the LENGTH of the random values rather
+#        than the values, because a random value cannot be compared
+#        across three engines -- which is itself the point being made.
+#
+#        MD5 is fine here and is not fine for anything security-shaped.
+#        SHA256 costs nothing extra; prefer it by habit.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - MD5, SHA1, SHA256, SHA384 and SHA512 hash a string. The digest is
+#      stable, so an IRI built from one is repeatable.
+#    - ENCODE_FOR_URI makes a string safe for an IRI path. It is the
+#      readable alternative to a hash.
+#    - BNODE(), UUID() and STRUUID() produce something new every time.
+#      Never use them where a re-run must produce the same graph.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#           SPARQL 1.2 Query §4.1.4 Syntax for Blank Nodes
+#           https://www.w3.org/TR/sparql12-query/#x4-1-4-syntax-for-blank-nodes
+#  RETURNS  6 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?digest ?safe ?uuidLength ?struuidLength
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( SUBSTR( SHA256( STR(?name) ), 1, 12 ) AS ?digest )
+  BIND( ENCODE_FOR_URI( STR(?name) )          AS ?safe )
+  BIND( STRLEN( STR( UUID() ) )               AS ?uuidLength )
+  BIND( STRLEN( STRUUID() )                   AS ?struuidLength )
+  BIND( BNODE()                               AS ?fresh )
+  FILTER( isBLANK(?fresh) )
+}
+ORDER BY ?name
+LIMIT 6

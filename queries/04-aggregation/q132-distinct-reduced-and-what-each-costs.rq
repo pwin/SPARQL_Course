@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q132  DISTINCT, REDUCED, and what each costs
+# ==========================================================================
+#
+#  ASKS
+#    List the towns that have a bookshop, without repeating any.
+#
+#  HOW IT WORKS
+#    DISTINCT removes every duplicate, which means the engine has to hold
+#    or sort the whole answer to know what it has already seen. REDUCED
+#    permits it to remove some and is not obliged to remove any, which lets
+#    it drop the adjacent ones as they stream past and keep nothing in
+#    memory.
+#
+#  DIAGRAM
+#        33 shops -> 26 towns, with duplicates in between
+#
+#          DISTINCT   every duplicate gone.       Guaranteed.
+#          REDUCED    duplicates MAY be gone.     Permitted, not required.
+#
+#        +-------------+-------------------+-------------------------+
+#        |             | result            | cost                    |
+#        +-------------+-------------------+-------------------------+
+#        | (neither)   | 33 rows           | none                    |
+#        | DISTINCT    | 26 rows           | remembers what it saw   |
+#        | REDUCED     | 26 to 33 rows     | may remember nothing    |
+#        +-------------+-------------------+-------------------------+
+#
+#        and this exact query, measured:
+#
+#          editor  26 rows     duplicates dropped
+#          holos   26 rows     duplicates dropped
+#          fuseki  33 rows     duplicates kept
+#
+#        All three are correct. REDUCED permits removal and requires
+#        nothing, so an engine that does the cheap thing and an engine
+#        that does the thorough thing both conform -- and here Jena is
+#        the one that declines to pay. There is no bug to report.
+#
+#        That is what makes REDUCED awkward to teach and awkward to
+#        use: the one guarantee it gives you is that it gives you no
+#        guarantee.
+#
+#        So REDUCED is not "DISTINCT but faster". It is "I do not mind
+#        duplicates, and I would rather you did not pay to remove
+#        them". Use it when the consumer deduplicates anyway, and use
+#        DISTINCT whenever the count matters.
+#
+#        +----------------------------------------------------------+
+#        |  COUNT(DISTINCT ?x) is a different thing again, and it    |
+#        |  does what it says -- q25 uses it. There is no            |
+#        |  COUNT(REDUCED ?x).                                       |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - DISTINCT guarantees no duplicates and costs memory or a sort.
+#      REDUCED permits duplicate removal without requiring it.
+#    - A REDUCED result is not reproducible across engines by definition.
+#      Never depend on its row count.
+#    - COUNT(DISTINCT ?x) is unrelated to the solution modifier and is
+#      what you want when counting distinct values.
+#
+#  NOTE
+#    engines-differ: and by design. Jena returns all 33 rows; Comunica and
+#    HOLOS return the 26 distinct ones. REDUCED permits duplicate removal
+#    without requiring it, so every one of those answers conforms.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §11 Aggregates
+#           https://www.w3.org/TR/sparql12-query/#x11-aggregates
+#           SPARQL 1.2 Query §11.2 GROUP BY
+#           https://www.w3.org/TR/sparql12-query/#x11-2-group-by
+#  RETURNS  editor 26, fuseki 33, holos 26  (see the note above)
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT REDUCED ?town
+WHERE {
+  ?shop a            bs:Bookshop ;
+        bs:locatedIn ?place .
+  ?place rdfs:label  ?town .
+  FILTER( LANG(?town) = "en" )
+}
+ORDER BY ?town

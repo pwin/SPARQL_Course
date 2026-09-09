@@ -1,0 +1,76 @@
+# ==========================================================================
+#  Q129  Four ways to lose the decimals
+# ==========================================================================
+#
+#  ASKS
+#    Round the shelf price of every book, four different ways, and see
+#    where they differ.
+#
+#  HOW IT WORKS
+#    ROUND, FLOOR, CEIL and ABS are the whole of SPARQL's numeric toolkit,
+#    and the differences between the first three only show up on particular
+#    values -- which is why they are worth putting side by side once rather
+#    than reading about.
+#
+#  DIAGRAM
+#          value    ROUND   FLOOR   CEIL    ABS
+#          -----    -----   -----   ----    ---
+#           8.99       9       8      9     8.99
+#           9.50      10       9     10     9.50
+#          12.00      12      12     12    12.00
+#          -3.50      -3      -4     -3     3.50     <- the interesting row
+#
+#        ROUND takes half away from zero on some engines and to
+#        positive infinity on others; SPARQL says "to nearest, ties
+#        toward positive infinity", so -3.5 rounds to -3. Test it
+#        rather than assuming, if the sign matters.
+#
+#        +----------------------------------------------------------+
+#        |  There is no square root and no power. Module 09 is built |
+#        |  around that fact, and module 15 shows what afn:sqrt and  |
+#        |  math:pow cost you in portability.                        |
+#        +----------------------------------------------------------+
+#
+#        Note the type. ROUND of an xsd:decimal is an xsd:decimal, so
+#        the answers come back as 8.0 and 12.0 rather than 8 and 12.
+#        Use xsd:integer() if you want the whole number.
+#
+#        RAND() returns a double in [0, 1). It is genuinely random, so
+#        a query using it cannot be checked by comparing answers --
+#        which is why this one asks whether the value is in range
+#        rather than what it is.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - ROUND, FLOOR, CEIL and ABS are the numeric functions. There is no
+#      sqrt, no pow and no log in standard SPARQL.
+#    - Rounding negative numbers is where engines have historically
+#      differed. The specification says ties go toward positive infinity.
+#    - RAND() is a real random double in [0, 1). Anything using it is
+#      unrepeatable, so keep it out of anything you need to verify.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
+#           SPARQL 1.2 Query §10.1 BIND
+#           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+SELECT ?rounded ?floored ?ceiled ?absolute ?randInRange (COUNT(*) AS ?books)
+WHERE {
+  ?record bs:shelfPrice ?price .
+  BIND( ROUND(?price)          AS ?rounded )
+  BIND( FLOOR(?price)          AS ?floored )
+  BIND( CEIL(?price)           AS ?ceiled )
+  BIND( ABS(0 - ?price)        AS ?absolute )
+  BIND( IF( RAND() >= 0.0 && RAND() < 1.0, "yes", "impossible" )
+        AS ?randInRange )
+}
+GROUP BY ?rounded ?floored ?ceiled ?absolute ?randInRange
+ORDER BY ?absolute
+LIMIT 8

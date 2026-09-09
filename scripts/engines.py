@@ -364,6 +364,162 @@ def comunica(data_files, query_file) -> Result:
         runner.unlink(missing_ok=True)
 
 
+# --------------------------------------------------------------- SPARQL Update
+#
+# An update has no result to compare, so a course query in module 17 comes in
+# two halves: the update itself, and a SELECT that shows what it did.  Each
+# runner applies the update to a throwaway copy of the data and then answers
+# the second half against the result, which makes an update checkable in
+# exactly the same way as everything else.
+
+def jena_update(data_files, update_file, verify_file) -> Result:
+    """arq.update applies the request and dumps the whole store; arq.sparql
+    then answers the verification query against the dump."""
+    env = _jena_env()
+    cmd = ["java", "-cp", _jena_classpath(), "arq.update"]
+    for d in data_files:
+        cmd.append(f"--data={_abs(d).as_posix()}")
+    cmd += [f"--update={_abs(update_file).as_posix()}", "--dump"]
+    p = _run(cmd, env=env)
+    dumped = _strip_log_noise(p.stdout)
+    if p.returncode != 0 or not dumped:
+        err = [l for l in (p.stderr or dumped).strip().splitlines() if l.strip()]
+        return Result("fuseki", False,
+                      error=(err[-1] if err else f"exit {p.returncode}")[:200],
+                      raw=p.stderr)
+    with tempfile.TemporaryDirectory(prefix="bookshop-upd-") as tmp:
+        # .trig, because the dump carries named graphs when the update
+        # touched one and Turtle would lose them without complaining.
+        out = Path(tmp) / "after.trig"
+        out.write_text(dumped, encoding="utf-8")
+        return jena([out], verify_file)
+
+
+def holos_update(data_files, update_file, verify_file) -> Result:
+    """holos update needs a persistent store, so the data is loaded into a
+    throwaway RocksDB directory first and thrown away afterwards."""
+    with tempfile.TemporaryDirectory(prefix="bookshop-upd-") as tmp:
+        store = Path(tmp) / "store"
+        load = [str(HOLOS_EXE), "query", "--store", str(store)]
+        for d in data_files:
+            load += ["--data", str(_abs(d))]
+        load += ["--query", "ASK { ?s ?p ?o }"]
+        p = _run(load)
+        if p.returncode != 0:
+            return Result("holos", False, error=f"load failed: {p.stderr[:180]}",
+                          raw=p.stderr)
+
+        p = _run([str(HOLOS_EXE), "update", "--store", str(store),
+                  "--update-file", str(_abs(update_file))])
+        if p.returncode != 0:
+            err = [l for l in (p.stderr or p.stdout).strip().splitlines() if l.strip()]
+            return Result("holos", False,
+                          error=(err[-1] if err else f"exit {p.returncode}")[:200],
+                          raw=p.stderr)
+
+        p = _run([str(HOLOS_EXE), "query", "--store", str(store),
+                  "--query-file", str(_abs(verify_file))])
+        lines = [l for l in p.stdout.strip().splitlines()
+                 if l.strip() and not _HOLOS_PROGRESS.match(l)]
+        body = chr(10).join(lines)
+        if p.returncode != 0 or not body:
+            err = [l for l in (p.stderr or p.stdout).strip().splitlines() if l.strip()]
+            return Result("holos", False,
+                          error=(err[-1] if err else f"exit {p.returncode}")[:200],
+                          raw=p.stderr)
+        return _parse_results("holos", body, p.stderr)
+
+
+_COMUNICA_UPDATE_JS = r"""
+import { Parser, Store } from 'n3';
+import { QueryEngine } from '@comunica/query-sparql';
+import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+// See the note in the query runner: the editor's undici wants a
+// worker_threads export that arrived in Node 22, and the update path reaches
+// it too.
+const _require = createRequire(import.meta.url);
+const _wt = _require('node:worker_threads');
+if (typeof _wt.markAsUncloneable !== 'function') _wt.markAsUncloneable = () => {};
+
+const [updateFile, verifyFile, ...dataFiles] = process.argv.slice(2);
+const store = new Store();
+for (const f of dataFiles) {
+  const p = new Parser({ baseIRI: 'https://example.org/bookshop-trail/' });
+  for (const q of p.parse(readFileSync(f, 'utf8'))) store.addQuad(q);
+}
+const engine = new QueryEngine();
+await engine.queryVoid(readFileSync(updateFile, 'utf8'),
+                       { sources: [store], destination: store });
+
+const r = await engine.query(readFileSync(verifyFile, 'utf8'), { sources: [store] });
+
+function cell(term) {
+  if (term.termType === 'Literal') {
+    const out = { type: 'literal', value: term.value };
+    if (term.language) out['xml:lang'] = term.language;
+    else if (term.datatype && term.datatype.value !== 'http://www.w3.org/2001/XMLSchema#string')
+      out.datatype = term.datatype.value;
+    return out;
+  }
+  if (term.termType === 'BlankNode') return { type: 'bnode', value: term.value };
+  return { type: 'uri', value: term.value };
+}
+
+if (r.resultType === 'bindings') {
+  const rows = await (await r.execute()).toArray();
+  const out = rows.map(b => {
+    const o = {};
+    for (const [k, v] of b) o[k.value] = cell(v);
+    return o;
+  });
+  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: out } }));
+} else if (r.resultType === 'boolean') {
+  console.log(JSON.stringify({ boolean: await r.execute() }));
+} else {
+  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: [] } }));
+}
+"""
+
+
+def comunica_update(data_files, update_file, verify_file) -> Result:
+    """Comunica the library does support update, through queryVoid.  The
+    editor's SPARQL panel does not display a void result, which is a different
+    thing and is why module 17 does not claim the editor."""
+    runner = EDITOR_HOME / ".course-update-runner.mjs"
+    try:
+        runner.write_text(_COMUNICA_UPDATE_JS, encoding="utf-8")
+        cmd = ([NODE_EXE, str(runner), str(_abs(update_file)),
+                str(_abs(verify_file))] + [str(_abs(d)) for d in data_files])
+        p = _run(cmd, cwd=str(EDITOR_HOME))
+        out = (p.stdout or "").strip().splitlines()
+        if p.returncode != 0 or not out:
+            err = [l for l in (p.stderr or "").strip().splitlines() if l.strip()]
+            msg = next((l for l in err if not l.startswith((" ", "	"))),
+                       f"exit {p.returncode}")
+            return Result("comunica", False, error=msg[:200], raw=p.stderr)
+        return _parse_results("comunica", out[-1], p.stderr)
+    finally:
+        runner.unlink(missing_ok=True)
+
+
+UPDATE_ENGINES = {
+    "comunica": comunica_update,
+    "editor": comunica_update,
+    "holos": holos_update,
+    "fuseki": jena_update,
+    "jena": jena_update,
+}
+
+
+def run_all_updates(data_files, update_file, verify_file,
+                    engines=("comunica", "holos", "fuseki")):
+    """Apply one update on several engines and compare what it did."""
+    return {e: UPDATE_ENGINES[e](data_files, update_file, verify_file)
+            for e in engines}
+
+
 ENGINES = {
     "editor": comunica,
     "holos": holos,

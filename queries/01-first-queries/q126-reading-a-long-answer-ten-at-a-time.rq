@@ -1,0 +1,77 @@
+# ==========================================================================
+#  Q126  Reading a long answer ten at a time
+# ==========================================================================
+#
+#  ASKS
+#    Show shops 11 to 20 of the trail, alphabetically.
+#
+#  HOW IT WORKS
+#    LIMIT caps the number of rows; OFFSET says how many to skip first.
+#    Together they page. The part everyone gets wrong is that neither means
+#    anything without ORDER BY: with no order, the second page may repeat
+#    rows from the first, and no engine is doing anything wrong.
+#
+#  DIAGRAM
+#        ORDER BY ?name          33 shops, in a defined order
+#        LIMIT 10                take ten
+#        OFFSET 10               after skipping ten
+#
+#          page 1   OFFSET  0    Bookbarrow         ... Errata
+#          page 2   OFFSET 10    Ex Libris          ... The Bookwyrm  <- this
+#          page 3   OFFSET 20    The Broads Bindery ... The Sea Margin
+#          page 4   OFFSET 30    Turn the Page      ... West Quay Books
+#
+#        Thirty-three shops, so the last page has three rows rather
+#        than ten. A client that stops when a page comes back short is
+#        doing the right thing; one that stops when a page comes back
+#        empty makes one extra request and is also fine.
+#
+#        without ORDER BY:
+#
+#          +----------------------------------------------------------+
+#          |  LIMIT 10 OFFSET 10 is "ten rows from somewhere in the    |
+#          |  middle of an arbitrary sequence". Run it twice and you   |
+#          |  may get different rows. Page through a whole table that  |
+#          |  way and you will miss some and see others twice.         |
+#          +----------------------------------------------------------+
+#
+#        Order by something unique, too. Ordering by a column with ties
+#        leaves the tied rows in an arbitrary order between them, and a
+#        page boundary landing inside a tie has the same problem in
+#        miniature -- q41 hit exactly this.
+#
+#        Paging costs the engine the whole sorted answer every time, so
+#        page 400 is as expensive as pages 1 to 400 together. For a
+#        large result set that is the thing to design around, not the
+#        LIMIT.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - LIMIT takes n rows; OFFSET skips n first. Neither is meaningful
+#      without ORDER BY.
+#    - Order by something unique, or a page boundary inside a group of
+#      tied rows will drop and repeat.
+#    - OFFSET n makes the engine produce and discard n rows. Deep paging
+#      is expensive everywhere.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §2 Making Simple Queries
+#           https://www.w3.org/TR/sparql12-query/#x2-making-simple-queries-informative
+#           SPARQL 1.2 Query §4 SPARQL Syntax
+#           https://www.w3.org/TR/sparql12-query/#x4-sparql-syntax
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+}
+ORDER BY ?name
+LIMIT 10
+OFFSET 10

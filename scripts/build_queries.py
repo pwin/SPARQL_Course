@@ -49,6 +49,14 @@ try:
     import queries_blanknodes  # noqa: F401
 except ModuleNotFoundError:
     pass
+try:
+    import queries_update  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_toolkit  # noqa: F401
+except ModuleNotFoundError:
+    pass
 
 
 def load_measured_counts() -> None:
@@ -87,8 +95,9 @@ def main() -> None:
     # Remove only what this script generates.  queries/00-the-lab/README.md and
     # queries/13-planning-and-debugging/PLANS.md are written by hand, and an
     # earlier version of this function deleted them by removing the whole tree.
-    for stale in QUERIES.glob("*/*.rq"):
-        stale.unlink()
+    for pattern in ("*/*.rq", "*/*.ru"):
+        for stale in QUERIES.glob(pattern):
+            stale.unlink()
 
     grouped: dict[str, list] = {}
     for item in CATALOGUE:
@@ -114,7 +123,7 @@ def main() -> None:
             lines += [f"- [{label}]({url})" for label, url in sections]
             lines += [""]
         lines += ["| Query | Asks |", "|---|---|"]
-        for item in sorted(items, key=lambda i: int(i.qid[1:])):
+        for item in sorted(items, key=lambda i: i.sort_key):
             item.path.write_text(item.text(), encoding="utf-8")
             lines.append(f"| [{item.qid} {item.title}]({item.filename}) | {item.asks} |")
         (folder / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

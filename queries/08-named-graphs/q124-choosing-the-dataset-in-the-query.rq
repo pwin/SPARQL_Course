@@ -1,0 +1,80 @@
+# ==========================================================================
+#  Q124  Choosing the dataset in the query
+# ==========================================================================
+#
+#  ASKS
+#    Answer a question against two of the ten graphs and ignore the rest.
+#
+#  HOW IT WORKS
+#    FROM names the graphs to merge into the default graph for this query
+#    only. Nothing is copied and nothing is changed: the engine builds a
+#    dataset for the duration of the query, and the ordinary triple
+#    patterns see exactly that. It is the cheapest way to scope a question.
+#
+#  DIAGRAM
+#        the store                         this query's dataset
+#        ---------                         --------------------
+#        bt:graph-vocabulary
+#        bt:graph-genres
+#        bt:graph-places      ------    bt:graph-shops       ---\       bt:graph-people          \   '--> default graph
+#        bt:graph-books            '-----> (places + shops merged)
+#        bt:graph-events
+#        bt:graph-trail                    everything else: invisible
+#        bt:graph-stock
+#        bt:graph-claims
+#
+#        FROM bt:graph-shops
+#        FROM bt:graph-places
+#
+#        Two clauses, one default graph. FROM does not give you two
+#        graphs you can tell apart -- for that you want FROM NAMED and
+#        GRAPH, which is q125.
+#
+#        +----------------------------------------------------------+
+#        |  no FROM at all   the service decides what the default    |
+#        |                   graph is, and services disagree. On     |
+#        |                   this TriG file the default graph holds  |
+#        |                   only the descriptions of the graphs,    |
+#        |                   so ?s a bs:Bookshop finds nothing.      |
+#        |                   That is q50's surprise.                 |
+#        +----------------------------------------------------------+
+#
+#        A caution worth carrying: FROM takes an IRI, and an engine
+#        that does not hold that graph may go and fetch it over HTTP.
+#        Same exposure as SERVICE and LOAD.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - FROM builds this query's default graph by merging the graphs it
+#      names. It reads; it does not copy or change anything.
+#    - Several FROM clauses merge into one graph. Use FROM NAMED when you
+#      need to know which graph a fact came from.
+#    - Without a dataset clause you get whatever the service calls the
+#      default graph, and that is not standardised.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#           SPARQL 1.2 Query §13.2 Specifying RDF Datasets
+#           https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:   <https://example.org/bookshop-trail/>
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?town
+FROM bt:graph-shops
+FROM bt:graph-places
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?name ;
+        bs:locatedIn ?place .
+  ?place rdfs:label  ?town .
+  FILTER( LANG(?town) = "en" )
+}
+ORDER BY ?name
+LIMIT 8

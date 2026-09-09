@@ -1,0 +1,81 @@
+# ==========================================================================
+#  Q131  IN, NOT IN, and when to use VALUES instead
+# ==========================================================================
+#
+#  ASKS
+#    Find the shops in three named towns, then everything outside them.
+#
+#  HOW IT WORKS
+#    IN tests whether a value is one of a list, and NOT IN is its negation.
+#    Both are expressions, so they live in a FILTER and can only narrow
+#    what a pattern already found. VALUES is a pattern, so it can supply
+#    rows rather than filter them -- which is the difference that decides
+#    which to reach for.
+#
+#  DIAGRAM
+#        FILTER( ?town IN (bt:place-hay-on-wye,
+#                          bt:place-wigtown,
+#                          bt:place-sedbergh) )
+#
+#          an EXPRESSION. The pattern has already found every shop;
+#          this throws most of them away.
+#
+#        VALUES ?town { bt:place-hay-on-wye
+#                       bt:place-wigtown
+#                       bt:place-sedbergh }
+#
+#          a PATTERN. Three rows exist before the join runs, and the
+#          engine can start from them.
+#
+#        +--------------+---------------------------+------------------+
+#        |              | reads as                  | engine can       |
+#        +--------------+---------------------------+------------------+
+#        | IN           | filter, after the match   | rarely optimise  |
+#        | VALUES       | data, before the match    | drive the join   |
+#        | NOT IN       | filter, after the match   | no equivalent    |
+#        +--------------+---------------------------+------------------+
+#
+#        NOT IN has no VALUES form, because a negative has no rows to
+#        supply. MINUS and NOT EXISTS are the pattern-shaped negations
+#        (q17), and IN is a list of values rather than a graph pattern.
+#
+#        Two more things worth knowing. IN evaluates its list left to
+#        right and stops at the first match, so put the likely ones
+#        first if the list is long. And an error in the list -- an
+#        unbound variable, say -- makes the whole expression an error
+#        rather than false, which is q19's territory.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - IN and NOT IN are expressions and belong in a FILTER. They narrow;
+#      they cannot supply rows.
+#    - VALUES does the positive case better, because the engine can start
+#      from the list rather than filter down to it. Compare q98.
+#    - NOT IN has no VALUES equivalent. For a negative, that is what
+#      MINUS and NOT EXISTS are for.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §6 Including Optional Values
+#           https://www.w3.org/TR/sparql12-query/#x6-including-optional-values
+#           SPARQL 1.2 Query §7 Matching Alternatives
+#           https://www.w3.org/TR/sparql12-query/#x7-matching-alternatives
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt: <https://example.org/bookshop-trail/>
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+SELECT ?where (COUNT(*) AS ?shops)
+WHERE {
+  ?shop a            bs:Bookshop ;
+        bs:locatedIn ?town .
+  BIND( IF( ?town IN ( bt:place-hay-on-wye,
+                       bt:place-wigtown,
+                       bt:place-sedbergh ),
+            "a book town", "somewhere else" ) AS ?where )
+  FILTER( ?town NOT IN ( bt:place-york ) )
+}
+GROUP BY ?where
+ORDER BY ?where

@@ -15,6 +15,7 @@ import urllib.request
 from collections import defaultdict
 from urllib.parse import urldefrag
 
+import features
 import specs
 
 UA = {"User-Agent": "SPARQL-Course-link-check/1.0"}
@@ -45,6 +46,11 @@ def main() -> int:
     for qid, entries in specs.QUERY_SPECS.items():
         for label, url in entries:
             add(f"{qid}: {label}", url)
+    # FEATURES.md links every keyword and function to the section that
+    # defines it, which is another eighty-odd anchors to get wrong.
+    for group, entries in features.FEATURES:
+        for label, _pattern, url in entries:
+            add(f"feature {label}", url)
 
     bad = []
     for doc in sorted(wanted):

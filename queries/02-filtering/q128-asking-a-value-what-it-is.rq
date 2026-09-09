@@ -1,0 +1,90 @@
+# ==========================================================================
+#  Q128  Asking a value what it is
+# ==========================================================================
+#
+#  ASKS
+#    For one shop, report the kind and datatype of everything said about
+#    it.
+#
+#  HOW IT WORKS
+#    Four tests sort every RDF term between them -- isIRI, isBLANK,
+#    isLITERAL and isNUMERIC -- and DATATYPE names the type of a literal.
+#    This is what to run when a FILTER is not matching and you cannot see
+#    why, because the answer is almost always that the value is not the
+#    type you assumed.
+#
+#  DIAGRAM
+#        for each object of bt:shop-inkwell:
+#
+#          isIRI(?o)      -> IRI          the town it is in
+#          isLITERAL(?o)  -> literal      its name, year, size
+#          isNUMERIC(?o)  -> numeric      a subset of the literals
+#          isBLANK(?o)    -> blank node   none here; see module 16
+#
+#          DATATYPE(?o)   the type IRI of a literal.
+#
+#        everything this dataset says about The Inkwell, sorted:
+#
+#          +-----------------+------------------+----+
+#          | IRI             |                  | 11 |
+#          | literal         | rdf:langString   |  1 |   the name
+#          | literal         | xsd:anyURI       |  1 |   the website
+#          | literal         | xsd:boolean      |  2 |   cafe, secondhand
+#          | literal         | xsd:gYear        |  1 |   founded
+#          | numeric literal | xsd:decimal      |  3 |   coordinates
+#          | numeric literal | xsd:integer      |  1 |   floor area
+#          +-----------------+------------------+----+
+#
+#        Note what is NOT there: a single xsd:string. Every string in
+#        this dataset carries either a language tag or a datatype, and
+#        that is deliberate.
+#
+#        +----------------------------------------------------------+
+#        |  A language-tagged literal has datatype rdf:langString,   |
+#        |  never xsd:string. A FILTER written as                    |
+#        |      FILTER( DATATYPE(?label) = xsd:string )              |
+#        |  therefore matches none of the labels in this dataset,    |
+#        |  and that is q11's lesson from the other direction.       |
+#        +----------------------------------------------------------+
+#
+#        langMatches is the right test for a language tag, because it
+#        understands ranges: langMatches(LANG(?x), "en") also matches
+#        "en-GB", where LANG(?x) = "en" does not.
+#
+#        STRDT and STRLANG go the other way -- they build a typed or
+#        tagged literal from a plain string, which is how you repair
+#        data that arrived untyped.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - isIRI, isBLANK, isLITERAL and isNUMERIC partition every RDF term.
+#      DATATYPE names a literal's type.
+#    - A language-tagged literal is rdf:langString, not xsd:string. Most
+#      surprising empty results come from this.
+#    - langMatches handles language ranges; equality on LANG() does not.
+#      STRDT and STRLANG build typed and tagged literals.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
+#           SPARQL 1.2 Query §10.1 BIND
+#           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
+#  RETURNS  7 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:  <https://example.org/bookshop-trail/>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?kind ?datatype (COUNT(*) AS ?n)
+WHERE {
+  bt:shop-inkwell ?p ?o .
+  BIND( IF( isIRI(?o),     "IRI",
+        IF( isBLANK(?o),   "blank node",
+        IF( isNUMERIC(?o), "numeric literal",
+                           "literal" ))) AS ?kind )
+  BIND( IF( isLITERAL(?o), DATATYPE(?o), "" ) AS ?datatype )
+}
+GROUP BY ?kind ?datatype
+ORDER BY ?kind ?datatype

@@ -21,3 +21,4 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q24 List each author's books on one line](q24-list-each-author-s-books-on-one-line.rq) | For each author, put all their titles into a single cell. |
 | [q25 Counting things that aren't there](q25-counting-things-that-aren-t-there.rq) | Count events per shop, including the shops that held none. |
 | [q26 One number for the whole dataset](q26-one-number-for-the-whole-dataset.rq) | How many shops, books, authors and events are there altogether? |
+| [q132 DISTINCT, REDUCED, and what each costs](q132-distinct-reduced-and-what-each-costs.rq) | List the towns that have a bookshop, without repeating any. |

@@ -20,6 +20,8 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q49 Where did this fact come from](q49-where-did-this-fact-come-from.rq) | Which part of the dataset asserts each thing known about The Inkwell? |
 | [q50 Querying one graph, then all of them](q50-querying-one-graph-then-all-of-them.rq) | Count the shops using only the shops graph, and then across the whole dataset. |
 | [q51 Joining across two graphs](q51-joining-across-two-graphs.rq) | Pair each shop with its town's name, when the shops and the places live in different graphs. |
+| [q124 Choosing the dataset in the query](q124-choosing-the-dataset-in-the-query.rq) | Answer a question against two of the ten graphs and ignore the rest. |
+| [q125 Keeping the graphs apart](q125-keeping-the-graphs-apart.rq) | Count the triples in two named graphs, and say which is which. |
 | [q105 Bringing in DBpedia](q105-bringing-in-dbpedia.rq) | How many people live in each of the three book towns, according to DBpedia? |
 | [q106 Keeping the rows the remote side cannot answer](q106-keeping-the-rows-the-remote-side-cannot-answer.rq) | List all three book towns, with the population where DBpedia has one. |
 | [q107 Sending the list with the question](q107-sending-the-list-with-the-question.rq) | Ask DBpedia about a batch of towns in one round trip, in a way both engines answer. |

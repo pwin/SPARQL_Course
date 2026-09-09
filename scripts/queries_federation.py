@@ -13,7 +13,7 @@ resolve -- so a federated query has something better to join on than a string
 match against a label.
 """
 
-from querycat import q, D11, ALL, EDITOR, HOLOS, FUSEKI
+from querycat import q, D11, DTRIG, ALL, EDITOR, HOLOS, FUSEKI
 
 MOD = "08-named-graphs"
 
@@ -289,4 +289,135 @@ LIMIT 5""",
     notes="Fuseki only. The browser editor raises rather than honouring "
           "SILENT, and HOLOS refuses remote SERVICE altogether -- which is "
           "the point of the query rather than a limitation of it.",
+)
+
+
+# --- the dataset clauses -------------------------------------------------
+#
+# These two belong with q48-q51 rather than with federation, and `place`
+# puts them there: query ids are permanent, reading order is not.
+
+q(
+    qid="q124", module=MOD, place=51.7,
+    title="Choosing the dataset in the query",
+    asks="Answer a question against two of the ten graphs and ignore the "
+         "rest.",
+    how="FROM names the graphs to merge into the default graph for this query "
+        "only. Nothing is copied and nothing is changed: the engine builds a "
+        "dataset for the duration of the query, and the ordinary triple "
+        "patterns see exactly that. It is the cheapest way to scope a "
+        "question.",
+    diagram="""
+    the store                         this query's dataset
+    ---------                         --------------------
+    bt:graph-vocabulary
+    bt:graph-genres
+    bt:graph-places      ------\
+    bt:graph-shops       ---\   \
+    bt:graph-people          \   '--> default graph
+    bt:graph-books            '-----> (places + shops merged)
+    bt:graph-events
+    bt:graph-trail                    everything else: invisible
+    bt:graph-stock
+    bt:graph-claims
+
+    FROM bt:graph-shops
+    FROM bt:graph-places
+
+    Two clauses, one default graph. FROM does not give you two
+    graphs you can tell apart -- for that you want FROM NAMED and
+    GRAPH, which is q125.
+
+    +----------------------------------------------------------+
+    |  no FROM at all   the service decides what the default    |
+    |                   graph is, and services disagree. On     |
+    |                   this TriG file the default graph holds  |
+    |                   only the descriptions of the graphs,    |
+    |                   so ?s a bs:Bookshop finds nothing.      |
+    |                   That is q50's surprise.                 |
+    +----------------------------------------------------------+
+
+    A caution worth carrying: FROM takes an IRI, and an engine
+    that does not hold that graph may go and fetch it over HTTP.
+    Same exposure as SERVICE and LOAD.
+    """,
+    learn=[
+        "FROM builds this query's default graph by merging the graphs it "
+        "names. It reads; it does not copy or change anything.",
+        "Several FROM clauses merge into one graph. Use FROM NAMED when you "
+        "need to know which graph a fact came from.",
+        "Without a dataset clause you get whatever the service calls the "
+        "default graph, and that is not standardised.",
+    ],
+    body="""SELECT ?name ?town
+FROM bt:graph-shops
+FROM bt:graph-places
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?name ;
+        bs:locatedIn ?place .
+  ?place rdfs:label  ?town .
+  FILTER( LANG(?town) = "en" )
+}
+ORDER BY ?name
+LIMIT 8""",
+    data=DTRIG,
+)
+
+q(
+    qid="q125", module=MOD, place=51.8,
+    title="Keeping the graphs apart",
+    asks="Count the triples in two named graphs, and say which is which.",
+    how="FROM NAMED adds a graph to the dataset without merging it, so GRAPH "
+        "can still name it. This is the pairing that gives you provenance: "
+        "FROM for the facts you want to treat as one body, FROM NAMED for the "
+        "ones whose origin matters.",
+    diagram="""
+    FROM        merges into the default graph -- origin lost
+    FROM NAMED  keeps the graph addressable   -- origin kept
+
+    FROM NAMED bt:graph-shops
+    FROM NAMED bt:graph-places
+    WHERE { GRAPH ?g { ?s ?p ?o } }
+
+      +-------------------------+-------+
+      | bt:graph-places         |   794 |
+      | bt:graph-shops          |   588 |
+      +-------------------------+-------+
+
+    and the eight other graphs contribute nothing, because they
+    are not in this query's dataset at all.
+
+    measured:
+
+      FROM         editor  yes    holos  yes    fuseki  yes
+      FROM NAMED   editor  ERROR  holos  yes    fuseki  yes
+
+    Comunica raises rather than answering: over an in-memory store
+    it has no actor for the pattern a FROM NAMED dataset produces.
+    So in the browser, scope with FROM and load the TriG file; keep
+    FROM NAMED for a real endpoint.
+    """,
+    learn=[
+        "FROM NAMED puts a graph in the dataset without merging it, so GRAPH "
+        "can still ask which graph a fact is in.",
+        "FROM and FROM NAMED are independent. A query can have both, and a "
+        "graph named only by FROM NAMED is not in the default graph.",
+        "The browser editor does not support FROM NAMED. Scope with FROM "
+        "there, and check the dataset clauses on the engine you will deploy "
+        "against.",
+    ],
+    body="""SELECT ?graph (COUNT(*) AS ?triples)
+FROM NAMED bt:graph-shops
+FROM NAMED bt:graph-places
+WHERE {
+  GRAPH ?graph { ?s ?p ?o }
+}
+GROUP BY ?graph
+ORDER BY ?graph""",
+    data=DTRIG,
+    engines=(HOLOS, FUSEKI),
+    notes="Fuseki and HOLOS. Comunica raises \"none of the configured actors "
+          "were able to handle the operation type pattern\" for FROM NAMED "
+          "over an in-memory store; FROM on its own (q124) works there.",
 )

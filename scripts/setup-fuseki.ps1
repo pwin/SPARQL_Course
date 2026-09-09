@@ -47,7 +47,8 @@ param(
     [string]$DatasetName = "bookshop",
     [int]$Port           = 3030,
     [switch]$Install,
-    [switch]$LoadOnly
+    [switch]$LoadOnly,
+    [switch]$Writable
 )
 
 $ErrorActionPreference = "Stop"
@@ -202,6 +203,11 @@ Write-Host ""
 Write-Host "Starting Fuseki on http://localhost:$Port/$DatasetName" -ForegroundColor Cyan
 Write-Host "  query UI : http://localhost:$Port/#/dataset/$DatasetName/query"
 Write-Host "  endpoint : http://localhost:$Port/$DatasetName/sparql"
+if ($Writable) {
+    Write-Host "  update   : http://localhost:$Port/$DatasetName/update  (module 17)"
+} else {
+    Write-Host "  read-only. Add -Writable for the update endpoint that module 17 needs."
+}
 Write-Host "  stop     : Ctrl+C"
 Write-Host ""
 Write-Host "  Try module 10's q58 in the query UI: it should return no rows," -ForegroundColor Gray
@@ -209,5 +215,11 @@ Write-Host "  which is how the data proves every settlement really does sit"  -F
 Write-Host "  inside the polygon it claims."                                  -ForegroundColor Gray
 Write-Host ""
 
-& java -Xmx2G -cp $cp org.apache.jena.fuseki.main.cmds.FusekiServerUICmd `
-    --port=$Port --loc="$store" "/$DatasetName"
+# --update opens the write endpoint. It is off unless asked for: an update
+# endpoint reachable from anywhere is a door into the store, and q123 is the
+# demonstration of what comes through it.
+$fusekiArgs = @("--port=$Port", "--loc=$store")
+if ($Writable) { $fusekiArgs += "--update" }
+$fusekiArgs += "/$DatasetName"
+
+& java -Xmx2G -cp $cp org.apache.jena.fuseki.main.cmds.FusekiServerUICmd @fusekiArgs

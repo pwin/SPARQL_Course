@@ -1,0 +1,92 @@
+# ==========================================================================
+#  Q133  A hop that may not be there
+# ==========================================================================
+#
+#  ASKS
+#    List every place with its council area, falling back to the place
+#    itself where there is no council above it.
+#
+#  HOW IT WORKS
+#    The ? modifier means zero or one hop. It is the path form of OPTIONAL
+#    and it behaves quite differently: where OPTIONAL leaves a variable
+#    unbound, a zero-length path binds the variable to the starting node.
+#    That is useful exactly as often as it is surprising.
+#
+#  DIAGRAM
+#        ?place bs:within? ?up
+#
+#        Both cases apply to every place, so each one produces TWO rows:
+#
+#          Hay-on-Wye   zero hops  ->  ?up = Hay-on-Wye
+#          Hay-on-Wye   one hop    ->  ?up = Powys
+#
+#          +--------------------+--------------------+
+#          | Aberystwyth        | Aberystwyth        |
+#          | Aberystwyth        | Ceredigion         |
+#          | Bath               | Bath               |
+#          | Bath               | Somerset           |
+#          +--------------------+--------------------+
+#
+#        That doubling is the thing to expect. A ? path does not choose
+#        between zero and one hop; it matches both, and the row count
+#        doubles for every node that has a parent.
+#
+#        +----------------------------------------------------------+
+#        |  bs:within?     always binds. Zero hops binds ?up to      |
+#        |                 ?place itself -- never unbound.           |
+#        |                                                           |
+#        |  OPTIONAL {     binds or leaves unbound. BOUND(?up)       |
+#        |    ?place         tells them apart; with the path there   |
+#        |    bs:within ?up  is nothing to tell apart.               |
+#        |  }                                                        |
+#        +----------------------------------------------------------+
+#
+#        So ? is the wrong tool when you need to know whether the hop
+#        happened, and the right one when you want "this or its parent"
+#        treated uniformly -- a lookup that should work whether it is
+#        given a town or the county containing it, say.
+#
+#        The four path modifiers, side by side:
+#
+#          p       exactly one hop
+#          p?      zero or one          always binds
+#          p+      one or more
+#          p*      zero or more         always binds
+#
+#        The two that include zero are the two that always produce a
+#        row, which is why q29 warns that ?x bs:within* ?y matches
+#        every node against itself.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - p? matches zero or one hop, and the zero case binds the variable
+#      to the starting node rather than leaving it unbound.
+#    - Use OPTIONAL, not p?, when you need to know whether the hop
+#      happened. BOUND() has nothing to test after a ? path.
+#    - p? and p* both include the zero-length case, so both always
+#      produce at least the node itself.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §9 Property Paths
+#           https://www.w3.org/TR/sparql12-query/#x9-property-paths
+#           SPARQL 1.2 Query §9.1 Property Path Syntax
+#           https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?place ?up (COUNT(*) AS ?rows)
+WHERE {
+  ?p     a           bs:Settlement ;
+         rdfs:label  ?place .
+  ?p     bs:within?  ?u .
+  ?u     rdfs:label  ?up .
+  FILTER( LANG(?place) = "en" && LANG(?up) = "en" )
+}
+GROUP BY ?place ?up
+ORDER BY ?place ?up
+LIMIT 8

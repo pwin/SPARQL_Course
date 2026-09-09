@@ -1,0 +1,74 @@
+# ==========================================================================
+#  Q134  Naming a statement in the query itself
+# ==========================================================================
+#
+#  ASKS
+#    Find the shop whose founding year somebody disputes, using the reifier
+#    syntax rather than a variable.
+#
+#  HOW IT WORKS
+#    << s p o ~ ?r >> is the reifier form: it matches the triple and binds
+#    ?r to the reifier that identifies it, in one piece of syntax. It is
+#    the query-side counterpart of the annotation syntax the data is
+#    written in, and it saves the two-step of matching the triple term and
+#    then finding what rdf:reifies it.
+#
+#  DIAGRAM
+#        the data, written with annotation syntax:
+#
+#          bt:shop-ex-libris bs:founded "1919"^^xsd:gYear
+#              {| bs:statedOn bt:source-guide ; bs:confidence 0.7 |} .
+#
+#        what that means underneath:
+#
+#          _:r rdf:reifies <<( bt:shop-ex-libris bs:founded "1919" )>> .
+#          _:r bs:statedOn bt:source-guide .
+#
+#        two ways to get at it:
+#
+#          the long way                    the reifier syntax
+#          ------------                    ------------------
+#          ?r rdf:reifies ?t .             << ?s bs:founded ?y ~ ?r >>
+#          BIND(SUBJECT(?t) AS ?s)         ?r bs:confidence ?c .
+#          BIND(OBJECT(?t)  AS ?y)
+#          ?r bs:confidence ?c .
+#
+#        Same answer, and the second says what it means. The ~ ?r part
+#        is optional: << ?s ?p ?o >> on its own matches the triple
+#        through some reifier without naming it.
+#
+#        +----------------------------------------------------------+
+#        |  A reifier identifies a STATEMENT, not a fact. Two        |
+#        |  reifiers on the same triple are two separate claims      |
+#        |  about it -- one from a guidebook, one from the shop --   |
+#        |  and that is the whole point of the mechanism.            |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - << s p o ~ ?r >> matches a triple and binds its reifier in one
+#      step.
+#    - The reifier is what carries the annotations. The triple term is
+#      the statement; the reifier is this particular assertion of it.
+#    - Reifiers are usually blank nodes, so do not sort or page on one --
+#      module 16 is about why.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §17.4.6 Functions on Triple Terms
+#           https://www.w3.org/TR/sparql12-query/#x17-4-6-functions-on-triple-terms
+#           SPARQL 1.2 Query §17.4.2.9 LANGDIR
+#           https://www.w3.org/TR/sparql12-query/#x17-4-2-9-langdir
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:  <https://example.org/bookshop-trail/schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+
+SELECT ?shop ?year ?confidence
+WHERE {
+  << ?shop bs:founded ?year ~ ?r >> .
+  ?r bs:confidence ?confidence .
+}
+ORDER BY ?confidence ?shop

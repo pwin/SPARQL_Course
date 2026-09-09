@@ -21,3 +21,4 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q18 Everyone who worked on a book](q18-everyone-who-worked-on-a-book.rq) | List every person credited on a work, whether as author or translator. |
 | [q19 Why a FILTER inside OPTIONAL behaves oddly](q19-why-a-filter-inside-optional-behaves-oddly.rq) | Compare filtering inside an OPTIONAL with filtering after it. |
 | [q98 A list of candidates, supplied inline](q98-a-list-of-candidates-supplied-inline.rq) | Ask about three named shops and nothing else. |
+| [q131 IN, NOT IN, and when to use VALUES instead](q131-in-not-in-and-when-to-use-values-instead.rq) | Find the shops in three named towns, then everything outside them. |

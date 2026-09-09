@@ -1,0 +1,74 @@
+# ==========================================================================
+#  Q125  Keeping the graphs apart
+# ==========================================================================
+#
+#  ASKS
+#    Count the triples in two named graphs, and say which is which.
+#
+#  HOW IT WORKS
+#    FROM NAMED adds a graph to the dataset without merging it, so GRAPH
+#    can still name it. This is the pairing that gives you provenance: FROM
+#    for the facts you want to treat as one body, FROM NAMED for the ones
+#    whose origin matters.
+#
+#  DIAGRAM
+#        FROM        merges into the default graph -- origin lost
+#        FROM NAMED  keeps the graph addressable   -- origin kept
+#
+#        FROM NAMED bt:graph-shops
+#        FROM NAMED bt:graph-places
+#        WHERE { GRAPH ?g { ?s ?p ?o } }
+#
+#          +-------------------------+-------+
+#          | bt:graph-places         |   794 |
+#          | bt:graph-shops          |   588 |
+#          +-------------------------+-------+
+#
+#        and the eight other graphs contribute nothing, because they
+#        are not in this query's dataset at all.
+#
+#        measured:
+#
+#          FROM         editor  yes    holos  yes    fuseki  yes
+#          FROM NAMED   editor  ERROR  holos  yes    fuseki  yes
+#
+#        Comunica raises rather than answering: over an in-memory store
+#        it has no actor for the pattern a FROM NAMED dataset produces.
+#        So in the browser, scope with FROM and load the TriG file; keep
+#        FROM NAMED for a real endpoint.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - FROM NAMED puts a graph in the dataset without merging it, so
+#      GRAPH can still ask which graph a fact is in.
+#    - FROM and FROM NAMED are independent. A query can have both, and a
+#      graph named only by FROM NAMED is not in the default graph.
+#    - The browser editor does not support FROM NAMED. Scope with FROM
+#      there, and check the dataset clauses on the engine you will deploy
+#      against.
+#
+#  NOTE
+#    Fuseki and HOLOS. Comunica raises "none of the configured actors were
+#    able to handle the operation type pattern" for FROM NAMED over an in-
+#    memory store; FROM on its own (q124) works there.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  holos, fuseki
+#  SPEC     SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#           SPARQL 1.2 Query §13.2 Specifying RDF Datasets
+#           https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt: <https://example.org/bookshop-trail/>
+
+SELECT ?graph (COUNT(*) AS ?triples)
+FROM NAMED bt:graph-shops
+FROM NAMED bt:graph-places
+WHERE {
+  GRAPH ?graph { ?s ?p ?o }
+}
+GROUP BY ?graph
+ORDER BY ?graph

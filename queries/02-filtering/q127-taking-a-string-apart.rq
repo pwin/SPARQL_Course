@@ -1,0 +1,86 @@
+# ==========================================================================
+#  Q127  Taking a string apart
+# ==========================================================================
+#
+#  ASKS
+#    Build a short sortable code for each shop from its name.
+#
+#  HOW IT WORKS
+#    The string functions compose, and this uses most of them at once:
+#    STRLEN to measure, UCASE and SUBSTR to cut, STRBEFORE and STRAFTER to
+#    split on a marker, CONTAINS and STRSTARTS to test, CONCAT to put the
+#    pieces back together.
+#
+#  DIAGRAM
+#        "The Harbour Page"
+#
+#          STRSTARTS(?n, "The ")        true
+#          STRAFTER(?n, "The ")         "Harbour Page"      drop the article
+#          STRBEFORE(?bare, " ")        "Harbour"           first word
+#          SUBSTR(?first, 1, 3)         "Har"
+#          UCASE( that )                "HAR"
+#          STRLEN(?n)                   16
+#          STRENDS(?n, "Books")         false            -> "-"
+#          CONCAT("HAR", "-", "16", "-")   "HAR-16-"
+#
+#        +--------------------+------------------+--------+
+#        | The Harbour Page   | HAR-16-          |     16 |
+#        | The Inkwell        | INK-11-          |     11 |
+#        | Castle Steps Books | CAS-18B          |     18 |
+#        +--------------------+------------------+--------+
+#
+#        the whole family, and what each is for:
+#
+#          STRLEN      length in characters, not bytes
+#          SUBSTR      by position; 1-based, and takes a LENGTH
+#          UCASE LCASE case, for comparison rather than display
+#          STRSTARTS   prefix test           STRENDS   suffix test
+#          CONTAINS    substring test -- cheaper than REGEX (q10)
+#          STRBEFORE   everything before the first match; "" if absent
+#          STRAFTER    everything after it;               "" if absent
+#          CONCAT      joins, and propagates the language tag only when
+#                      every argument carries the same one
+#
+#        STRBEFORE and STRAFTER returning "" rather than erroring when
+#        the marker is missing is the trap: an empty string is a
+#        perfectly good value, and it will flow through the rest of the
+#        expression without complaint.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - SUBSTR counts from 1 and takes a length, not an end position.
+#      afn:substr does neither -- see q103.
+#    - CONTAINS and STRSTARTS say what REGEX would, cost less, and read
+#      better. Keep REGEX for actual patterns.
+#    - STRBEFORE and STRAFTER return the empty string when the marker is
+#      absent. Test with CONTAINS first if that matters.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
+#           SPARQL 1.2 Query §10.1 BIND
+#           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?code ?length
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( STR(?name) AS ?plain )
+  BIND( IF( STRSTARTS(?plain, "The "), STRAFTER(?plain, "The "), ?plain )
+        AS ?bare )
+  BIND( IF( CONTAINS(?bare, " "), STRBEFORE(?bare, " "), ?bare )
+        AS ?firstWord )
+  BIND( STRLEN(?plain) AS ?length )
+  BIND( IF( STRENDS(?plain, "Books"), "B", "-" ) AS ?trade )
+  BIND( CONCAT( UCASE(SUBSTR(?firstWord, 1, 3)), "-", STR(?length),
+                ?trade ) AS ?code )
+}
+ORDER BY ?code
+LIMIT 10

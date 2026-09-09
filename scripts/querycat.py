@@ -38,7 +38,12 @@ DTRIG = "bookshop-trail.trig"
 EDITOR = "editor"    # Turtle Editor Viewer (Comunica)
 HOLOS = "holos"      # HOLOS / new_triplestore_sparql_engine
 FUSEKI = "fuseki"    # Apache Jena Fuseki 6.2.0 / ARQ
+# Comunica the library, as distinct from the editor built on it. Module 17
+# needs the distinction: the library runs SPARQL Update perfectly well, and
+# the editor's SPARQL panel has no way to show the result of one.
+COMUNICA = "comunica"
 ALL = (EDITOR, HOLOS, FUSEKI)
+ALL_UPDATE = (COMUNICA, HOLOS, FUSEKI)
 
 # Every prefix the course knows about.  A query declares only the ones it
 # actually uses: ten PREFIX lines above a two-line query is noise, and the
@@ -116,8 +121,26 @@ class Query:
     # unless --network is given, so the default run stays deterministic and
     # works with no internet: a course should not fail because DBpedia is busy.
     network: bool = False
+    # An update request rather than a query. `body` holds the update; `verify`
+    # holds a SELECT that shows what it did, run against the result. Without
+    # the second half an update is unverifiable, and every claim in this
+    # course is meant to be checkable.
+    verify: str = ""
+    # Where this query sits inside its module. Query ids are permanent -- a
+    # link to q51 has to keep working -- so a lesson added later cannot take
+    # the number its position deserves. This overrides the reading order
+    # without touching the id: 51.5 sits between q51 and q52.
+    place: float = 0.0
     expect: str = ""            # filled in by check_queries.py
     order: int = 0
+
+    @property
+    def sort_key(self) -> float:
+        return self.place or float(self.qid[1:])
+
+    @property
+    def is_update(self) -> bool:
+        return bool(self.verify)
 
     @property
     def filename(self) -> str:
@@ -128,7 +151,8 @@ class Query:
             slug = slug.replace(ch, "-")
         while "--" in slug:
             slug = slug.replace("--", "-")
-        return f"{self.qid}-{slug.strip('-')}.rq"
+        ext = "ru" if self.is_update else "rq"
+        return f"{self.qid}-{slug.strip('-')}.{ext}"
 
     @property
     def path(self) -> Path:
@@ -148,6 +172,8 @@ class Query:
         prefixes it may not use.
         """
         names = prefixes_used(self.body) | set(self.extra_prefixes)
+        if self.verify:
+            names |= prefixes_used(self.verify)
         head = self.body.lstrip().upper()
         if head.startswith("DESCRIBE"):
             names |= {"bt", "bs", "rdfs", "skos", "geo", "sf", "dct", "wgs84",
@@ -182,9 +208,14 @@ class Query:
             "# Data: " + self.data,
             "# The Bookshop Trail -- " + REPO,
         ]
-        return (nl.join(head) + nl * 2
+        text = (nl.join(head) + nl * 2
                 + self.prologue + nl * 2
                 + self.body.strip() + nl)
+        if self.verify:
+            text += (nl + "# Then run this to see what it did:" + nl
+                     + nl.join("# " + l for l in self.verify.strip().splitlines())
+                     + nl)
+        return text
 
 
     def text(self) -> str:
@@ -233,6 +264,17 @@ class Query:
         out.append("")
         out.append(self.body.strip())
         out.append("")
+        if self.verify:
+            out.append("")
+            out.append("# " + "-" * 72)
+            out.append("#  CHECK IT WORKED.  Run this afterwards, against the")
+            out.append("#  updated store.  An update returns nothing, so this")
+            out.append("#  is the only way to see what it did.")
+            out.append("# " + "-" * 72)
+            out.append("#")
+            for line in self.verify.strip().splitlines():
+                out.append(("#  " + line).rstrip())
+            out.append("")
         return chr(10).join(out)
 
 
@@ -349,6 +391,14 @@ MODULE_INFO = {
         "up until you move the query. This module measures which of them your "
         "three engines actually have, shows what each does when a function is "
         "missing, and ends with the portable rewrite.",
+    ),
+    "17-updating-the-data": (
+        "Updating the data",
+        "Everything before this reads. SPARQL Update writes: INSERT, DELETE, "
+        "the two together, whole-graph operations, and a migration applied in "
+        "place rather than handed back. An update returns nothing, so every "
+        "query here comes with a second one that shows what it did. The "
+        "editor's SPARQL panel cannot run these -- use Fuseki or HOLOS.",
     ),
     "16-blank-nodes": (
         "Blank nodes",

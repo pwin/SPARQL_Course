@@ -18,5 +18,6 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q02 Everything known about one shop](q02-everything-known-about-one-shop.rq) | What does the dataset actually record about The Inkwell? |
 | [q03 Which town is each shop in](q03-which-town-is-each-shop-in.rq) | Pair every shop with the name of the town it trades in. |
 | [q04 The ten oldest shops](q04-the-ten-oldest-shops.rq) | Which shops have been trading longest? |
+| [q126 Reading a long answer ten at a time](q126-reading-a-long-answer-ten-at-a-time.rq) | Show shops 11 to 20 of the trail, alphabetically. |
 | [q05 What kinds of thing are in here](q05-what-kinds-of-thing-are-in-here.rq) | Without knowing anything about the dataset, what classes does it contain? |
 | [q06 What can I ask about a bookshop](q06-what-can-i-ask-about-a-bookshop.rq) | Which properties do bookshops actually carry? |

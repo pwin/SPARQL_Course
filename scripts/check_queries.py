@@ -22,12 +22,13 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 from querycat import CATALOGUE
-from engines import run_all
+from engines import run_all, run_all_updates
 
 import queries_core          # noqa: F401  (importing registers the queries)
 for _mod in ("queries_paths", "queries_geo", "queries_rdf12",
              "queries_forms", "queries_debug", "queries_extensions",
-             "queries_federation", "queries_blanknodes"):
+             "queries_federation", "queries_blanknodes",
+             "queries_update", "queries_toolkit"):
     try:
         __import__(_mod)
     except ModuleNotFoundError:
@@ -68,13 +69,28 @@ def main() -> int:
         engines = [e for e in item.engines if not args.engine or e in args.engine]
         if not engines:
             continue
-        qfile = BUILD / f"{item.qid}.rq"
-        qfile.write_text(item.prologue + chr(10) * 2 + item.body + chr(10),
-                         encoding="utf-8")
-        got = run_all([DATA / item.data], qfile, engines=tuple(engines))
+        if item.is_update:
+            # Two files: the update, and the query that shows what it did.
+            ufile = BUILD / f"{item.qid}.ru"
+            ufile.write_text(item.prologue + chr(10) * 2 + item.body + chr(10),
+                             encoding="utf-8")
+            vfile = BUILD / f"{item.qid}-verify.rq"
+            vfile.write_text(item.prologue + chr(10) * 2 + item.verify + chr(10),
+                             encoding="utf-8")
+            got = run_all_updates([DATA / item.data], ufile, vfile,
+                                  engines=tuple(engines))
+        else:
+            qfile = BUILD / f"{item.qid}.rq"
+            qfile.write_text(item.prologue + chr(10) * 2 + item.body + chr(10),
+                             encoding="utf-8")
+            got = run_all([DATA / item.data], qfile, engines=tuple(engines))
 
+        # The first column is the browser engine under whichever name the
+        # query claims: "editor" for the hosted tool, "comunica" where only
+        # the library can do it.
+        browser = "comunica" if "comunica" in item.engines else "editor"
         row, cells, sigs = {}, [], {}
-        for name in ("editor", "holos", "fuseki"):
+        for name in (browser, "holos", "fuseki"):
             if name not in engines:
                 cells.append(f"{name}:  -   ")
                 continue

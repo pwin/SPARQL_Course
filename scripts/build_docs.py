@@ -26,6 +26,8 @@ from querycat import (CATALOGUE, MODULE_INFO, EDITOR_BASE, RAW_BASE,
 from lab_section import LAB_SECTION
 import logo
 from plans_section import PLANS_PREAMBLE
+from protocol_section import PROTOCOL_SECTION
+import features
 import specs
 
 import queries_core          # noqa: F401
@@ -47,6 +49,14 @@ except ModuleNotFoundError:
     pass
 try:
     import queries_blanknodes  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_update  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_toolkit  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -271,6 +281,22 @@ def engine_strip(item) -> str:
            f'<span class="datafile">{esc(item.data)}</span></div>'
 
 
+def verify_block(item) -> str:
+    """An update returns nothing, so module 17 pairs each one with a query
+    that shows what it did.  Showing only the update would leave the reader
+    with no way to see the result the page is quoting."""
+    if not getattr(item, "verify", ""):
+        return ""
+    return f"""
+  <div class="verify">
+    <h4>Then check it worked</h4>
+    <p>An update produces no result. This is the query that shows what it
+      did, run against the updated store &mdash; and it is what the row
+      counts below were measured from.</p>
+    <div class="code-wrap"><pre class="code"><code>{highlight(item.verify)}</code></pre></div>
+  </div>"""
+
+
 def query_section(item) -> str:
     learn = "".join(f"<li>{esc(x)}</li>" for x in item.learn)
     note = ""
@@ -304,6 +330,7 @@ def query_section(item) -> str:
   <div class="code-wrap"><pre class="code"><code>{highlight(item.prologue)}
 
 {highlight(item.body)}</code></pre></div>
+  {verify_block(item)}
 
   <div class="mech">
     <div class="mech-prose">
@@ -361,7 +388,7 @@ def build() -> str:
     for i, (module, items) in enumerate(by_module.items(), start=1):
         title, blurb = MODULE_INFO[module]
         num = module.split("-")[0]
-        items = sorted(items, key=lambda x: int(x.qid[1:]))
+        items = sorted(items, key=lambda x: x.sort_key)
         nav.append(
             f'<li><a href="#m{num}"><span class="n">{num}</span>{esc(title)}'
             f'<span class="c">{len(items)}</span></a></li>')
@@ -394,6 +421,16 @@ def build() -> str:
   </div>
   {sections}
 </section>""")
+
+    found = features.scan(CATALOGUE)
+    covered = sum(1 for hits in found.values() if hits)
+    nav.append(f'<li><a href="#features"><span class="n">A-Z</span>'
+               f'Find a feature<span class="c">{covered}</span></a></li>')
+    body.append(features.html(found))
+
+    nav.append('<li><a href="#protocol"><span class="n">http</span>'
+               'Talking to an endpoint</a></li>')
+    body.append(PROTOCOL_SECTION)
 
     docs = sum(len(entries) for _g, entries in specs.STANDARDS)
     nav.append(f'<li><a href="#standards"><span class="n">§</span>'
@@ -734,6 +771,29 @@ ul.learn li::marker {{ color: var(--route); }}
   text-transform: uppercase; font-size: .68rem; color: var(--ink-3);
   margin-right: 8px; }}
 .module-specs a {{ color: var(--ink-2); }}
+.verify {{ margin: 14px 0 0; padding: 12px 0 0; border-top: 1px dashed var(--rule); }}
+.verify h4 {{ margin: 0 0 4px; font-size: .8rem; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--ink-3); }}
+.verify p {{ max-width: var(--maxw); margin: 0 0 8px; font-size: .86rem;
+  color: var(--ink-2); }}
+.feat-wrap {{ display: grid; gap: 26px;
+  grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); }}
+.feat-group h3 {{ font-size: .95rem; margin: 0 0 8px; }}
+table.feat {{ width: 100%; border-collapse: collapse; font-size: .84rem; }}
+table.feat th {{ text-align: left; font-weight: 400; white-space: nowrap;
+  padding: 3px 10px 3px 0; vertical-align: top; border-bottom: 1px solid var(--rule); }}
+table.feat th a {{ font-family: var(--mono, monospace); color: var(--ink-2); }}
+table.feat td {{ padding: 3px 0; border-bottom: 1px solid var(--rule);
+  line-height: 1.9; }}
+table.feat td a {{ margin-right: 4px; }}
+table.feat .more {{ color: var(--ink-3); }}
+.proto-wrap {{ display: grid; gap: 30px; }}
+.proto-block h3 {{ font-size: 1rem; margin: 0 0 8px; }}
+.proto-block p {{ max-width: var(--maxw); }}
+pre.shell {{ background: var(--paper-2); border: 1px solid var(--rule);
+  border-left: 3px solid var(--rule-2, var(--rule)); border-radius: 3px;
+  padding: 12px 14px; overflow-x: auto; font-size: .82rem; line-height: 1.55;
+  margin: 10px 0; }}
 .std-wrap {{ display: grid; gap: 26px; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }}
 .std-group h3 {{ font-size: .95rem; margin: 0 0 10px; }}
 .std-list {{ list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }}

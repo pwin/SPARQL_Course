@@ -240,6 +240,7 @@ slide("plain", """
   <div><b>14</b> Putting it together</div>
   <div><b>15</b> Beyond the standard &mdash; afn:, spif:, fn:, math:</div>
   <div class="hi"><b>16</b> Blank nodes &mdash; the nodes with no name</div>
+  <div class="hi"><b>17</b> Updating &mdash; INSERT, DELETE, and no undo</div>
 </div>
 """)
 
@@ -704,6 +705,45 @@ slide("plain", """
     <p class="take"><b>Take away.</b> The sections are shorter than their
       reputation. When an engine and a tutorial disagree, this is the thing
       that settles it.</p>
+  </div>
+</div>
+""")
+
+slide("plain", """
+<h2>Writing, not just reading</h2>
+<div class="cols">
+  <div>
+    <p>Module 17 is the half of SPARQL the other sixteen modules do not
+      touch. An update returns <b>nothing</b> &mdash; no rows, no count, no
+      graph &mdash; so every lesson in it comes in two halves: the update,
+      and a query that shows what it did.</p>
+""" + code("""DELETE { ?shop bs:founded ?old }
+INSERT { ?shop bs:founded "1921"^^xsd:gYear }
+WHERE  { ?shop bs:founded ?old .
+         FILTER( ?shop = bt:shop-ex-libris ) }""") + """
+    <p class="take"><b>Leave out the DELETE</b> and the new value appears
+      alongside the old one. No error, and the property now has two values.</p>
+  </div>
+  <div>
+""" + ascii_box("""
+DELETE WHERE { ?s ?p ?o }
+
+  4826 triples  ->  0
+
+no prompt   no confirmation   no undo
+the operation SUCCEEDS
+
+three habits that prevent it:
+
+  1  write the WHERE as a SELECT first
+  2  keep the endpoint read-only unless
+     it needs to write
+  3  back up before a migration, not
+     after noticing
+""") + """
+    <p class="take"><b>The browser editor cannot run these.</b> Comunica the
+      library can; the editor's SPARQL panel has no way to display a result
+      that is empty by definition. Use Fuseki or HOLOS.</p>
   </div>
 </div>
 """)

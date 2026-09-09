@@ -1,0 +1,78 @@
+# ==========================================================================
+#  Q135  The XPath maths library
+# ==========================================================================
+#
+#  ASKS
+#    Compute a distance with math:sqrt and a growth figure with math:pow.
+#
+#  HOW IT WORKS
+#    math: is the XPath 3.1 maths library, and Jena registers it. It covers
+#    what afn: covers and rather more -- pow, log, exp, the trigonometric
+#    functions -- and unlike afn: it is at least a published specification,
+#    even if not one SPARQL requires.
+#
+#  DIAGRAM
+#          math:sqrt(x)        math:pow(x, y)      math:exp(x)
+#          math:log(x)         math:log10(x)       math:sin  cos  tan
+#          math:atan2(y, x)    math:pi()
+#
+#        measured on the three engines:
+#
+#          math:sqrt   editor  error   holos  error   fuseki  yes
+#          math:pow    editor  error   holos  error   fuseki  yes
+#
+#        So this is the narrowest of the extension libraries in this
+#        course: one engine of the three. afn:sqrt (q101) covers the
+#        same ground on two of them, which makes afn: the better bet
+#        if you are going to depend on an extension at all.
+#
+#        +----------------------------------------------------------+
+#        |  What to take from module 15 as a whole: there are four   |
+#        |  function libraries here and no two engines agree on      |
+#        |  which they have. Write the standard version (q104),      |
+#        |  measure whether it is fast enough, and only then reach   |
+#        |  for a library -- with a comment saying which engine you  |
+#        |  have just tied yourself to.                              |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - math: is the XPath maths library: sqrt, pow, log, exp and the
+#      trigonometric functions. Jena has it; the other two do not.
+#    - It overlaps afn: without replacing it, and afn: is available on
+#      more of these engines.
+#    - Four libraries, three engines, no agreement. That is the state of
+#      extension functions, and it is why the portable rewrite matters.
+#
+#  NOTE
+#    Fuseki only. Comunica and HOLOS both raise on math:, so the portable
+#    version of this is q104 and the two-engine version is q101.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  fuseki
+#  SPEC     SPARQL 1.2 Query §17.3.1 Operator Extensibility
+#           https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility
+#           SPARQL 1.2 Query §17.6 Extensible Value Testing
+#           https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:   <https://example.org/bookshop-trail/>
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX math: <http://www.w3.org/2005/xpath-functions/math#>
+
+SELECT ?name ?km ?doubled
+WHERE {
+  bt:place-york bs:easting ?ye ; bs:northing ?yn .
+  ?shop a           bs:Bookshop ;
+        rdfs:label  ?name ;
+        bs:easting  ?se ;
+        bs:northing ?sn .
+  BIND( (?se - ?ye) * (?se - ?ye) + (?sn - ?yn) * (?sn - ?yn) AS ?d2 )
+  BIND( ROUND( math:sqrt(?d2) / 100 ) / 10 AS ?km )
+  BIND( ROUND( math:pow(?km, 2) )          AS ?doubled )
+}
+ORDER BY ?km
+LIMIT 8

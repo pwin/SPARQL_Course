@@ -23,4 +23,5 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q112 Where in the list?](q112-where-in-the-list.rq) | An RDF collection is ordered. Which position does each member hold? |
 | [q113 Telling two blank nodes apart](q113-telling-two-blank-nodes-apart.rq) | Are the two disjointness axioms really two nodes, or one node found twice? |
 | [q114 Giving a blank node a name](q114-giving-a-blank-node-a-name.rq) | Mint a stable IRI for each disjointness axiom, so it can be quoted in a bug report. |
+| [q136 Names you can compute](q136-names-you-can-compute.rq) | Mint identifiers three ways -- a hash, a URI-safe string, and a fresh blank node -- and see which are stable. |
 | [q115 A copy with no blank nodes left in it](q115-a-copy-with-no-blank-nodes-left-in-it.rq) | Build a graph that says the same thing about disjointness, with every blank node replaced by something nameable. |
