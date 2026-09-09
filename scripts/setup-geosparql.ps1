@@ -43,7 +43,7 @@
     ./scripts/setup-geosparql.ps1 -Verify
 #>
 param(
-    [string]$FusekiJar  = "C:\apache-jena-fuseki-6.2.0-SNAPSHOT\fuseki-server.jar",
+    [string]$FusekiJar  = "C:\apache-jena-fuseki-6.2.0\fuseki-server.jar",
     [string]$JenaHome   = "C:\apache-jena-6.2.0",
     [string]$SisHome    = "C:\apache-sis-1.6",
     [string]$SisEpsgVersion = "1.4",
@@ -53,6 +53,17 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root    = Split-Path -Parent $PSScriptRoot
+
+# Release and snapshot builds differ only in the directory name, so fall back
+# to whichever apache-jena-fuseki-* is actually installed.
+if (-not (Test-Path $FusekiJar)) {
+    $parent = Split-Path -Parent (Split-Path -Parent $FusekiJar)
+    $found = Get-ChildItem -Path $parent -Directory -Filter "apache-jena-fuseki-*" `
+             -ErrorAction SilentlyContinue | Sort-Object Name -Descending |
+             ForEach-Object { Join-Path $_.FullName "fuseki-server.jar" } |
+             Where-Object { Test-Path $_ } | Select-Object -First 1
+    if ($found) { $FusekiJar = $found }
+}
 $libDir  = Join-Path $root "lib\geosparql"
 $sisData = Join-Path $root "build\sis-data"
 

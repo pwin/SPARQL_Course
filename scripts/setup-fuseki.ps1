@@ -1,5 +1,6 @@
 <#
 .SYNOPSIS
+    Download and install Apache Jena Fuseki from https://jena.apache.org/download/index.cgi
     Load the Bookshop Trail into Apache Jena Fuseki and start it.
 
 .DESCRIPTION
@@ -19,8 +20,8 @@
     ./scripts/setup-fuseki.ps1 -Port 3131 -Data bookshop-trail-full.ttl
 #>
 param(
-    [string]$FusekiHome = "C:\apache-jena-fuseki-6.2.0-SNAPSHOT",
-    [string]$FusekiJar  = "C:\apache-jena-fuseki-6.2.0-SNAPSHOT\fuseki-server.jar",
+    [string]$FusekiHome = "C:\apache-jena-fuseki-6.2.0",
+    [string]$FusekiJar  = "C:\apache-jena-fuseki-6.2.0\fuseki-server.jar",
     [string]$JenaHome   = "C:\apache-jena-6.2.0",
     [string]$Data       = "bookshop-trail-1.2.ttl",
     [string]$DatasetName = "bookshop",
@@ -30,6 +31,24 @@ param(
 
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
+
+# The Fuseki directory name differs between a release and a snapshot build, so
+# the default above is a preference rather than a requirement: if it is not
+# there, take the newest apache-jena-fuseki-* sitting beside it.
+function Resolve-Fuseki([string]$preferred) {
+    if (Test-Path $preferred) { return $preferred }
+    $parent = Split-Path -Parent $preferred
+    $found = Get-ChildItem -Path $parent -Directory -Filter "apache-jena-fuseki-*" `
+             -ErrorAction SilentlyContinue | Sort-Object Name -Descending |
+             Select-Object -First 1
+    if ($found) { return $found.FullName }
+    return $preferred
+}
+
+$FusekiHome = Resolve-Fuseki $FusekiHome
+if (-not (Test-Path $FusekiJar)) {
+    $FusekiJar = Join-Path $FusekiHome "fuseki-server.jar"
+}
 $dataFile = Join-Path $root "data\$Data"
 $store = Join-Path $root "build\fuseki-tdb2"
 
@@ -49,8 +68,10 @@ New-Item -ItemType Directory -Force -Path $store | Out-Null
 & "$JenaHome\bat\tdb2_tdbloader.bat" --loc="$store" "$dataFile"
 if ($LASTEXITCODE -ne 0) { throw "tdbloader failed with exit code $LASTEXITCODE" }
 
-& "$JenaHome\bat\tdb2_tdbquery.bat" --loc="$store" `
-    --query=<(Write-Output "SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }") 2>$null
+$countQuery = Join-Path $env:TEMP "bookshop-count.rq"
+Set-Content -Path $countQuery -Value "SELECT (COUNT(*) AS ?n) WHERE { ?s ?p ?o }"
+& "$JenaHome\bat\tdb2_tdbquery.bat" --loc="$store" --query="$countQuery"
+Remove-Item $countQuery -ErrorAction SilentlyContinue
 
 Write-Host "Loaded." -ForegroundColor Green
 
