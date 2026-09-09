@@ -1,0 +1,64 @@
+# ==========================================================================
+#  Q100  Readable names without a label
+# ==========================================================================
+#
+#  ASKS
+#    Show each shop's IRI as a short name, without joining to rdfs:label.
+#
+#  HOW IT WORKS
+#    afn:localname splits an IRI at its last slash or hash and returns the
+#    tail; afn:namespace returns the rest. Both come from ARQ, Jena's query
+#    engine, and neither is in the SPARQL specification. They are the most
+#    useful of the extensions and the easiest to become dependent on.
+#
+#  DIAGRAM
+#        <https://example.org/bookshop-trail/shop-inkwell>
+#         -------------------+---------------  ------+-----
+#                            |                       |
+#           afn:namespace ---'                       '--- afn:localname
+#           "https://example.org/bookshop-trail/"    "shop-inkwell"
+#
+#        what it's for: a diagnostic listing where the IRIs matter and
+#        the labels would just get in the way -- q96's namespace census
+#        is the same idea done with REPLACE.
+#
+#        where it works, measured:
+#
+#          afn:localname        editor  error    holos  yes    fuseki  yes
+#          afn:namespace        editor  error    holos  yes    fuseki  yes
+#
+#        Comunica raises rather than returning nothing, which is the
+#        better of the two failure modes: you find out.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - afn: is ARQ's function library. Jena has it, HOLOS implements it
+#      too, and it is not part of SPARQL.
+#    - afn:localname and afn:namespace take an IRI apart, which is
+#      otherwise a REPLACE with a regular expression -- see q104.
+#    - Reach for an extension when it makes a query clearer, but know you
+#      have done it. Q104 is the way back out.
+#
+#  NOTE
+#    Comunica has no afn: functions and raises an error rather than
+#    returning unbound, so the editor is not claimed here.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX afn:  <http://jena.apache.org/ARQ/function#>
+
+SELECT ?localName ?namespace ?name
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( afn:localname(?shop) AS ?localName )
+  BIND( afn:namespace(?shop) AS ?namespace )
+}
+ORDER BY ?localName
+LIMIT 8

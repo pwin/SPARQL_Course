@@ -1,0 +1,71 @@
+# ==========================================================================
+#  Q104  The same query, with nothing but the standard
+# ==========================================================================
+#
+#  ASKS
+#    Get the local name, the namespace and a real distance using only
+#    SPARQL 1.1.
+#
+#  HOW IT WORKS
+#    Everything the previous four queries needed an extension for, done
+#    with built-ins. REPLACE takes an IRI apart. A square root is
+#    unavailable, so the distance stays squared -- and the row is ordered
+#    correctly regardless, because that is all a ranking needs.
+#
+#  DIAGRAM
+#        afn:localname(?iri)
+#            -> REPLACE(STR(?iri), "^.*[/#]", "")
+#
+#        afn:namespace(?iri)
+#            -> REPLACE(STR(?iri), "[^/#]*$", "")
+#
+#        spif:titleCase(?s)
+#            -> no built-in. CONCAT(UCASE(SUBSTR(?s,1,1)), SUBSTR(?s,2))
+#               does the first word, which is usually what was meant.
+#
+#        afn:sqrt(?d2)
+#            -> nothing. Rank on ?d2 instead, or compare against a
+#               squared threshold (q53, q56).
+#
+#        +----------------------------------------------------------+
+#        |  runs on the editor, HOLOS and Fuseki                     |
+#        |  no library, no engine lock-in, no silent unbound column  |
+#        +----------------------------------------------------------+
+#
+#        That is the trade this module exists to show. The extensions
+#        are real and they are useful; the standard is the thing that
+#        travels.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - REPLACE with a small regular expression replaces afn:localname and
+#      afn:namespace, and runs everywhere.
+#    - Some extensions have no standard equivalent at all -- a square
+#      root is the clearest -- and then the question is whether you need
+#      the value or only the order.
+#    - Write the standard version first. Reach for an extension when the
+#      standard one is genuinely worse, and leave a comment saying which
+#      engine you have just tied the query to.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt: <https://example.org/bookshop-trail/>
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+SELECT ?localName ?namespace ?squaredMetres
+WHERE {
+  bt:place-york bs:easting ?ye ; bs:northing ?yn .
+  ?shop a           bs:Bookshop ;
+        bs:easting  ?se ;
+        bs:northing ?sn .
+  BIND( REPLACE(STR(?shop), "^.*[/#]", "")  AS ?localName )
+  BIND( REPLACE(STR(?shop), "[^/#]*$", "")  AS ?namespace )
+  BIND( ROUND( (?se - ?ye) * (?se - ?ye)
+             + (?sn - ?yn) * (?sn - ?yn) )  AS ?squaredMetres )
+}
+ORDER BY ?squaredMetres
+LIMIT 8

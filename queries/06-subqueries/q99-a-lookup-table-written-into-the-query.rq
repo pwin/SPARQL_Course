@@ -1,0 +1,74 @@
+# ==========================================================================
+#  Q99  A lookup table written into the query
+# ==========================================================================
+#
+#  ASKS
+#    Check three shops against the specialism you expected each to have,
+#    with one deliberately left blank.
+#
+#  HOW IT WORKS
+#    VALUES can bind several variables at once, which makes it a small join
+#    table rather than a list. UNDEF leaves one cell empty, so a row can
+#    carry a key with no value -- useful when you want the row to appear
+#    even though you have nothing to compare it with.
+#
+#  DIAGRAM
+#        VALUES (?shop ?expected) {
+#          ( bt:shop-inkwell    "Crime Fiction" )
+#          ( bt:shop-marginalia "Poetry"        )
+#          ( bt:shop-errata     UNDEF           )
+#        }
+#
+#        a two-column table, joined on ?shop:
+#
+#          +--------------------+-----------------+
+#          | ?shop              | ?expected       |
+#          +--------------------+-----------------+
+#          | bt:shop-inkwell    | "Crime Fiction" |
+#          | bt:shop-marginalia | "Poetry"        |
+#          | bt:shop-errata     |   (unbound)     |  <- UNDEF
+#          +--------------------+-----------------+
+#
+#        UNDEF is not the empty string and not zero.  The row is kept and
+#        the variable is simply not bound, exactly as if an OPTIONAL had
+#        failed -- so BOUND() is how you test for it, and the comparison
+#        below reports "not checked" rather than a mismatch.
+#
+#        A parenthesised VALUES with n variables is n columns wide; every
+#        row must have n entries, and UNDEF is how you leave one out.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - VALUES (?a ?b) { (x y) ... } binds several variables per row,
+#      which turns it into a join table rather than a list.
+#    - UNDEF leaves a cell unbound. The row survives; the variable is
+#      absent, and BOUND() tells them apart.
+#    - Comparing stored data against expected values is a test, and this
+#      is how you write one without a second dataset.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:   <https://example.org/bookshop-trail/>
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos: <http://www.w3.org/2004/02/skos/core#>
+
+SELECT ?name ?actual ?expected ?verdict
+WHERE {
+  VALUES ( ?shop ?expected ) {
+    ( bt:shop-inkwell    "Crime Fiction" )
+    ( bt:shop-marginalia "Poetry"        )
+    ( bt:shop-errata     UNDEF           )
+  }
+  ?shop  rdfs:label    ?name ;
+         bs:specialises ?genre .
+  ?genre skos:prefLabel ?actual .
+  FILTER( LANG(?actual) = "en" )
+  BIND( IF(!BOUND(?expected), "not checked",
+        IF(STR(?actual) = ?expected, "matches", "DIFFERS")) AS ?verdict )
+}
+ORDER BY ?name

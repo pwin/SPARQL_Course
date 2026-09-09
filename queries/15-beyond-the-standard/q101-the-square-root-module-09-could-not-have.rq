@@ -1,0 +1,69 @@
+# ==========================================================================
+#  Q101  The square root module 09 could not have
+# ==========================================================================
+#
+#  ASKS
+#    How far is each shop from York, in actual kilometres?
+#
+#  HOW IT WORKS
+#    Module 09 ranked shops by squared distance because SPARQL 1.1 has no
+#    square root. afn:sqrt supplies one. The arithmetic is the same as
+#    q56's; the only difference is that the answer is now a distance rather
+#    than an ordering.
+#
+#  DIAGRAM
+#        module 09, portable:            here, with an extension:
+#
+#          d2 = dx*dx + dy*dy              d = afn:sqrt(dx*dx + dy*dy)
+#          ORDER BY ?d2                    ORDER BY ?d
+#
+#          ranks correctly                 ranks correctly AND
+#          but the number is                gives the distance
+#          metres squared
+#
+#        +------------------+---------+
+#        | Endpapers        |   0.5 km|
+#        | The Bookwyrm     |   0.6 km|
+#        | The Harbour Page |  66.1 km|
+#        | Cotton Quarto    |  93.7 km|
+#        +------------------+---------+
+#
+#        measured:  afn:sqrt   editor error   holos yes   fuseki yes
+#
+#        Note what module 09 bought by not using this: the same query,
+#        without the square root, runs in the browser too. That is the
+#        trade in one line.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - afn:sqrt, afn:pi, afn:e, afn:min and afn:max fill the gaps in
+#      SPARQL's arithmetic.
+#    - Fuseki also has the XPath math: library -- math:sqrt, math:pow,
+#      math:log -- which HOLOS does not. Two engines, two different sets
+#      of extras.
+#    - A ranking rarely needs the root. Take it only when you are going
+#      to show the number to somebody.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:   <https://example.org/bookshop-trail/>
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX afn:  <http://jena.apache.org/ARQ/function#>
+
+SELECT ?name ?km
+WHERE {
+  bt:place-york bs:easting ?ye ; bs:northing ?yn .
+  ?shop a           bs:Bookshop ;
+        rdfs:label  ?name ;
+        bs:easting  ?se ;
+        bs:northing ?sn .
+  BIND( (?se - ?ye) * (?se - ?ye) + (?sn - ?yn) * (?sn - ?yn) AS ?d2 )
+  BIND( ROUND( afn:sqrt(?d2) / 100 ) / 10 AS ?km )
+}
+ORDER BY ?km
+LIMIT 8

@@ -9,9 +9,9 @@ all in the browser, with nothing installed.
 These are not SPARQL exercises. They take about twenty minutes and they will
 make every query afterwards easier to picture.
 
-```powershell
-./scripts/setup-editor.ps1
-```
+The editor is **used online**. There is nothing to install:
+
+**<https://semantechs.co.uk/turtle-editor-viewer/>**
 
 ---
 
@@ -148,17 +148,20 @@ language-tagged label.
 
 ## 6 · Load by URL
 
-The Graph toolbar takes a URL, and the app accepts `?dot=<url>` as a query
-parameter, so a link can carry a dataset with it. `setup-editor.ps1` copies
-the data into the editor's `public/` folder, which makes the files reachable
-at, for example:
+The Graph toolbar takes a URL, and the app accepts `?dot=<url>`, so a link can
+carry a dataset with it. The course's own files are on GitHub and send the CORS
+header the editor needs:
 
 ```
-http://localhost:5173/bookshop-trail/04-bookshops.ttl
+https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2F04-bookshops.ttl
 ```
 
-Useful for sharing an exercise with someone: send the link, and they land in
-the editor with the data already loaded.
+`./scripts/open-editor.ps1 04-bookshops` builds that and opens it; `-List`
+shows every file it can open. Every query in the course document has its own
+link, so you never have to assemble one by hand.
+
+Useful for setting an exercise: send the link, and the other person lands in
+the editor with the data already there.
 
 ---
 

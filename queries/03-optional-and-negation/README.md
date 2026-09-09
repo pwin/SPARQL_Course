@@ -1,6 +1,6 @@
 # Module 03 · Optional data, alternatives and negation
 
-Real data has holes. OPTIONAL keeps a row when the extra fact is missing, UNION merges two shapes, and MINUS and NOT EXISTS remove rows -- in ways that aren't quite interchangeable.
+Real data has holes. OPTIONAL keeps a row when the extra fact is missing, UNION merges two shapes, and MINUS and NOT EXISTS remove rows -- in ways that aren't quite interchangeable. VALUES is the other half of the same idea: rather than filtering rows out, it supplies the ones you want.
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
@@ -12,3 +12,4 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q17 MINUS and NOT EXISTS aren't the same](q17-minus-and-not-exists-aren-t-the-same.rq) | Show the case where swapping MINUS for NOT EXISTS changes the answer. |
 | [q18 Everyone who worked on a book](q18-everyone-who-worked-on-a-book.rq) | List every person credited on a work, whether as author or translator. |
 | [q19 Why a FILTER inside OPTIONAL behaves oddly](q19-why-a-filter-inside-optional-behaves-oddly.rq) | Compare filtering inside an OPTIONAL with filtering after it. |
+| [q98 A list of candidates, supplied inline](q98-a-list-of-candidates-supplied-inline.rq) | Ask about three named shops and nothing else. |

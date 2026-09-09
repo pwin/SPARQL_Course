@@ -590,10 +590,9 @@ slide("end", """
 <h2>Start here</h2>
 <div class="cols">
   <div>
-    <p>The fastest route in needs nothing but a browser.</p>
-""" + code("""./scripts/setup-editor.ps1""") + """
-    <p>Then load <code>data/04-bookshops.ttl</code>, look at the graph, and
-      run:</p>
+    <p>Nothing to install. The editor is used online:</p>
+    <p><b>semantechs.co.uk/turtle-editor-viewer</b></p>
+    <p>Load <code>data/04-bookshops.ttl</code>, look at the graph, and run:</p>
 """ + code("""SELECT ?shop ?name
 WHERE {
   ?shop a          bs:Bookshop ;

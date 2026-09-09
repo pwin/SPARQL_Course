@@ -36,6 +36,10 @@ try:
     import queries_debug     # noqa: F401
 except ModuleNotFoundError:
     pass
+try:
+    import queries_extensions  # noqa: F401
+except ModuleNotFoundError:
+    pass
 
 ROOT = Path(__file__).resolve().parent.parent
 DOCS = ROOT / "docs"

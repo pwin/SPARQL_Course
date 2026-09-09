@@ -9,7 +9,11 @@ Environment overrides:
 
     JENA_HOME     default C:/apache-jena-6.2.0
     HOLOS_EXE     default C:/repos/new_triplestore_sparql_engine/target/release/holos.exe
-    EDITOR_HOME   default C:/repos/turtle-editor-viewer   (for its node_modules)
+    EDITOR_HOME   a checkout of the Turtle Editor Viewer, used ONLY to borrow
+                  its node_modules so Comunica can be run headless here.
+                  Learners never need this: the editor itself is used online
+                  at https://semantechs.co.uk/turtle-editor-viewer/ . Without
+                  a checkout, run the checker with --engine holos --engine fuseki.
     NODE_EXE      a Node >= 22; the editor's Comunica needs it
 """
 from __future__ import annotations
@@ -32,8 +36,37 @@ NODE_EXE = os.environ.get("NODE_EXE") or shutil.which("node") or "node"
 # functions; Fuseki's self-contained jar carries the whole implementation, so
 # putting it on the classpath brings them in.  scripts/setup-geosparql.ps1
 # installs the Apache SIS EPSG database that the CRS handling needs.
-FUSEKI_JAR = Path(os.environ.get(
-    "FUSEKI_JAR", r"C:/apache-jena-fuseki-6.2.0-SNAPSHOT/fuseki-server.jar"))
+def _find_fuseki_jar() -> Path:
+    """Locate fuseki-server.jar, whatever the install is called.
+
+    Release and snapshot builds differ only in the directory name, and a
+    machine may have both, so prefer the newest rather than insisting on one
+    spelling. The jar matters because it carries Jena's GeoSPARQL
+    implementation, which the ARQ command line does not load on its own.
+    """
+    override = os.environ.get("FUSEKI_JAR")
+    if override:
+        return Path(override)
+    for parent in (Path("C:/"), JENA_HOME.parent):
+        # Newest version first, and a release ahead of a snapshot of the same
+        # version -- "6.2.0-SNAPSHOT" sorts after "6.2.0" as a plain string,
+        # which is the wrong way round.
+        def rank(path):
+            name = path.parent.name.replace("apache-jena-fuseki-", "")
+            release = not name.endswith("-SNAPSHOT")
+            version = name.replace("-SNAPSHOT", "")
+            parts = tuple(int(x) if x.isdigit() else 0
+                          for x in version.split("."))
+            return (parts, release)
+
+        candidates = sorted(parent.glob("apache-jena-fuseki-*/fuseki-server.jar"),
+                            key=rank, reverse=True)
+        if candidates:
+            return candidates[0]
+    return Path("C:/apache-jena-fuseki-6.2.0/fuseki-server.jar")
+
+
+FUSEKI_JAR = _find_fuseki_jar()
 GEO_LIB = Path(os.environ.get(
     "GEO_LIB", str(Path(__file__).resolve().parent.parent / "lib" / "geosparql")))
 SIS_DATA = os.environ.get(

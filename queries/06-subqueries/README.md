@@ -1,6 +1,6 @@
 # Module 06 · Sub-queries
 
-A SELECT inside a WHERE clause. It runs first, produces a small table, and the outer query joins against it. This is how you say 'above average', 'the top three in each group', and 'the one with the most'.
+A SELECT inside a WHERE clause. It runs first, produces a small table, and the outer query joins against it. This is how you say 'above average', 'the top three in each group', and 'the one with the most'. A VALUES block is the same shape with the table written by hand instead of computed.
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
@@ -12,3 +12,4 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | [q40 Shops that punch above their weight](q40-shops-that-punch-above-their-weight.rq) | Which shops draw a bigger total audience than the average shop does? |
 | [q41 Limiting the inner query, not the outer one](q41-limiting-the-inner-query-not-the-outer-one.rq) | Show every book by the three most prolific authors. |
 | [q42 Authors more prolific than the person who inspired them](q42-authors-more-prolific-than-the-person-who-inspired-them.rq) | Which authors wrote more books than the author who influenced them? |
+| [q99 A lookup table written into the query](q99-a-lookup-table-written-into-the-query.rq) | Check three shops against the specialism you expected each to have, with one deliberately left blank. |

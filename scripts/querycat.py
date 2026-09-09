@@ -56,6 +56,12 @@ KNOWN_PREFIXES = [
     ("wgs84",  "http://www.w3.org/2003/01/geo/wgs84_pos#"),
     ("prov",   "http://www.w3.org/ns/prov#"),
     ("schema", "https://schema.org/"),
+    # Extension-function libraries. None of these are in the SPARQL
+    # specification; module 15 measures which engines provide them.
+    ("afn",    "http://jena.apache.org/ARQ/function#"),
+    ("spif",   "http://spinrdf.org/spif#"),
+    ("fn",     "http://www.w3.org/2005/xpath-functions#"),
+    ("math",   "http://www.w3.org/2005/xpath-functions/math#"),
 ]
 PREFIX_URI = dict(KNOWN_PREFIXES)
 
@@ -242,7 +248,9 @@ MODULE_INFO = {
         "Optional data, alternatives and negation",
         "Real data has holes. OPTIONAL keeps a row when the extra fact is "
         "missing, UNION merges two shapes, and MINUS and NOT EXISTS remove "
-        "rows -- in ways that aren't quite interchangeable.",
+        "rows -- in ways that aren't quite interchangeable. VALUES is the "
+        "other half of the same idea: rather than filtering rows out, it "
+        "supplies the ones you want.",
     ),
     "04-aggregation": (
         "Counting, grouping and summarising",
@@ -261,7 +269,8 @@ MODULE_INFO = {
         "A SELECT inside a WHERE clause. It runs first, produces a small "
         "table, and the outer query joins against it. This is how you say "
         "'above average', 'the top three in each group', and 'the one with "
-        "the most'.",
+        "the most'. A VALUES block is the same shape with the table written "
+        "by hand instead of computed.",
     ),
     "07-construct-ask-describe": (
         "Other query forms",
@@ -311,6 +320,15 @@ MODULE_INFO = {
         "too much. All three engines will show you the plan they built; this "
         "module reads those plans, and collects the diagnostic queries worth "
         "reaching for before you start rewriting anything.",
+    ),
+    "15-beyond-the-standard": (
+        "Beyond the standard",
+        "Reference rather than lesson. Every engine adds functions the "
+        "specification doesn't define -- ARQ's afn:, SPIN's spif:, the XPath "
+        "fn: library, GeoSPARQL's geof: -- and they're genuinely useful right "
+        "up until you move the query. This module measures which of them your "
+        "three engines actually have, shows what each does when a function is "
+        "missing, and ends with the portable rewrite.",
     ),
     "14-challenges": (
         "Putting it together",

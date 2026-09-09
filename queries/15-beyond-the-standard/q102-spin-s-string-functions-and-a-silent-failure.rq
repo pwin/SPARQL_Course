@@ -1,0 +1,73 @@
+# ==========================================================================
+#  Q102  SPIN's string functions, and a silent failure
+# ==========================================================================
+#
+#  ASKS
+#    Tidy up some strings with spif:, and find out what happens where spif:
+#    is not implemented.
+#
+#  HOW IT WORKS
+#    SPIN's spif: library has the string helpers SPARQL never grew: trim,
+#    titleCase, indexOf, buildString. HOLOS implements them. Jena does not
+#    -- and rather than complaining, it returns the row with the variable
+#    unbound, which is the failure mode this course keeps warning about.
+#
+#  DIAGRAM
+#        spif:titleCase("the inkwell")   ->  "The Inkwell"
+#        spif:trim("  x  ")              ->  "x"
+#        spif:indexOf("bookshop","shop") ->  4
+#        spif:buildString("{?1}-{?2}", "a", "b")  ->  "a-b"
+#
+#        measured, and this is the point of the query:
+#
+#          spif:trim        editor  ERROR      holos  yes    fuseki  UNBOUND
+#          spif:titleCase   editor  ERROR      holos  yes    fuseki  UNBOUND
+#          spif:indexOf     editor  ERROR      holos  yes    fuseki  UNBOUND
+#
+#        +----------+-------------------------------------------+
+#        | Comunica | raises. You find out immediately.          |
+#        | Jena     | returns the row, variable unbound, HTTP    |
+#        |          | 200. Looks exactly like missing data.      |
+#        | HOLOS    | answers.                                   |
+#        +----------+-------------------------------------------+
+#
+#        Same shape as geof:distance in metres on Jena (q57), and the
+#        reason the checking harness compares values rather than counting
+#        rows: a column of blanks and a column of answers both have the
+#        same number of rows.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - spif: is SPIN's function library. HOLOS has it; Jena and Comunica
+#      do not.
+#    - An unimplemented function is not guaranteed to be an error. Jena
+#      leaves the variable unbound and returns the row, which is
+#      indistinguishable from the data simply not being there.
+#    - If a column comes back empty, suspect the function before you
+#      suspect the data.
+#
+#  NOTE
+#    HOLOS only. Jena parses this and returns eight rows with three empty
+#    columns; Comunica raises. Run it on Fuseki yourself -- seeing the
+#    blanks is worth more than reading about them.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  holos
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX spif: <http://spinrdf.org/spif#>
+
+SELECT ?name ?titled ?trimmed ?shopAt
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( spif:titleCase( LCASE(STR(?name)) )      AS ?titled )
+  BIND( spif:trim( CONCAT("  ", STR(?name), "  ") ) AS ?trimmed )
+  BIND( spif:indexOf( STR(?name), "o" )          AS ?shopAt )
+}
+ORDER BY ?name
+LIMIT 8

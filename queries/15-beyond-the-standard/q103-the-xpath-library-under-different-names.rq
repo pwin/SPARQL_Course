@@ -1,0 +1,69 @@
+# ==========================================================================
+#  Q103  The XPath library, under different names
+# ==========================================================================
+#
+#  ASKS
+#    Do the same string work with fn: instead of the SPARQL built-ins.
+#
+#  HOW IT WORKS
+#    The fn: library is XPath and XQuery Functions and Operators, which
+#    SPARQL borrowed from without adopting wholesale. Several fn: functions
+#    duplicate a SPARQL built-in exactly, and the built-in is the one to
+#    use -- but you will meet fn: in other people's queries, and the
+#    indexing differs in a way that bites.
+#
+#  DIAGRAM
+#        the same operation, two spellings:
+#
+#          UCASE(?s)               fn:upper-case(?s)
+#          STRLEN(?s)              fn:string-length(?s)
+#          SUBSTR(?s, 1, 4)        fn:substring(?s, 1, 4)
+#          CONTAINS(?s, "x")       fn:contains(?s, "x")
+#          YEAR(?d)                fn:year-from-dateTime(?d)
+#
+#        and one that is NOT the same:
+#
+#          fn:substring   is 1-based, like SUBSTR
+#          afn:substr     is 0-based, with an END index, not a length
+#
+#            SUBSTR("bookshop", 1, 4)      ->  "book"
+#            afn:substr("bookshop", 0, 4)  ->  "book"
+#                                    ^  ^
+#                                    |  '-- end, not length
+#                                    '----- counts from zero
+#
+#        measured:  fn:  editor error   holos yes   fuseki yes
+#
+#        Prefer the built-in every time. It is shorter, it is in the
+#        specification, and it runs in the browser.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - fn: is the XPath function library. Where a SPARQL built-in does
+#      the same job, use the built-in.
+#    - Two functions that look equivalent may index differently:
+#      fn:substring counts from 1 and takes a length, afn:substr counts
+#      from 0 and takes an end position.
+#    - Knowing fn: is for reading other people's queries. Writing it into
+#      your own only costs you portability.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX fn:   <http://www.w3.org/2005/xpath-functions#>
+
+SELECT ?name ?upper ?length ?firstFour
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( fn:upper-case( STR(?name) )         AS ?upper )
+  BIND( fn:string-length( STR(?name) )      AS ?length )
+  BIND( fn:substring( STR(?name), 1, 4 )    AS ?firstFour )
+}
+ORDER BY ?name
+LIMIT 8

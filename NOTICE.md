@@ -121,7 +121,7 @@ and widely taught. The genre of a small fictional world built for teaching is
 well established.
 
 What is offered here is the synthesis, the explanations, and the
-verification: 97 queries run against three engines with the answers compared
+verification: 104 queries run against three engines with the answers compared
 value by value, and the disagreements chased down rather than smoothed over.
 Those engine findings are measurements taken during the build, and are
 reproducible with `python scripts/check_queries.py`.

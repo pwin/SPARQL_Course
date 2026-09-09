@@ -26,7 +26,7 @@ from engines import run_all
 
 import queries_core          # noqa: F401  (importing registers the queries)
 for _mod in ("queries_paths", "queries_geo", "queries_rdf12",
-             "queries_forms", "queries_debug"):
+             "queries_forms", "queries_debug", "queries_extensions"):
     try:
         __import__(_mod)
     except ModuleNotFoundError:

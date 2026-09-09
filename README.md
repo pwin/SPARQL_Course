@@ -6,17 +6,22 @@
 
 <br clear="left">
 
-A teaching dataset in RDF, and 97 worked queries that take a beginner from
+A teaching dataset in RDF, and 104 worked queries that take a beginner from
 `SELECT ?s ?p ?o` to property paths, nested aggregation, geospatial work and
 RDF 1.2 statement annotation — quickly, and without toy data.
 
 Everything here runs in three environments:
 
-| Environment | What it is | Where |
-|---|---|---|
-| **Turtle Editor Viewer** | Browser editor, graph visualiser and SPARQL panel (Comunica). The course is built around this one — no install, and you can *see* the graph you are querying. | `C:\repos\turtle-editor-viewer` |
-| **HOLOS** | RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL functions. The only one of the three that answers module 10. | `C:\repos\new_triplestore_sparql_engine` |
-| **Apache Jena Fuseki 6.2.0** | The reference server, for when you want a real endpoint over HTTP. | `C:\apache-jena-fuseki-6.2.0-SNAPSHOT` |
+| Environment | What it is | Where it comes from | Script |
+|---|---|---|---|
+| **Turtle Editor Viewer** | Browser editor, graph visualiser and SPARQL panel (Comunica). The course is built around this one — you can *see* the graph you are querying. | **[semantechs.co.uk/turtle-editor-viewer](https://semantechs.co.uk/turtle-editor-viewer/)** — used online. Nothing to install, and no local copy needed. | [`open-editor.ps1`](scripts/open-editor.ps1) opens it with a chosen file already loaded |
+| **Apache Jena Fuseki** | The reference server, for when you want a real endpoint over HTTP. Needs [Java 17+](https://adoptium.net). | [jena.apache.org/download](https://jena.apache.org/download/index.cgi) — or the script fetches [Jena](https://dlcdn.apache.org/jena/binaries/apache-jena-6.2.0.zip) and [Fuseki](https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.2.0.zip) and checks their published SHA-512 | [`setup-fuseki.ps1 -Install`](scripts/setup-fuseki.ps1) |
+| **HOLOS** | RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL functions. The only one of the three that answers module 10 in full. | [github.com/pwin/triplestore](https://github.com/pwin/triplestore) — no binary release, so it is built from source; needs [Rust](https://rustup.rs) 1.87+ | [`setup-holos.ps1 -Install`](scripts/setup-holos.ps1) clones and builds it |
+| *GeoSPARQL for Jena* | Not an environment — the add-on that gives Fuseki its coordinate reference systems. Needed only for module 10. | Apache Derby, and the [EPSG dataset](https://epsg.org/terms-of-use.html) from Maven Central under its own terms | [`setup-geosparql.ps1 -AcceptEpsgTerms`](scripts/setup-geosparql.ps1) |
+
+Only the first is needed to do the course. Modules 01–09 and 11–14 all run in
+the browser; module 10 wants a triplestore, and module 15 is about what each
+one adds beyond the specification.
 
 Every query in the course has been **run against all three** and its answers
 compared value by value. Where they disagree, the query says so and explains
@@ -27,13 +32,12 @@ the course.
 
 ## Start here
 
-The fastest route in needs nothing but a browser.
+The fastest route in needs nothing but a browser. The Turtle Editor Viewer is
+**used online** — there is nothing to install and nothing to run locally:
 
-```powershell
-./scripts/setup-editor.ps1
-```
+**<https://semantechs.co.uk/turtle-editor-viewer/>**
 
-Then, in the editor:
+Open it, then:
 
 1. **Choose File** → `data/04-bookshops.ttl`. It is small enough to see whole.
 2. Look at the graph pane. That is your data.
@@ -51,6 +55,14 @@ WHERE {
 ORDER BY ?name
 ```
 
+Or skip the file-picking: this link opens the editor with the shops already
+loaded.
+
+<https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2F04-bookshops.ttl>
+
+`./scripts/open-editor.ps1` builds those links for you; `-List` shows every
+file it can open.
+
 There are [slides](docs/slides.html) too — twenty-four of them, explaining the
 data and the queries — if you would rather see the shape of the thing first.
 
@@ -58,24 +70,33 @@ Then read [`queries/00-the-lab/`](queries/00-the-lab/) -- twenty minutes on the
 editor itself, the reasoner included -- and start on
 [`queries/01-first-queries/`](queries/01-first-queries/).
 
-> The editor needs **Node 22 or newer**. On Node 20 Comunica's HTTP layer fails
-> to load with `webidl.util.markAsUncloneable is not a function`. If `node
-> --version` reports 20, pass a newer one:
-> `./scripts/setup-editor.ps1 -NodeExe "$HOME\.nvm\versions\node\v22.21.1\bin\node.exe"`
+### The other two, if you want them
 
-### The other two
+Neither is needed for modules 01–09 and 11–14, which all run in the browser.
+Both scripts install what they need:
 
 ```powershell
-./scripts/setup-holos.ps1            # load a RocksDB store; add -Serve for HTTP + YASGUI
-./scripts/setup-fuseki.ps1           # load TDB2 and start Fuseki on :3030
+./scripts/setup-fuseki.ps1 -Install    # downloads Jena and Fuseki 6.2.0, checks
+                                       # the published SHA-512, unpacks, loads,
+                                       # and starts the server on :3030
+./scripts/setup-holos.ps1  -Install    # clones and builds HOLOS; needs a Rust
+                                       # toolchain from https://rustup.rs
 ```
 
-HOLOS will also answer a query straight from the Turtle with no server at all,
+Fuseki needs Java 17 or newer — [Adoptium](https://adoptium.net) has builds.
+HOLOS is a Rust project with no binary release, so the first build takes a few
+minutes and needs a C toolchain for RocksDB; on Windows that means the Visual
+Studio Build Tools with the C++ workload.
+
+HOLOS will answer a query straight from a Turtle file with no server at all,
 which is the quickest way to try one:
 
 ```powershell
-./scripts/setup-holos.ps1 -Query queries/05-property-paths/q31-*.rq
+./scripts/setup-holos.ps1 -Query q31-*.rq
 ```
+
+Reach for HOLOS when you get to **module 10**: it is the only one of the three
+that answers `geof:distance` in metres.
 
 ---
 
@@ -97,8 +118,8 @@ For example, the shops on their own:
 <https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2F04-bookshops.ttl>
 
 `raw.githubusercontent.com` sends `Access-Control-Allow-Origin: *`, so the
-editor can fetch it. Running the editor locally works the same way — swap the
-host for `http://localhost:5173/`.
+editor can fetch it. Any URL that does the same will work — the editor is the
+hosted one either way.
 
 Each query also has a **Copy query** button. What lands on your clipboard is
 the query with a four-line comment at the top saying which query it is, what it
@@ -217,10 +238,10 @@ which engines run it. Read the file; do not just run it.
 | [00](queries/00-the-lab/) | **The lab** | the editor itself: graph view, layout engines, the HyLAR reasoner, SHACL, format conversion |
 | [01](queries/01-first-queries/) | First queries | patterns, joins, `ORDER BY`, exploring an unknown dataset |
 | [02](queries/02-filtering/) | Filtering and expressions | `FILTER`, `BIND`, strings, dates, language tags, datatype traps |
-| [03](queries/03-optional-and-negation/) | Optional data and negation | `OPTIONAL`, `UNION`, `MINUS` vs `NOT EXISTS` |
+| [03](queries/03-optional-and-negation/) | Optional data and negation | `OPTIONAL`, `UNION`, `VALUES`, `MINUS` vs `NOT EXISTS` |
 | [04](queries/04-aggregation/) | Counting and grouping | `GROUP BY`, `HAVING`, `GROUP_CONCAT`, counting things that are not there |
 | [05](queries/05-property-paths/) | **Property paths** | `+ * ? ^ / \| !`, reachability, cycles, and why a fixed chain is wrong |
-| [06](queries/06-subqueries/) | **Sub-queries** | above-average, top-per-group, aggregate-of-aggregate, `LIMIT` inside |
+| [06](queries/06-subqueries/) | **Sub-queries** | above-average, top-per-group, aggregate-of-aggregate, `LIMIT` inside, `VALUES` as a join table |
 | [07](queries/07-construct-ask-describe/) | Other query forms | `CONSTRUCT` as inference, `ASK`, and why not to trust `DESCRIBE` |
 | [08](queries/08-named-graphs/) | Named graphs | `GRAPH`, provenance for free, and the default-graph surprise |
 | [09](queries/09-geo-without-geosparql/) | Geography with arithmetic | bounding boxes and distance with no trig and no square root — runs in the browser |
@@ -229,8 +250,9 @@ which engines run it. Read the file; do not just run it.
 | [12](queries/12-graphs-in-graphs-out/) | **Graphs in, graphs out** | ASK, DESCRIBE and CONSTRUCT in earnest: tests, subgraph extraction, vocabulary translation, an RDF 1.1 → 1.2 migration |
 | [13](queries/13-planning-and-debugging/) | **Planning and debugging** | reading the plan on all three engines, and the diagnostics for empty results, cross products and inflated aggregates |
 | [14](queries/14-challenges/) | **Putting it together** | questions that need three techniques at once |
+| [15](queries/15-beyond-the-standard/) | Beyond the standard *(reference)* | `afn:`, `spif:`, `fn:`, `math:` — which engine has what, how each fails without it, and the portable rewrite |
 
-Modules 01–08 and 12–14 run in **all three** environments. Module 09 does
+Modules 01–08 and 12–14 run in **all three** environments. Module 15 is reference, and deliberately does not: it is about what each engine adds beyond the specification. Module 09 does
 too — that is its point. Module 11 needs an RDF 1.2 engine, and all three
 qualify.
 
@@ -427,6 +449,9 @@ Worth knowing before you write your own queries against a mixed estate:
 | `LANGDIR`, `hasLANGDIR`, `STRLANGDIR` | works | works | works |
 | `VERSION()` | parse error | parse error | works |
 | `geof:` functions | none at all | 45 of them | warns, returns the row, leaves the value **unbound** |
+| `afn:` (ARQ) and `fn:` (XPath) | error | works | works |
+| `spif:` (SPIN) | error | works | returns the row, value **unbound** |
+| `math:` (XPath) | error | error | works |
 
 The first row is the dangerous one: casting a `gYear` straight to an integer
 returns **zero rows** on two of the three engines and no error anywhere. Go via
@@ -463,14 +488,16 @@ python scripts/build_slides.py      # docs/slides.html
 | `content.py`, `content_works.py` | the source tables — places, shops, people, books, events |
 | `build_dataset.py` | turns them into Turtle, TriG and geometry |
 | `querycat.py` | the query catalogue: one object per lesson, and the `.rq` writer |
-| `queries_core.py`, `queries_paths.py`, `queries_geo.py`, `queries_rdf12.py`, `queries_forms.py`, `queries_debug.py` | the 97 queries and their explanations |
+| `queries_core.py`, `queries_paths.py`, `queries_geo.py`, `queries_rdf12.py`, `queries_forms.py`, `queries_debug.py`, `queries_extensions.py` | the 104 queries and their explanations |
 | `engines.py` | runs a query on any of the three engines and normalises the answer |
 | `check_queries.py` | the cross-engine comparison |
 | `vocabulary.py` | the OWL 2 DL specification of the schema |
 | `build_docs.py`, `lab_section.py`, `plans_section.py` | the course document |
 | `build_slides.py`, `trail_map.py` | the slide deck, and the map generated from the coordinates |
 | `check_owl.py`, `make_dl_variant.py` | OWL 2 profile checking, and the conformant dataset |
+| `setup-fuseki.ps1`, `setup-holos.ps1` | install, load and run the two servers |
 | `setup-geosparql.ps1` | GeoSPARQL for Jena: classpath, Derby, EPSG dataset |
+| `open-editor.ps1` | builds a `?dot=` link and opens the hosted editor |
 
 The `.rq` files are generated from the catalogue so that a query and its
 explanation cannot drift apart. Edit the catalogue, not the `.rq`.

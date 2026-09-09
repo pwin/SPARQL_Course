@@ -15,8 +15,11 @@ LAB_SECTION = """
       Editor Viewer does four things a plain SPARQL endpoint doesn't: it draws
       the graph you're querying, reasons over it, converts it between formats
       and validates it against SHACL &mdash; all in the browser, with nothing
-      installed. These aren't SPARQL exercises. They take twenty minutes and
-      they make every query afterwards easier to picture.</p>
+      installed &mdash; the editor is used online, at
+      <a href="https://semantechs.co.uk/turtle-editor-viewer/"
+         target="_blank" rel="noopener">semantechs.co.uk/turtle-editor-viewer</a>.
+      These aren't SPARQL exercises. They take twenty minutes and they make
+      every query afterwards easier to picture.</p>
   </div>
 
   <article class="query">

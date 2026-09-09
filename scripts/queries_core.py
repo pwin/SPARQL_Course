@@ -1086,3 +1086,122 @@ WHERE {
 GROUP BY ?class
 ORDER BY ?class""",
 )
+
+
+q(
+    qid="q98", module="03-optional-and-negation",
+    title="A list of candidates, supplied inline",
+    asks="Ask about three named shops and nothing else.",
+    how="VALUES puts a small table of bindings directly in the query. The "
+        "engine treats it as data, joins it to everything else, and -- this "
+        "is the part that matters -- it restricts the pattern before the join "
+        "rather than filtering rows afterwards.",
+    diagram="""
+    VALUES ?shop {
+      bt:shop-inkwell
+      bt:shop-ex-libris
+      bt:shop-sea-margin
+    }
+    ?shop rdfs:label ?name ; bs:founded ?founded .
+
+    the VALUES block IS a result table, written by hand:
+
+        +--------------------+
+        | ?shop              |
+        +--------------------+
+        | bt:shop-inkwell    |   3 rows in,
+        | bt:shop-ex-libris  |   joined to the pattern
+        | bt:shop-sea-margin |
+        +--------------------+
+
+    three ways to say "one of these", and they are not equal:
+
+      VALUES ?shop { ... }              3 shops looked up
+      FILTER( ?shop IN (a, b, c) )      33 matched, then 30 discarded
+      { } UNION { } UNION { }           three separate patterns
+
+    VALUES restricts BEFORE the join.  On 33 shops nobody notices; on
+    a few million the difference is the query finishing or not.
+
+    It is also how you parameterise: generate the VALUES block from
+    your program and the rest of the query never changes.
+    """,
+    learn=[
+        "VALUES supplies an inline table of bindings and joins it like any "
+        "other pattern.",
+        "Prefer it to FILTER(?x IN ...) when you know the values up front: it "
+        "narrows the search rather than filtering the results.",
+        "It is the natural way to parameterise a query from code, and the "
+        "mechanism SERVICE uses to pass bindings to a remote endpoint.",
+    ],
+    body="""SELECT ?name ?founded
+WHERE {
+  VALUES ?shop {
+    bt:shop-inkwell
+    bt:shop-ex-libris
+    bt:shop-sea-margin
+  }
+  ?shop rdfs:label ?name ;
+        bs:founded ?founded .
+}
+ORDER BY ?name""",
+)
+
+q(
+    qid="q99", module="06-subqueries",
+    title="A lookup table written into the query",
+    asks="Check three shops against the specialism you expected each to have, "
+         "with one deliberately left blank.",
+    how="VALUES can bind several variables at once, which makes it a small "
+        "join table rather than a list. UNDEF leaves one cell empty, so a row "
+        "can carry a key with no value -- useful when you want the row to "
+        "appear even though you have nothing to compare it with.",
+    diagram="""
+    VALUES (?shop ?expected) {
+      ( bt:shop-inkwell    "Crime Fiction" )
+      ( bt:shop-marginalia "Poetry"        )
+      ( bt:shop-errata     UNDEF           )
+    }
+
+    a two-column table, joined on ?shop:
+
+      +--------------------+-----------------+
+      | ?shop              | ?expected       |
+      +--------------------+-----------------+
+      | bt:shop-inkwell    | "Crime Fiction" |
+      | bt:shop-marginalia | "Poetry"        |
+      | bt:shop-errata     |   (unbound)     |  <- UNDEF
+      +--------------------+-----------------+
+
+    UNDEF is not the empty string and not zero.  The row is kept and
+    the variable is simply not bound, exactly as if an OPTIONAL had
+    failed -- so BOUND() is how you test for it, and the comparison
+    below reports "not checked" rather than a mismatch.
+
+    A parenthesised VALUES with n variables is n columns wide; every
+    row must have n entries, and UNDEF is how you leave one out.
+    """,
+    learn=[
+        "VALUES (?a ?b) { (x y) ... } binds several variables per row, which "
+        "turns it into a join table rather than a list.",
+        "UNDEF leaves a cell unbound. The row survives; the variable is "
+        "absent, and BOUND() tells them apart.",
+        "Comparing stored data against expected values is a test, and this is "
+        "how you write one without a second dataset.",
+    ],
+    body="""SELECT ?name ?actual ?expected ?verdict
+WHERE {
+  VALUES ( ?shop ?expected ) {
+    ( bt:shop-inkwell    "Crime Fiction" )
+    ( bt:shop-marginalia "Poetry"        )
+    ( bt:shop-errata     UNDEF           )
+  }
+  ?shop  rdfs:label    ?name ;
+         bs:specialises ?genre .
+  ?genre skos:prefLabel ?actual .
+  FILTER( LANG(?actual) = "en" )
+  BIND( IF(!BOUND(?expected), "not checked",
+        IF(STR(?actual) = ?expected, "matches", "DIFFERS")) AS ?verdict )
+}
+ORDER BY ?name""",
+)

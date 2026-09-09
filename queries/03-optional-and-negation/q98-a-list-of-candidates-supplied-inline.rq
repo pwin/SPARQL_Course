@@ -1,0 +1,73 @@
+# ==========================================================================
+#  Q98  A list of candidates, supplied inline
+# ==========================================================================
+#
+#  ASKS
+#    Ask about three named shops and nothing else.
+#
+#  HOW IT WORKS
+#    VALUES puts a small table of bindings directly in the query. The
+#    engine treats it as data, joins it to everything else, and -- this is
+#    the part that matters -- it restricts the pattern before the join
+#    rather than filtering rows afterwards.
+#
+#  DIAGRAM
+#        VALUES ?shop {
+#          bt:shop-inkwell
+#          bt:shop-ex-libris
+#          bt:shop-sea-margin
+#        }
+#        ?shop rdfs:label ?name ; bs:founded ?founded .
+#
+#        the VALUES block IS a result table, written by hand:
+#
+#            +--------------------+
+#            | ?shop              |
+#            +--------------------+
+#            | bt:shop-inkwell    |   3 rows in,
+#            | bt:shop-ex-libris  |   joined to the pattern
+#            | bt:shop-sea-margin |
+#            +--------------------+
+#
+#        three ways to say "one of these", and they are not equal:
+#
+#          VALUES ?shop { ... }              3 shops looked up
+#          FILTER( ?shop IN (a, b, c) )      33 matched, then 30 discarded
+#          { } UNION { } UNION { }           three separate patterns
+#
+#        VALUES restricts BEFORE the join.  On 33 shops nobody notices; on
+#        a few million the difference is the query finishing or not.
+#
+#        It is also how you parameterise: generate the VALUES block from
+#        your program and the rest of the query never changes.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - VALUES supplies an inline table of bindings and joins it like any
+#      other pattern.
+#    - Prefer it to FILTER(?x IN ...) when you know the values up front:
+#      it narrows the search rather than filtering the results.
+#    - It is the natural way to parameterise a query from code, and the
+#      mechanism SERVICE uses to pass bindings to a remote endpoint.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:   <https://example.org/bookshop-trail/>
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?founded
+WHERE {
+  VALUES ?shop {
+    bt:shop-inkwell
+    bt:shop-ex-libris
+    bt:shop-sea-margin
+  }
+  ?shop rdfs:label ?name ;
+        bs:founded ?founded .
+}
+ORDER BY ?name
