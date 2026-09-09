@@ -26,7 +26,8 @@ from engines import run_all
 
 import queries_core          # noqa: F401  (importing registers the queries)
 for _mod in ("queries_paths", "queries_geo", "queries_rdf12",
-             "queries_forms", "queries_debug", "queries_extensions"):
+             "queries_forms", "queries_debug", "queries_extensions",
+             "queries_federation", "queries_blanknodes"):
     try:
         __import__(_mod)
     except ModuleNotFoundError:
@@ -42,6 +43,8 @@ def main() -> int:
     ap.add_argument("only", nargs="*", help="query ids (default: all)")
     ap.add_argument("--engine", action="append", help="restrict to one engine")
     ap.add_argument("--show", help="print the result table for this query id")
+    ap.add_argument("--network", action="store_true",
+                    help="also run the queries that call a remote endpoint")
     args = ap.parse_args()
 
     items = CATALOGUE
@@ -50,6 +53,10 @@ def main() -> int:
         items = [i for i in items if i.qid in wanted]
     if args.show:
         items = [i for i in CATALOGUE if i.qid == args.show.lower()]
+
+    skipped = [i.qid for i in items if i.network and not (args.network or args.only or args.show)]
+    if skipped:
+        items = [i for i in items if i.qid not in skipped]
 
     BUILD.mkdir(exist_ok=True)
     results: dict[str, dict] = {}

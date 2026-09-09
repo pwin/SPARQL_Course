@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q111  Walking an RDF collection
+# ==========================================================================
+#
+#  ASKS
+#    Which classes are declared disjoint from one another?
+#
+#  HOW IT WORKS
+#    An RDF collection -- the ( a b c ) in Turtle -- is not a list
+#    structure the query language knows about. It is a chain of blank
+#    nodes, each carrying rdf:first for its item and rdf:rest for the rest
+#    of the chain. rdf:rest*/rdf:first is the path that walks it, and it is
+#    the reason property paths and blank nodes belong in the same lesson.
+#
+#  DIAGRAM
+#        what the file says:
+#
+#          [] a owl:AllDisjointClasses ;
+#             owl:members ( bs:Settlement bs:CouncilArea bs:Region bs:Country ) .
+#
+#        what is actually stored:
+#
+#          _:axiom --owl:members--> _:c1 --rdf:first--> bs:Settlement
+#                                    |
+#                                rdf:rest
+#                                    v
+#                                   _:c2 --rdf:first--> bs:CouncilArea
+#                                    |
+#                                rdf:rest
+#                                    v
+#                                   _:c3 --rdf:first--> bs:Region
+#                                    |
+#                                rdf:rest
+#                                    v
+#                                   _:c4 --rdf:first--> bs:Country
+#                                    |
+#                                rdf:rest
+#                                    v
+#                                 rdf:nil        <- the end of the list
+#
+#        the path that gets the members out:
+#
+#          owl:members / rdf:rest* / rdf:first
+#          -----------   ---------   ---------
+#           one hop to    zero or     the item
+#           the first     more hops   in this
+#           cell          along the   cell
+#                         chain
+#
+#        Note rdf:rest* and not rdf:rest+ : the zero-length case is what
+#        lets the first member out. With + you would silently lose it.
+#
+#        Fifteen classes come back, from the two axioms in the file.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - An RDF collection is a chain of blank nodes with rdf:first and
+#      rdf:rest. Nothing in SPARQL treats it as a list.
+#    - rdf:rest*/rdf:first is the idiom for reading one out. The star,
+#      not the plus -- the plus drops the first member.
+#    - This is also why you can reach a blank node without naming it:
+#      start from something with an IRI and walk.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §4.2.3 RDF Collections
+#           https://www.w3.org/TR/sparql12-query/#x4-2-3-rdf-collections
+#           RDF 1.2 Turtle §2.9 Collections
+#           https://www.w3.org/TR/rdf12-turtle/#x2-9-collections
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?member
+WHERE {
+  ?axiom a           owl:AllDisjointClasses ;
+         owl:members/rdf:rest*/rdf:first ?member .
+}
+ORDER BY ?member

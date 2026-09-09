@@ -13,6 +13,7 @@ import json
 
 import querycat
 from querycat import CATALOGUE, MODULE_INFO, QUERIES
+import specs
 
 # Importing these registers their queries with the catalogue.
 import queries_core          # noqa: F401
@@ -38,6 +39,14 @@ except ModuleNotFoundError:
     pass
 try:
     import queries_extensions  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_federation  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_blanknodes  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -98,8 +107,14 @@ def main() -> None:
                  "header before running the query.", ""]
         for extra, why in EXTRA_READING.get(module, []):
             lines += [f"**Read first: [{extra}]({extra})** — {why}.", ""]
+        sections = specs.MODULE_SPECS.get(module, [])
+        if sections:
+            lines += ["**In the standards.** The sections this module is "
+                      "defined by:", ""]
+            lines += [f"- [{label}]({url})" for label, url in sections]
+            lines += [""]
         lines += ["| Query | Asks |", "|---|---|"]
-        for item in sorted(items, key=lambda i: i.qid):
+        for item in sorted(items, key=lambda i: int(i.qid[1:])):
             item.path.write_text(item.text(), encoding="utf-8")
             lines.append(f"| [{item.qid} {item.title}]({item.filename}) | {item.asks} |")
         (folder / "README.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

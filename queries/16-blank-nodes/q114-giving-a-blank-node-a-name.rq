@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q114  Giving a blank node a name
+# ==========================================================================
+#
+#  ASKS
+#    Mint a stable IRI for each disjointness axiom, so it can be quoted in
+#    a bug report.
+#
+#  HOW IT WORKS
+#    Skolemising means replacing a blank node with an IRI. The IRI has to
+#    come from the node's content, never from its label, because the label
+#    changes between runs. Here the content is the size of the axiom and
+#    its alphabetically first member, computed in a sub-query and turned
+#    into an IRI with CONCAT and IRI().
+#
+#  DIAGRAM
+#          a blank node                    an IRI you can send to somebody
+#          ------------                    ------------------------------
+#            _:b0        --skolemise-->    bt:axiom-bookshop-11
+#            _:b1                          bt:axiom-councilarea-4
+#
+#        the key must come from the CONTENT:
+#
+#          MIN(?local)  ->  "Bookshop"       stable across runs
+#          COUNT(?m)    ->  11               stable across engines
+#          STR(?axiom)  ->  "b0"             CHANGES. Never use it.
+#
+#        +--------------------------------------------------------+
+#        | RDF has a convention for this: IRIs under               |
+#        | .../.well-known/genid/ are understood to be             |
+#        | skolem IRIs -- IRIs standing in for blank nodes.        |
+#        | A readable name works just as well when the graph is    |
+#        | yours; the convention matters when you publish.         |
+#        +--------------------------------------------------------+
+#
+#        Going the other way, BNODE() mints a fresh blank node -- one
+#        per solution, so it is the tool for building structure in a
+#        CONSTRUCT template rather than for identifying anything.
+#
+#        Skolemising is not free. You have asserted that these two
+#        axioms are distinct, findable things, and if the file changes
+#        so that a third axiom also starts with Bookshop and has eleven
+#        members, two of them collide. Pick a key that cannot.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Skolemising replaces a blank node with an IRI so it can be
+#      referred to from outside. Derive the IRI from content, never from
+#      the label.
+#    - IRI(CONCAT(...)) builds an IRI at query time; the .well-
+#      known/genid/ prefix is the published convention for skolem IRIs.
+#    - BNODE() is the opposite operation, and it mints a fresh node per
+#      solution -- useful for structure, useless for identity.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     RDF 1.2 Concepts, Appendix B: Replacing Blank Nodes with IRIs
+#           https://www.w3.org/TR/rdf12-concepts/#b-replacing-blank-nodes-with-iris
+#           SPARQL 1.2 Query §17.4.2.14 BNODE
+#           https://www.w3.org/TR/sparql12-query/#x17-4-2-14-bnode
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?id ?size ?firstMember
+WHERE {
+  {
+    SELECT ?axiom (COUNT(?m) AS ?size) (MIN(?local) AS ?firstMember)
+    WHERE {
+      ?axiom a           owl:AllDisjointClasses ;
+             owl:members/rdf:rest*/rdf:first ?m .
+      BIND( REPLACE(STR(?m), "^.*[/#]", "") AS ?local )
+    }
+    GROUP BY ?axiom
+  }
+  BIND( IRI(CONCAT("https://example.org/bookshop-trail/axiom-",
+                   LCASE(?firstMember), "-", STR(?size))) AS ?id )
+}
+ORDER BY ?id

@@ -1400,6 +1400,7 @@ bt:place-wigtown
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Wigtown"@en ;
     rdfs:label              "Baile na h-Uige"@gd ;
+    owl:sameAs              <http://dbpedia.org/resource/Wigtown> ;
     bs:within               bt:place-dumfries-galloway ;
     bs:population           "1000"^^xsd:integer ;
     bs:isBookTown           true ;
@@ -1416,6 +1417,7 @@ bt:place-edinburgh
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Edinburgh"@en ;
     rdfs:label              "Dun Eideann"@gd ;
+    owl:sameAs              <http://dbpedia.org/resource/Edinburgh> ;
     bs:within               bt:place-edinburgh-city ;
     bs:population           "506520"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1432,6 +1434,7 @@ bt:place-glasgow
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Glasgow"@en ;
     rdfs:label              "Glaschu"@gd ;
+    owl:sameAs              <http://dbpedia.org/resource/Glasgow> ;
     bs:within               bt:place-glasgow-city ;
     bs:population           "635640"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1447,6 +1450,7 @@ bt:geom-glasgow
 bt:place-st-andrews
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "St Andrews"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/St_Andrews> ;
     bs:within               bt:place-fife ;
     bs:population           "16800"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1463,6 +1467,7 @@ bt:place-inverness
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Inverness"@en ;
     rdfs:label              "Inbhir Nis"@gd ;
+    owl:sameAs              <http://dbpedia.org/resource/Inverness> ;
     bs:within               bt:place-highland ;
     bs:population           "47790"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1479,6 +1484,7 @@ bt:place-portree
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Portree"@en ;
     rdfs:label              "Port Righ"@gd ;
+    owl:sameAs              <http://dbpedia.org/resource/Portree> ;
     bs:within               bt:place-highland ;
     bs:population           "2500"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1494,6 +1500,7 @@ bt:geom-portree
 bt:place-berwick
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Berwick-upon-Tweed"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Berwick-upon-Tweed> ;
     bs:within               bt:place-northumberland ;
     bs:population           "12040"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1509,6 +1516,7 @@ bt:geom-berwick
 bt:place-sedbergh
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Sedbergh"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Sedbergh> ;
     bs:within               bt:place-cumbria ;
     bs:population           "2800"^^xsd:integer ;
     bs:isBookTown           true ;
@@ -1524,6 +1532,7 @@ bt:geom-sedbergh
 bt:place-kendal
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Kendal"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Kendal> ;
     bs:within               bt:place-cumbria ;
     bs:population           "28590"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1539,6 +1548,7 @@ bt:geom-kendal
 bt:place-keswick
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Keswick"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Keswick,_Cumbria> ;
     bs:within               bt:place-cumbria ;
     bs:population           "5240"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1554,6 +1564,7 @@ bt:geom-keswick
 bt:place-york
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "York"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/York> ;
     bs:within               bt:place-north-yorkshire ;
     bs:population           "153720"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1569,6 +1580,7 @@ bt:geom-york
 bt:place-whitby
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Whitby"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Whitby> ;
     bs:within               bt:place-north-yorkshire ;
     bs:population           "13210"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1584,6 +1596,7 @@ bt:geom-whitby
 bt:place-manchester
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Manchester"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Manchester> ;
     bs:within               bt:place-greater-manchester ;
     bs:population           "553230"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1599,6 +1612,7 @@ bt:geom-manchester
 bt:place-liverpool
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Liverpool"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Liverpool> ;
     bs:within               bt:place-merseyside ;
     bs:population           "496770"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1614,6 +1628,7 @@ bt:geom-liverpool
 bt:place-shrewsbury
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Shrewsbury"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Shrewsbury> ;
     bs:within               bt:place-shropshire ;
     bs:population           "76780"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1629,6 +1644,7 @@ bt:geom-shrewsbury
 bt:place-ludlow
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Ludlow"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Ludlow> ;
     bs:within               bt:place-shropshire ;
     bs:population           "10940"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1644,6 +1660,7 @@ bt:geom-ludlow
 bt:place-oxford
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Oxford"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Oxford> ;
     bs:within               bt:place-oxfordshire ;
     bs:population           "162100"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1659,6 +1676,7 @@ bt:geom-oxford
 bt:place-cambridge
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Cambridge"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Cambridge> ;
     bs:within               bt:place-cambridgeshire ;
     bs:population           "145670"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1674,6 +1692,7 @@ bt:geom-cambridge
 bt:place-norwich
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Norwich"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Norwich> ;
     bs:within               bt:place-norfolk ;
     bs:population           "144000"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1689,6 +1708,7 @@ bt:geom-norwich
 bt:place-london
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "London"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/London> ;
     bs:within               bt:place-greater-london ;
     bs:population           "8982000"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1704,6 +1724,7 @@ bt:geom-london
 bt:place-bath
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Bath"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Bath,_Somerset> ;
     bs:within               bt:place-somerset ;
     bs:population           "94090"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1719,6 +1740,7 @@ bt:geom-bath
 bt:place-exeter
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Exeter"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Exeter> ;
     bs:within               bt:place-devon ;
     bs:population           "130800"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1734,6 +1756,7 @@ bt:geom-exeter
 bt:place-penzance
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Penzance"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Penzance> ;
     bs:within               bt:place-cornwall ;
     bs:population           "21200"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1750,6 +1773,7 @@ bt:place-hay-on-wye
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Hay-on-Wye"@en ;
     rdfs:label              "Y Gelli Gandryll"@cy ;
+    owl:sameAs              <http://dbpedia.org/resource/Hay-on-Wye> ;
     bs:within               bt:place-powys ;
     bs:population           "1500"^^xsd:integer ;
     bs:isBookTown           true ;
@@ -1766,6 +1790,7 @@ bt:place-aberystwyth
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Aberystwyth"@en ;
     rdfs:label              "Aberystwyth"@cy ;
+    owl:sameAs              <http://dbpedia.org/resource/Aberystwyth> ;
     bs:within               bt:place-ceredigion ;
     bs:population           "15940"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1782,6 +1807,7 @@ bt:place-cardiff
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Cardiff"@en ;
     rdfs:label              "Caerdydd"@cy ;
+    owl:sameAs              <http://dbpedia.org/resource/Cardiff> ;
     bs:within               bt:place-city-of-cardiff ;
     bs:population           "362310"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1797,6 +1823,7 @@ bt:geom-cardiff
 bt:place-durham
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Durham"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Durham,_England> ;
     bs:within               bt:place-county-durham ;
     bs:population           "48070"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1812,6 +1839,7 @@ bt:geom-durham
 bt:place-perth
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Perth"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Perth,_Scotland> ;
     bs:within               bt:place-perth-kinross ;
     bs:population           "47430"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1827,6 +1855,7 @@ bt:geom-perth
 bt:place-fort-william
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Fort William"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Fort_William,_Highland> ;
     bs:within               bt:place-highland ;
     bs:population           "10460"^^xsd:integer ;
     bs:isBookTown           false ;
@@ -1842,6 +1871,7 @@ bt:geom-fort-william
 bt:place-truro
     a                       bs:Settlement, bs:Place, geo:Feature ;
     rdfs:label              "Truro"@en ;
+    owl:sameAs              <http://dbpedia.org/resource/Truro> ;
     bs:within               bt:place-cornwall ;
     bs:population           "18770"^^xsd:integer ;
     bs:isBookTown           false ;

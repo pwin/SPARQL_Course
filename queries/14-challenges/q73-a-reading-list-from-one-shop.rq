@@ -54,6 +54,10 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query Language
+#           https://www.w3.org/TR/sparql12-query/
+#           SPARQL 1.2 Query §17.4 Function Definitions
+#           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  23 rows, on every engine that runs it
 # ==========================================================================
 

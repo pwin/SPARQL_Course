@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q109  Where the blank nodes are
+# ==========================================================================
+#
+#  ASKS
+#    This dataset has blank nodes in it. Which predicates do they carry?
+#
+#  HOW IT WORKS
+#    isBLANK is the test. Grouping the triples whose subject is blank by
+#    predicate gives a census: it says what the blank nodes are being used
+#    for without needing to name any of them.
+#
+#  DIAGRAM
+#        ?b ?p ?o .  FILTER( isBLANK(?b) )
+#        --                  ---------
+#        |                   keeps the rows whose subject has no IRI
+#        '-- binds to a blank node, but you can never write its name
+#
+#        the census, all four thousand-odd triples in:
+#
+#          rdf:first        19    the list cells that hold a member
+#          rdf:rest         19    the cells that point to the next one
+#          rdf:type          4    the two disjointness axioms
+#                                 plus two anonymous owl:Class nodes
+#          owl:members       2
+#          owl:unionOf       2
+#                         ----
+#                           46 triples, on 23 blank nodes
+#
+#        All of them are in 01-vocabulary.ttl. That is typical: blank
+#        nodes cluster in schema and in structures -- lists, restrictions,
+#        addresses, SHACL shapes -- and are rare in plain instance data,
+#        where things deserve names.
+#
+#        isIRI, isLITERAL and isNUMERIC are the other three tests, and
+#        they partition every RDF term between them.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - isBLANK(?x) is true when a term is a blank node -- a node with no
+#      IRI, which exists only inside the graph that contains it.
+#    - A census by predicate is the quickest way to find out what the
+#      blank nodes in an unfamiliar dataset are doing.
+#    - Blank nodes cluster in structure: lists, restrictions, shapes.
+#      Data about real things usually has IRIs, and should.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §17.4.2.4 isBLANK
+#           https://www.w3.org/TR/sparql12-query/#x17-4-2-4-isblank
+#           SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#  RETURNS  5 rows, on every engine that runs it
+# ==========================================================================
+
+
+
+SELECT ?p (COUNT(*) AS ?triples)
+WHERE {
+  ?b ?p ?o .
+  FILTER( isBLANK(?b) )
+}
+GROUP BY ?p
+ORDER BY DESC(?triples) ?p

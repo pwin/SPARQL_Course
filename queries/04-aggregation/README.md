@@ -4,6 +4,14 @@ GROUP BY collapses many rows into one per group. HAVING filters the groups. The 
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §11 Aggregates](https://www.w3.org/TR/sparql12-query/#x11-aggregates)
+- [SPARQL 1.2 Query §11.2 GROUP BY](https://www.w3.org/TR/sparql12-query/#x11-2-group-by)
+- [SPARQL 1.2 Query §11.3 HAVING](https://www.w3.org/TR/sparql12-query/#x11-3-having)
+- [SPARQL 1.2 Query §11.4 Aggregate Projection Restrictions](https://www.w3.org/TR/sparql12-query/#x11-4-aggregate-projection-restrictions)
+- [SPARQL 1.2 Query §18.6.1 Aggregate Algebra](https://www.w3.org/TR/sparql12-query/#x18-6-1-aggregate-algebra)
+
 | Query | Asks |
 |---|---|
 | [q20 How many shops in each town](q20-how-many-shops-in-each-town.rq) | Count the bookshops town by town. |

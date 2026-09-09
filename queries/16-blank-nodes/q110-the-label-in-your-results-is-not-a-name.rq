@@ -1,0 +1,75 @@
+# ==========================================================================
+#  Q110  The label in your results is not a name
+# ==========================================================================
+#
+#  ASKS
+#    A previous query returned _:b0. What happens if you put _:b0 back into
+#    a query?
+#
+#  HOW IT WORKS
+#    Nothing you would want. A blank node label written in a query pattern
+#    is not a reference to anything -- it is a variable that you are not
+#    allowed to project. It matches every term in the graph, IRIs and
+#    literals included, so this query counts the whole dataset.
+#
+#  DIAGRAM
+#        SELECT (COUNT(*) AS ?triples) WHERE { _:b0 ?p ?o }
+#
+#                                         4826
+#                                         ----
+#                                every triple in the file
+#
+#        What you probably meant:      What SPARQL heard:
+#
+#          "the node called _:b0"        "some subject, I don't care
+#                                         which, and don't ask me to
+#                                         show it to you"
+#
+#        _:b0 there behaves exactly like ?anything, minus the ability
+#        to SELECT it. The label is scoped to the query, and it has no
+#        connection to the _:b0 an earlier query printed -- or to the
+#        _:b0 in the Turtle file, come to that.
+#
+#        So the rule is:
+#
+#          +--------------------------------------------------------+
+#          | A blank node label in query results is a local nickname |
+#          | the engine made up while answering. It is not stable    |
+#          | between queries, between engines, or between runs.      |
+#          | You cannot look one up. Do not store one.               |
+#          +--------------------------------------------------------+
+#
+#        Which leaves a real problem: how do you get back to a blank
+#        node you have found? Two answers -- reach it by a path from
+#        something that does have an IRI (q111), or give it a name of
+#        your own (q114).
+#
+#
+#  WHAT TO TAKE AWAY
+#    - _:label in a query pattern is a variable, not a reference. It
+#      matches anything and cannot be projected.
+#    - Blank node labels in results are made up by the engine per query.
+#      They are not identifiers and will not survive a second query.
+#    - The way back to a blank node is a path from a named node, or a
+#      skolem IRI you mint yourself.
+#
+#  NOTE
+#    4826 is every triple in bookshop-trail-1.1.ttl, which is the point:
+#    _:b0 constrained nothing at all.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#           SPARQL 1.2 Query §19.6 Blank Nodes and Blank Node Identifiers
+#           https://www.w3.org/TR/sparql12-query/#x19-6-blank-nodes-and-blank-node-identifiers
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+
+
+SELECT (COUNT(*) AS ?triples)
+WHERE {
+  _:b0 ?p ?o .
+}

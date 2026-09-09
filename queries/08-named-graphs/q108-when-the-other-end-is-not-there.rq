@@ -1,0 +1,90 @@
+# ==========================================================================
+#  Q108  When the other end is not there
+# ==========================================================================
+#
+#  ASKS
+#    What happens when the remote endpoint is unreachable, and why does
+#    HOLOS refuse to call one at all?
+#
+#  HOW IT WORKS
+#    SERVICE SILENT tells the engine to carry on with no bindings rather
+#    than fail when a remote call goes wrong. Fuseki honours it. The
+#    browser editor raises anyway. HOLOS declines to make the request in
+#    the first place, and its reason is worth understanding.
+#
+#  DIAGRAM
+#        SERVICE SILENT <https://endpoint.invalid/sparql> { ... }
+#
+#        measured against a host that does not exist:
+#
+#          +---------+------------------+--------------------------+
+#          |         | SERVICE          | SERVICE SILENT           |
+#          +---------+------------------+--------------------------+
+#          | Fuseki  | error            | 3 rows, no bindings   ok |
+#          | editor  | error            | error                    |
+#          | HOLOS   | refuses          | refuses                  |
+#          +---------+------------------+--------------------------+
+#
+#        WHY HOLOS REFUSES
+#
+#        A SERVICE IRI is a URL chosen by whoever wrote the query. An
+#        engine that follows it will make its server issue a request to
+#        that address -- from inside your network:
+#
+#            SERVICE <http://169.254.169.254/latest/meta-data/>
+#            SERVICE <http://localhost:9200/>
+#            SERVICE <http://admin.internal/>
+#
+#        That is server-side request forgery, and the query language is
+#        the attack surface. HOLOS evaluates SERVICE only against
+#        endpoints registered in the process, and refuses remote HTTP
+#        outright; it refuses remote LOAD for the same reason. Enabling
+#        it safely needs an allow-list, which is a policy decision rather
+#        than a default.
+#
+#        Not a bug, then, but a position. Worth knowing which position
+#        your own endpoint takes before you expose it.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - SERVICE SILENT continues with no bindings instead of failing.
+#      Fuseki honours it; Comunica raises anyway, so do not rely on it in
+#      the browser.
+#    - A public endpoint that follows arbitrary SERVICE IRIs will make
+#      requests to any address a stranger names, including ones only it
+#      can reach. That is SSRF, and it is why HOLOS refuses.
+#    - Federation is a network operation wearing the clothes of a join:
+#      it can be slow, it can fail, and it can be a security question.
+#
+#  NOTE
+#    Fuseki only. The browser editor raises rather than honouring SILENT,
+#    and HOLOS refuses remote SERVICE altogether -- which is the point of
+#    the query rather than a limitation of it.
+#
+#  NETWORK  calls a remote endpoint; needs the internet
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  fuseki
+#  SPEC     SPARQL 1.2 Query, Security Considerations
+#           https://www.w3.org/TR/sparql12-query/#c-security-considerations
+#           SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#  RETURNS  5 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?name ?remote
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+
+  # The host does not exist. SILENT is what decides whether that
+  # ends the query or is simply shrugged off.
+  SERVICE SILENT <https://endpoint.invalid/sparql> {
+    ?shop bs:somethingRemote ?remote .
+  }
+}
+ORDER BY ?name
+LIMIT 5

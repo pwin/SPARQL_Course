@@ -4,6 +4,14 @@ Real data has holes. OPTIONAL keeps a row when the extra fact is missing, UNION 
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §6 Including Optional Values](https://www.w3.org/TR/sparql12-query/#x6-including-optional-values)
+- [SPARQL 1.2 Query §7 Matching Alternatives](https://www.w3.org/TR/sparql12-query/#x7-matching-alternatives)
+- [SPARQL 1.2 Query §8 Negation](https://www.w3.org/TR/sparql12-query/#x8-negation)
+- [SPARQL 1.2 Query §8.3 NOT EXISTS and MINUS compared](https://www.w3.org/TR/sparql12-query/#x8-3-relationship-and-differences-between-not-exists-and-minus)
+- [SPARQL 1.2 Query §10.2 VALUES](https://www.w3.org/TR/sparql12-query/#x10-2-values-providing-inline-data)
+
 | Query | Asks |
 |---|---|
 | [q14 Shops, with a website if there's one](q14-shops-with-a-website-if-there-s-one.rq) | List every shop, showing its website where one is recorded. |

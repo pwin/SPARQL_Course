@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q113  Telling two blank nodes apart
+# ==========================================================================
+#
+#  ASKS
+#    Are the two disjointness axioms really two nodes, or one node found
+#    twice?
+#
+#  HOW IT WORKS
+#    Blank nodes have identity inside a query even though they have no name
+#    outside it. sameTerm compares two bindings and answers truthfully, so
+#    a self-join with a not-same filter counts the distinct pairs.
+#
+#  DIAGRAM
+#        ?a a owl:AllDisjointClasses .
+#        ?b a owl:AllDisjointClasses .
+#        FILTER( !sameTerm(?a, ?b) )
+#
+#        with two axioms in the file:
+#
+#          (a1,a1) (a1,a2)        the filter removes the diagonal
+#          (a2,a1) (a2,a2)        and 2 ordered pairs survive
+#
+#        +--------------------------------------------------------+
+#        | inside one query   blank nodes have identity. They      |
+#        |                    join, compare and group correctly.   |
+#        |                                                         |
+#        | outside the query  they have none. The label you saw    |
+#        |                    means nothing to the next query.     |
+#        +--------------------------------------------------------+
+#
+#        A note on the anonymous form: writing
+#
+#            [] a owl:AllDisjointClasses ; owl:members ?head .
+#
+#        means exactly what ?axiom meant in q111 -- one node, matched
+#        once, just not projectable. Two separate [] in the same query
+#        are two separate variables, and nothing stops them matching the
+#        same node.
+#
+#        Use != rather than !sameTerm and most engines will still do the
+#        right thing on blank nodes, but sameTerm is the operator that is
+#        actually defined for them, and it does not raise on terms that
+#        cannot be compared by value.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - sameTerm compares RDF terms by identity, and it is the right test
+#      for blank nodes.
+#    - Identity is real within a query and gone outside it. That is the
+#      whole of what makes blank nodes awkward.
+#    - [] is an unnamed variable used once. Two [] in one query are two
+#      different variables, not the same node.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §17.4.2.1 sameTerm
+#           https://www.w3.org/TR/sparql12-query/#x17-4-2-1-sameterm
+#           SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT (COUNT(*) AS ?orderedPairs)
+WHERE {
+  ?a a owl:AllDisjointClasses .
+  ?b a owl:AllDisjointClasses .
+  FILTER( !sameTerm(?a, ?b) )
+}

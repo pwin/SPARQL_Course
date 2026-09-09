@@ -21,6 +21,8 @@ import sys
 import textwrap
 from pathlib import Path
 
+from urllib.parse import quote
+
 from pyproj import Transformer
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -639,6 +641,11 @@ def build_places() -> str:
         ]
         for text, lang in C.PLACE_ALT_NAMES.get(sid, []):
             pairs.append(("rdfs:label", lit(text, lang)))
+        dbp = C.DBPEDIA.get(sid)
+        if dbp:
+            pairs.append(("owl:sameAs",
+                          "<http://dbpedia.org/resource/"
+                          + quote(dbp, safe="_,-") + ">"))
         pairs += [
             ("bs:within", place(council)),
             ("bs:population", typed(pop, "xsd:integer")),

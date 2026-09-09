@@ -4,6 +4,13 @@ A SELECT inside a WHERE clause. It runs first, produces a small table, and the o
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §12 Subqueries](https://www.w3.org/TR/sparql12-query/#x12-subqueries)
+- [SPARQL 1.2 Query §15 Solution Sequences and Modifiers](https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers)
+- [SPARQL 1.2 Query §18.3.1 Variable Scope](https://www.w3.org/TR/sparql12-query/#x18-3-1-variable-scope)
+- [SPARQL 1.2 Query §10.2 VALUES](https://www.w3.org/TR/sparql12-query/#x10-2-values-providing-inline-data)
+
 | Query | Asks |
 |---|---|
 | [q37 Books priced above average](q37-books-priced-above-average.rq) | Which books cost more than the average book? |

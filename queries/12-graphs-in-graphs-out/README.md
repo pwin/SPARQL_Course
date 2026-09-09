@@ -4,6 +4,14 @@ Module 07 introduced ASK, CONSTRUCT and DESCRIBE. This one uses them in earnest.
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §16.2 CONSTRUCT](https://www.w3.org/TR/sparql12-query/#x16-2-construct)
+- [SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes](https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes)
+- [SPARQL 1.2 Query §16.4 DESCRIBE](https://www.w3.org/TR/sparql12-query/#x16-4-describe-informative)
+- [SPARQL 1.2 Update](https://www.w3.org/TR/sparql12-update/)
+- [SHACL](https://www.w3.org/TR/shacl/)
+
 | Query | Asks |
 |---|---|
 | [q75 Can you walk from Wigtown to London](q75-can-you-walk-from-wigtown-to-london.rq) | Is there any route along the trail from The Inkwell to Ex Libris? |

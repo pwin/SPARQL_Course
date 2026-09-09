@@ -16,6 +16,8 @@ from dataclasses import dataclass, field
 from urllib.parse import quote
 from pathlib import Path
 
+import specs
+
 ROOT = Path(__file__).resolve().parent.parent
 QUERIES = ROOT / "queries"
 
@@ -62,6 +64,9 @@ KNOWN_PREFIXES = [
     ("spif",   "http://spinrdf.org/spif#"),
     ("fn",     "http://www.w3.org/2005/xpath-functions#"),
     ("math",   "http://www.w3.org/2005/xpath-functions/math#"),
+    # Only used by the federated queries in module 08, where the remote
+    # endpoint is DBpedia.
+    ("dbo",    "http://dbpedia.org/ontology/"),
 ]
 PREFIX_URI = dict(KNOWN_PREFIXES)
 
@@ -107,13 +112,19 @@ class Query:
     # Prefixes a query needs but does not mention, if any. Nothing needs this
     # except a CONSTRUCT whose output vocabulary is wider than its template.
     extra_prefixes: tuple = ()
+    # A query that calls out to a remote endpoint. Skipped by the checker
+    # unless --network is given, so the default run stays deterministic and
+    # works with no internet: a course should not fail because DBpedia is busy.
+    network: bool = False
     expect: str = ""            # filled in by check_queries.py
     order: int = 0
 
     @property
     def filename(self) -> str:
         slug = self.title.lower()
-        for ch in " ,'()/":
+        # Anything a filesystem would object to, plus the punctuation that
+        # makes a name awkward to type.  Windows rejects ? * : " < > | outright.
+        for ch in " ,'()/?*:\"<>|!":
             slug = slug.replace(ch, "-")
         while "--" in slug:
             slug = slug.replace("--", "-")
@@ -205,9 +216,15 @@ class Query:
         block("WHAT TO TAKE AWAY", self.learn, bullet=True)
         if self.notes:
             block("NOTE", self.notes)
+        if self.network:
+            out.append("#  NETWORK  calls a remote endpoint; needs the internet")
         out.append(f"#  DATA     {self.data}")
         out.append(f"#  LOAD IT  {self.editor_url}")
         out.append(f"#  RUNS ON  {', '.join(self.engines)}")
+        for i, (label, url) in enumerate(specs.for_query(self.qid, self.module,
+                                                         limit=2)):
+            out.append(f"#  {'SPEC    ' if i == 0 else '        '} {label}")
+            out.append(f"#           {url}")
         if self.expect:
             out.append(f"#  RETURNS  {self.expect}")
         out.append(rule)
@@ -281,10 +298,13 @@ MODULE_INFO = {
         "these five make sense.",
     ),
     "08-named-graphs": (
-        "Named graphs",
+        "Named graphs and federation",
         "The dataset also ships as TriG, with each subject area in its own "
         "named graph. GRAPH lets you ask where a fact came from, which is the "
-        "cheapest form of provenance there's.",
+        "cheapest form of provenance there's. The second half of the module "
+        "takes the same idea across the network: SERVICE puts the other graph "
+        "on somebody else's machine, and the last four queries join this "
+        "dataset to DBpedia.",
     ),
     "09-geo-without-geosparql": (
         "Geospatial with nothing but arithmetic",
@@ -329,6 +349,15 @@ MODULE_INFO = {
         "up until you move the query. This module measures which of them your "
         "three engines actually have, shows what each does when a function is "
         "missing, and ends with the portable rewrite.",
+    ),
+    "16-blank-nodes": (
+        "Blank nodes",
+        "The nodes with no name. They are how RDF writes lists, restrictions "
+        "and anything else that is structure rather than a thing, and they "
+        "behave differently from everything else in the language: they have "
+        "identity inside a query and none outside it. This module is late in "
+        "the sequence because it needs property paths and sub-queries, but the "
+        "hazards in it turn up from module 01 onwards.",
     ),
     "14-challenges": (
         "Putting it together",

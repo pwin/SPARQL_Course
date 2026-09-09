@@ -4,6 +4,12 @@ Every engine can do geography if the coordinates are plain numbers. This module 
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §17.3 Operator Mapping](https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping)
+- [SPARQL 1.2 Query §17.4.4 Functions on Numerics](https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics)
+- [SPARQL 1.2 Query §15.1 ORDER BY](https://www.w3.org/TR/sparql12-query/#x15-1-order-by)
+
 | Query | Asks |
 |---|---|
 | [q52 Shops in a box on the map](q52-shops-in-a-box-on-the-map.rq) | Which shops lie in the south west, between 50 and 52 degrees north and west of 2 degrees? |

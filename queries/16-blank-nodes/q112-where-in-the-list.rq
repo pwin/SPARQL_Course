@@ -1,0 +1,76 @@
+# ==========================================================================
+#  Q112  Where in the list?
+# ==========================================================================
+#
+#  ASKS
+#    An RDF collection is ordered. Which position does each member hold?
+#
+#  HOW IT WORKS
+#    The order is in the chain, not in any property, so it has to be
+#    counted. Every cell from the head to this one is one hop of rdf:rest*,
+#    so counting those cells gives the position. It is an aggregate over a
+#    path, which is a shape worth having in your hands.
+#
+#  DIAGRAM
+#        head --> c1 --> c2 --> c3 --> c4 --> nil
+#
+#        for c3, how many cells lie between the head and it, inclusive?
+#
+#          head rdf:rest* ?between .      <- c1, c2, c3, c4  (and head=c1)
+#          ?between rdf:rest* c3 .        <- keeps c1, c2, c3
+#                                            -------------
+#                                            COUNT = 3
+#
+#        so ?position falls out of a GROUP BY on the cell:
+#
+#          +--------------------+----------+
+#          | bs:Settlement      |        1 |
+#          | bs:CouncilArea     |        2 |
+#          | bs:Region          |        3 |
+#          | bs:Country         |        4 |
+#          +--------------------+----------+
+#
+#        GROUP BY ?cell groups on a blank node, which is fine: within
+#        one query the engine knows perfectly well which node is which.
+#        It is only outside the query that the identity evaporates.
+#
+#        The FILTER on bs:Country picks the four-member axiom out of the
+#        two in the file, using a member as the handle -- again, reaching
+#        a blank node through something named.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - RDF collections are ordered, and the order lives in the chain.
+#      Counting rdf:rest* hops is how you recover it.
+#    - GROUP BY on a blank node works and is deterministic within a
+#      single query. Sorting or paging on one is not -- see the note on
+#      q64.
+#    - Counting along a path is a general trick: depth in a hierarchy is
+#      the same query with a different predicate.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#           SPARQL 1.2 Query §4.1.4 Syntax for Blank Nodes
+#           https://www.w3.org/TR/sparql12-query/#x4-1-4-syntax-for-blank-nodes
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:  <https://example.org/bookshop-trail/schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?member (COUNT(?between) AS ?position)
+WHERE {
+  ?axiom   a owl:AllDisjointClasses ;
+           owl:members ?head .
+  ?head    rdf:rest*/rdf:first bs:Country .
+
+  ?head    rdf:rest* ?between .
+  ?between rdf:rest* ?cell .
+  ?cell    rdf:first ?member .
+}
+GROUP BY ?cell ?member
+ORDER BY ?position

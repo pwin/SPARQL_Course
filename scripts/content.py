@@ -102,6 +102,45 @@ PLACE_ALT_NAMES = {
     "wigtown":     [("Baile na h-Uige", "gd")],
 }
 
+
+# DBpedia resources for the same real places.  The shops, people and books are
+# invented; the towns are not, and owl:sameAs is how a dataset says so.  These
+# links are what makes the federation module possible: they give a SERVICE
+# call something to join on that is not a string match on a label.
+# Verified: all thirty resolve on dbpedia.org.
+DBPEDIA = {
+    "wigtown":      "Wigtown",
+    "edinburgh":    "Edinburgh",
+    "glasgow":      "Glasgow",
+    "st-andrews":   "St_Andrews",
+    "inverness":    "Inverness",
+    "portree":      "Portree",
+    "berwick":      "Berwick-upon-Tweed",
+    "sedbergh":     "Sedbergh",
+    "kendal":       "Kendal",
+    "keswick":      "Keswick,_Cumbria",
+    "york":         "York",
+    "whitby":       "Whitby",
+    "manchester":   "Manchester",
+    "liverpool":    "Liverpool",
+    "shrewsbury":   "Shrewsbury",
+    "ludlow":       "Ludlow",
+    "oxford":       "Oxford",
+    "cambridge":    "Cambridge",
+    "norwich":      "Norwich",
+    "london":       "London",
+    "bath":         "Bath,_Somerset",
+    "exeter":       "Exeter",
+    "penzance":     "Penzance",
+    "hay-on-wye":   "Hay-on-Wye",
+    "aberystwyth":  "Aberystwyth",
+    "cardiff":      "Cardiff",
+    "durham":       "Durham,_England",
+    "perth":        "Perth,_Scotland",
+    "fort-william": "Fort_William,_Highland",
+    "truro":        "Truro",
+}
+
 # (id, label, settlement, founded, floor_m2, staff, specialism, second_hand, cafe)
 SHOPS = [
     ("inkwell",       "The Inkwell",           "wigtown",     1979, 140,  4, "crime-fiction",      True,  True),

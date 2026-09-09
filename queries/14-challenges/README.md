@@ -4,6 +4,11 @@ Questions with no single obvious shape, each needing two or three of the techniq
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query Language](https://www.w3.org/TR/sparql12-query/)
+- [SPARQL 1.2 Query §17.4 Function Definitions](https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions)
+
 | Query | Asks |
 |---|---|
 | [q69 Whose influence reaches furthest](q69-whose-influence-reaches-furthest.rq) | Which author has the largest number of literary descendants? |

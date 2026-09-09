@@ -4,6 +4,13 @@ Reference rather than lesson. Every engine adds functions the specification does
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §17.3.1 Operator Extensibility](https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility)
+- [SPARQL 1.2 Query §17.6 Extensible Value Testing](https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing)
+- [SPARQL 1.2 Service Description](https://www.w3.org/TR/sparql12-service-description/)
+- [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31/)
+
 | Query | Asks |
 |---|---|
 | [q100 Readable names without a label](q100-readable-names-without-a-label.rq) | Show each shop's IRI as a short name, without joining to rdfs:label. |

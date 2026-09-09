@@ -33,6 +33,10 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
+#           SPARQL 1.2 Query §10.1 BIND
+#           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
 #  RETURNS  13 rows, on every engine that runs it
 # ==========================================================================
 

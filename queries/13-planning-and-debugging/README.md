@@ -6,6 +6,13 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **Read first: [PLANS.md](PLANS.md)** — Getting the plan out of each engine, and the debugging playbook.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §18 Definition of SPARQL](https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql)
+- [SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax](https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax)
+- [SPARQL 1.2 Query §18.6.2 Evaluation Semantics](https://www.w3.org/TR/sparql12-query/#x18-6-2-evaluation-semantics)
+- [SPARQL 1.2 Query §17.2.2 Evaluation errors](https://www.w3.org/TR/sparql12-query/#x17-2-2-evaluation-errors)
+
 | Query | Asks |
 |---|---|
 | [q90 How selective is each pattern](q90-how-selective-is-each-pattern.rq) | Before optimising anything: how many rows does each pattern in my query match on its own? |

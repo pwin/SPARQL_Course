@@ -1,0 +1,84 @@
+# ==========================================================================
+#  Q115  A copy with no blank nodes left in it
+# ==========================================================================
+#
+#  ASKS
+#    Build a graph that says the same thing about disjointness, with every
+#    blank node replaced by something nameable.
+#
+#  HOW IT WORKS
+#    CONSTRUCT with a skolem IRI in the subject position. The list
+#    structure disappears: instead of a chain of cells, each axiom gets a
+#    flat set of bs:disjointMember triples. The result loads into any
+#    engine, survives a round trip through a file, and can be diffed.
+#
+#  DIAGRAM
+#        before -- 23 blank nodes, 46 triples of plumbing:
+#
+#          _:a --owl:members--> _:c1 --rdf:rest--> _:c2 --rdf:rest--> ...
+#                                 |                  |
+#                            rdf:first          rdf:first
+#                                 v                  v
+#                           bs:Settlement    bs:CouncilArea
+#
+#        after -- no blank nodes, no plumbing:
+#
+#          bt:axiom-bookshop-11    bs:disjointMember  bs:Bookshop ;
+#                                  bs:disjointMember  bs:Person ;
+#                                  ...
+#          bt:axiom-councilarea-4  bs:disjointMember  bs:Settlement ;
+#                                  ...
+#
+#        15 triples out, one per member, and every subject has a name.
+#
+#        What was lost: the order of the list, and the fact that OWL
+#        reads it as one axiom rather than a bag of memberships. That is
+#        the trade -- flattening is easier to query and no longer means
+#        quite the same thing. Do it for reporting and for diffing, not
+#        as a replacement for the original.
+#
+#        Sending the result somewhere: press Get All in the editor after
+#        running a CONSTRUCT and the constructed triples come back as
+#        Turtle you can save.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - CONSTRUCT plus a skolem IRI is how you hand a blank-node structure
+#      to something that cannot cope with blank nodes.
+#    - Flattening a collection loses its order and its meaning as a
+#      single axiom. Know what you are giving up.
+#    - A graph with no blank nodes can be diffed, merged and quoted. That
+#      is worth a lot when the data is under review.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes
+#           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
+#           SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:  <https://example.org/bookshop-trail/>
+PREFIX bs:  <https://example.org/bookshop-trail/schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+CONSTRUCT {
+  ?id bs:disjointMember ?member .
+}
+WHERE {
+  {
+    SELECT ?axiom (COUNT(?m) AS ?size) (MIN(?local) AS ?firstMember)
+    WHERE {
+      ?axiom a           owl:AllDisjointClasses ;
+             owl:members/rdf:rest*/rdf:first ?m .
+      BIND( REPLACE(STR(?m), "^.*[/#]", "") AS ?local )
+    }
+    GROUP BY ?axiom
+  }
+  ?axiom owl:members/rdf:rest*/rdf:first ?member .
+  BIND( IRI(CONCAT("https://example.org/bookshop-trail/axiom-",
+                   LCASE(?firstMember), "-", STR(?size))) AS ?id )
+}

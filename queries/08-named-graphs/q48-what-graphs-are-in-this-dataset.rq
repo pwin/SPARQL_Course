@@ -43,6 +43,10 @@
 #  DATA     bookshop-trail.trig
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
 #  RUNS ON  editor, holos, fuseki
+#  SPEC     SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#           SPARQL 1.2 Query §13.2 Specifying RDF Datasets
+#           https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets
 #  RETURNS  10 rows, on every engine that runs it
 # ==========================================================================
 

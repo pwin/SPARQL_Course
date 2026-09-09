@@ -1,0 +1,86 @@
+# ==========================================================================
+#  Q107  Sending the list with the question
+# ==========================================================================
+#
+#  ASKS
+#    Ask DBpedia about a batch of towns in one round trip, in a way both
+#    engines answer.
+#
+#  HOW IT WORKS
+#    Rather than relying on the engine to push bindings across, put them in
+#    the SERVICE block yourself with VALUES. The remote endpoint gets one
+#    self-contained query naming exactly the resources you care about, and
+#    there is nothing for an engine to get wrong.
+#
+#  DIAGRAM
+#        SERVICE <https://dbpedia.org/sparql> {
+#          VALUES ?dbp {
+#            <http://dbpedia.org/resource/York>
+#            <http://dbpedia.org/resource/Bath,_Somerset>
+#            ...
+#          }
+#          ?dbp dbo:populationTotal ?population .
+#        }
+#
+#        five IRIs go out, four answers come back:
+#
+#          +-------------------------+------------+
+#          | York                    |    141,685 |
+#          | Bath, Somerset          |     94,092 |
+#          | Penzance                |     20,734 |
+#          | Sedbergh                |      2,765 |
+#          | Norwich                 |  -- no dbo:populationTotal --
+#          +-------------------------+------------+
+#
+#        Norwich drops out for the same reason Hay-on-Wye did in q105.
+#        Asking for five things and getting four is normal when the data
+#        is somebody else's.
+#
+#        why this is the shape to reach for:
+#
+#          - both engines answer it identically
+#          - one round trip rather than one per row
+#          - the remote endpoint sees a query it can plan properly
+#          - you can paste the SERVICE block straight into DBpedia's own
+#            form to see what it does on its own
+#
+#        The cost is that the list is fixed. Generate the VALUES block
+#        from a first, local query when it needs to vary.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - VALUES inside a SERVICE block sends the keys with the question,
+#      which is the most portable way to federate.
+#    - One round trip for n resources beats n round trips. Federation is
+#      dominated by latency, not by matching.
+#    - A self-contained SERVICE block can be tested directly against the
+#      remote endpoint, which is how you tell whose fault an empty result
+#      is.
+#
+#  NETWORK  calls a remote endpoint; needs the internet
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, fuseki
+#  SPEC     SPARQL 1.2 Query §10.2.1 VALUES syntax
+#           https://www.w3.org/TR/sparql12-query/#x10-2-1-values-syntax
+#           SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX dbo: <http://dbpedia.org/ontology/>
+
+SELECT ?dbp ?population
+WHERE {
+  SERVICE <https://dbpedia.org/sparql> {
+    VALUES ?dbp {
+      <http://dbpedia.org/resource/York>
+      <http://dbpedia.org/resource/Bath,_Somerset>
+      <http://dbpedia.org/resource/Penzance>
+      <http://dbpedia.org/resource/Sedbergh>
+      <http://dbpedia.org/resource/Norwich>
+    }
+    ?dbp dbo:populationTotal ?population .
+  }
+}
+ORDER BY DESC(?population)

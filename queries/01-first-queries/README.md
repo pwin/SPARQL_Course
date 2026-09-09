@@ -4,6 +4,14 @@ Everything here runs in the browser. Paste the data into the Turtle Editor Viewe
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §2 Making Simple Queries](https://www.w3.org/TR/sparql12-query/#x2-making-simple-queries-informative)
+- [SPARQL 1.2 Query §4 SPARQL Syntax](https://www.w3.org/TR/sparql12-query/#x4-sparql-syntax)
+- [SPARQL 1.2 Query §5 Graph Patterns](https://www.w3.org/TR/sparql12-query/#x5-graph-patterns)
+- [SPARQL 1.2 Query §16.1 SELECT](https://www.w3.org/TR/sparql12-query/#x16-1-select)
+- [RDF 1.2 Turtle](https://www.w3.org/TR/rdf12-turtle/)
+
 | Query | Asks |
 |---|---|
 | [q01 Every bookshop on the trail](q01-every-bookshop-on-the-trail.rq) | What bookshops are in this dataset, and what are they called? |

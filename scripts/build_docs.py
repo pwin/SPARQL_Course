@@ -26,6 +26,7 @@ from querycat import (CATALOGUE, MODULE_INFO, EDITOR_BASE, RAW_BASE,
 from lab_section import LAB_SECTION
 import logo
 from plans_section import PLANS_PREAMBLE
+import specs
 
 import queries_core          # noqa: F401
 import queries_paths         # noqa: F401
@@ -38,6 +39,14 @@ except ModuleNotFoundError:
     pass
 try:
     import queries_extensions  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_federation  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_blanknodes  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -313,6 +322,32 @@ def query_section(item) -> str:
 """
 
 
+def standards_section() -> str:
+    """The reading list: every document this course leans on, with a line on
+    why it is here.  Links open in a new tab because a reader who follows one
+    is checking a detail, not leaving."""
+    groups = []
+    for group, entries in specs.STANDARDS:
+        rows = "".join(
+            f'<li><a href="{url}" target="_blank" rel="noopener">{esc(title)}</a>'
+            f'<span>{esc(note)}</span></li>'
+            for title, url, note in entries)
+        groups.append(f'<div class="std-group"><h3>{esc(group)}</h3>'
+                      f'<ul class="std-list">{rows}</ul></div>')
+    return f"""
+<section class="module" id="standards">
+  <div class="module-head">
+    <span class="module-num">Reference</span>
+    <h2>The standards</h2>
+    <p class="module-blurb">Every module links to the sections it is defined
+      by; this is the whole reading list in one place. When an engine and this
+      course disagree, the specification is the thing that settles it &mdash;
+      and the sections are shorter than their reputation suggests.</p>
+  </div>
+  <div class="wrap std-wrap">{"".join(groups)}</div>
+</section>"""
+
+
 def build() -> str:
     grouped: dict[str, list] = {}
     for item in CATALOGUE:
@@ -326,7 +361,7 @@ def build() -> str:
     for i, (module, items) in enumerate(by_module.items(), start=1):
         title, blurb = MODULE_INFO[module]
         num = module.split("-")[0]
-        items = sorted(items, key=lambda x: x.qid)
+        items = sorted(items, key=lambda x: int(x.qid[1:]))
         nav.append(
             f'<li><a href="#m{num}"><span class="n">{num}</span>{esc(title)}'
             f'<span class="c">{len(items)}</span></a></li>')
@@ -338,16 +373,32 @@ def build() -> str:
             f'<p class="module-open"><a class="btn btn-open" target="_blank" '
             f'rel="noopener" href="{EDITOR_BASE}?dot={quote(RAW_BASE + common, safe="")}">'
             f'Open {esc(common)} in the editor</a></p>')
+        # Not "sections": that name already holds this module's query cards,
+        # and shadowing it silently puts a Python list into the page.
+        spec_sections = specs.MODULE_SPECS.get(module, [])
+        spec_links = ""
+        if spec_sections:
+            links = " · ".join(
+                f'<a href="{url}" target="_blank" rel="noopener">{esc(label)}</a>'
+                for label, url in spec_sections)
+            spec_links = (f'<p class="module-specs"><span>In the standards</span>'
+                          f'{links}</p>')
         body.append(f"""
 <section class="module" id="m{num}">
   <div class="module-head">
     <span class="module-num">Module {num}</span>
     <h2>{esc(title)}</h2>
     <p class="module-blurb">{esc(blurb)}</p>
+    {spec_links}
     {module_link}
   </div>
   {sections}
 </section>""")
+
+    docs = sum(len(entries) for _g, entries in specs.STANDARDS)
+    nav.append(f'<li><a href="#standards"><span class="n">§</span>'
+               f'The standards<span class="c">{docs}</span></a></li>')
+    body.append(standards_section())
 
     total = len(CATALOGUE)
     checked = sum(1 for q in CATALOGUE if q.qid in RESULTS)
@@ -677,6 +728,19 @@ ul.learn li::marker {{ color: var(--route); }}
 .btn-copy.done {{ border-color: var(--bracken); color: var(--bracken); }}
 .actions .hint {{ font-family: var(--mono); font-size: .7rem; color: var(--ink-3); }}
 .module-open {{ margin: 10px 0 0; }}
+.module-specs {{ max-width: var(--maxw); margin: 0 0 10px; font-size: .82rem;
+  line-height: 1.7; color: var(--ink-3); }}
+.module-specs span {{ display: inline-block; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; font-size: .68rem; color: var(--ink-3);
+  margin-right: 8px; }}
+.module-specs a {{ color: var(--ink-2); }}
+.std-wrap {{ display: grid; gap: 26px; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); }}
+.std-group h3 {{ font-size: .95rem; margin: 0 0 10px; }}
+.std-list {{ list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }}
+.std-list li {{ padding-left: 12px; border-left: 2px solid var(--rule); }}
+.std-list a {{ display: block; font-weight: 700; font-size: .9rem; }}
+.std-list span {{ display: block; color: var(--ink-3); font-size: .82rem;
+  line-height: 1.55; margin-top: 2px; }}
 .engines {{ display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
   margin-top: 16px; }}
 .eng {{ font-family: var(--mono); font-size: .72rem; padding: 2px 8px;

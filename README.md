@@ -6,7 +6,7 @@
 
 <br clear="left">
 
-A teaching dataset in RDF, and 104 worked queries that take a beginner from
+A teaching dataset in RDF, and 115 worked queries that take a beginner from
 `SELECT ?s ?p ?o` to property paths, nested aggregation, geospatial work and
 RDF 1.2 statement annotation — quickly, and without toy data.
 
@@ -243,7 +243,7 @@ which engines run it. Read the file; do not just run it.
 | [05](queries/05-property-paths/) | **Property paths** | `+ * ? ^ / \| !`, reachability, cycles, and why a fixed chain is wrong |
 | [06](queries/06-subqueries/) | **Sub-queries** | above-average, top-per-group, aggregate-of-aggregate, `LIMIT` inside, `VALUES` as a join table |
 | [07](queries/07-construct-ask-describe/) | Other query forms | `CONSTRUCT` as inference, `ASK`, and why not to trust `DESCRIBE` |
-| [08](queries/08-named-graphs/) | Named graphs | `GRAPH`, provenance for free, and the default-graph surprise |
+| [08](queries/08-named-graphs/) | Named graphs and federation | `GRAPH`, provenance for free, the default-graph surprise — then `SERVICE`, and four queries that join this dataset to **DBpedia** |
 | [09](queries/09-geo-without-geosparql/) | Geography with arithmetic | bounding boxes and distance with no trig and no square root — runs in the browser |
 | [10](queries/10-geosparql/) | GeoSPARQL proper | `geof:` functions, topology, and two coordinate systems in one query |
 | [11](queries/11-sparql-1-2/) | **SPARQL 1.2 and RDF 1.2** | annotation syntax, triple terms, `rdf:reifies`, language direction |
@@ -251,10 +251,14 @@ which engines run it. Read the file; do not just run it.
 | [13](queries/13-planning-and-debugging/) | **Planning and debugging** | reading the plan on all three engines, and the diagnostics for empty results, cross products and inflated aggregates |
 | [14](queries/14-challenges/) | **Putting it together** | questions that need three techniques at once |
 | [15](queries/15-beyond-the-standard/) | Beyond the standard *(reference)* | `afn:`, `spif:`, `fn:`, `math:` — which engine has what, how each fails without it, and the portable rewrite |
+| [16](queries/16-blank-nodes/) | **Blank nodes** | `isBLANK`, why a `_:b0` in your results is not a name, walking an RDF collection, and skolemising |
 
-Modules 01–08 and 12–14 run in **all three** environments. Module 15 is reference, and deliberately does not: it is about what each engine adds beyond the specification. Module 09 does
+Modules 01–07, 12–14 and 16 run in **all three** environments. Module 09 does
 too — that is its point. Module 11 needs an RDF 1.2 engine, and all three
-qualify.
+qualify. Two modules deliberately do not run everywhere: module 15, which is
+about what each engine adds beyond the specification, and the four federated
+queries at the end of module 08, which HOLOS refuses to run at all. It refuses
+on purpose, and q108 is about why.
 
 Module 10 is the partial exception, and the situation is more interesting than
 "Jena cannot do it".
@@ -299,6 +303,59 @@ a query first surprises you, whenever that happens.
 
 Modules 05 and 06 are where SPARQL stops being a table language, and the whole
 course is arranged to reach them quickly.
+
+---
+
+## The standards
+
+Everything this course teaches is defined somewhere, usually in one short
+section of one document, and reading that section is the fastest way to settle
+an argument with an engine. Start with
+[SPARQL 1.2 Query Language](https://www.w3.org/TR/sparql12-query/) — section
+17.4 is the function reference you will open most often.
+
+<!-- standards:start -->
+
+**The query language**
+
+- [SPARQL 1.2 Query Language](https://www.w3.org/TR/sparql12-query/) — The one to bookmark. Everything in modules 01 to 09 and 11 to 16 is defined here, and section 17.4 is the function reference you will open most often.
+- [SPARQL 1.2 Update](https://www.w3.org/TR/sparql12-update/) — INSERT, DELETE and LOAD. The course reads rather than writes, so this appears only in module 12.
+- [SPARQL 1.2 Federated Query](https://www.w3.org/TR/sparql12-federated-query/) — SERVICE, in its own short document. Module 08.
+- [SPARQL 1.1 Query Language](https://www.w3.org/TR/sparql11-query/) — The previous edition, still what most engines implement in full. Worth having open beside the 1.2 document when an engine disagrees with you.
+
+**The data model and its syntaxes**
+
+- [RDF 1.2 Concepts and Abstract Syntax](https://www.w3.org/TR/rdf12-concepts/) — What a triple, a literal, a blank node and a triple term actually are. Appendix B is the one on replacing blank nodes with IRIs.
+- [RDF 1.2 Turtle](https://www.w3.org/TR/rdf12-turtle/) — The syntax every data file in this course is written in.
+- [RDF 1.2 TriG](https://www.w3.org/TR/rdf12-trig/) — Turtle plus named graphs, which is what bookshop-trail.trig uses.
+- [RDF 1.2 N-Triples](https://www.w3.org/TR/rdf12-n-triples/) — One triple per line, no abbreviations. The format to fall back on when a parser disagrees with you about Turtle.
+- [RDF 1.2 Schema](https://www.w3.org/TR/rdf12-schema/) — rdfs:label, rdfs:subClassOf, rdfs:domain and rdfs:range.
+- [RDF 1.2 Semantics](https://www.w3.org/TR/rdf12-semantics/) — What entailment means. Only needed if you start asking what a reasoner is allowed to conclude.
+
+**Vocabularies the dataset uses**
+
+- [OWL 2 Structural Specification](https://www.w3.org/TR/owl2-syntax/) — The normative one. The vocabulary file is OWL 2 DL, and this is the document that says what that requires.
+- [OWL 2 Primer](https://www.w3.org/TR/owl2-primer/) — The readable one. Start here.
+- [OWL 2 Profiles](https://www.w3.org/TR/owl2-profiles/) — What DL, EL, QL and RL are, and why the datatype map matters.
+- [SKOS Reference](https://www.w3.org/TR/skos-reference/) — The genre scheme is a SKOS concept scheme: broader, narrower, prefLabel, altLabel.
+- [PROV-O](https://www.w3.org/TR/prov-o/) — Where the provenance terms in the annotations come from.
+- [SHACL](https://www.w3.org/TR/shacl/) — Validating the shape of the data, used in module 12. SHACL 1.2 Core is at https://www.w3.org/TR/shacl12-core/.
+- [OGC GeoSPARQL 1.1](https://docs.ogc.org/is/22-047r1/22-047r1.html) — geo:asWKT, geof:sfWithin, geof:distance and the rest of module 10. An OGC standard, not a W3C one.
+
+**Results, protocol and functions**
+
+- [SPARQL 1.2 Query Results JSON Format](https://www.w3.org/TR/sparql12-results-json/) — What comes back over HTTP, and what the checking harness in this repository compares.
+- [SPARQL 1.2 Query Results CSV and TSV Formats](https://www.w3.org/TR/sparql12-results-csv-tsv/) — The formats to ask for when the answer is going into a spreadsheet.
+- [SPARQL 1.2 Query Results XML Format](https://www.w3.org/TR/sparql12-results-xml/) — The oldest of the three, still widely produced.
+- [SPARQL 1.2 Protocol](https://www.w3.org/TR/sparql12-protocol/) — How a query gets to an endpoint over HTTP: the query parameter, default-graph-uri, and which verbs are allowed.
+- [SPARQL 1.2 Graph Store HTTP Protocol](https://www.w3.org/TR/sparql12-graph-store-protocol/) — Managing whole graphs with PUT and DELETE rather than with SPARQL Update.
+- [SPARQL 1.2 Service Description](https://www.w3.org/TR/sparql12-service-description/) — How an endpoint advertises what it supports -- including which extension functions, which module 15 is about.
+- [SPARQL 1.2 Entailment Regimes](https://www.w3.org/TR/sparql12-entailment/) — What it means to query with a reasoner switched on.
+- [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31/) — SPARQL borrows its function semantics from here, and module 15 meets the fn: library directly.
+
+Each module also links to the particular sections it is defined by; those are in the module READMEs and at the head of every module in the course document. `python scripts/check_links.py` fetches every document and checks that each anchor still lands on its heading.
+
+<!-- standards:end -->
 
 ---
 
@@ -481,6 +538,15 @@ python scripts/make_dl_variant.py   # data/bookshop-trail-owl-dl.ttl
 python scripts/build_queries.py     # queries/**/*.rq
 python scripts/build_docs.py        # docs/index.html
 python scripts/build_slides.py      # docs/slides.html
+python scripts/build_standards.py   # the reading list block in this file
+```
+
+Two checks are worth running after any of those:
+
+```powershell
+python scripts/check_queries.py     # every query, on all three engines
+python scripts/check_queries.py --network   # the federated ones as well
+python scripts/check_links.py       # every standards link, anchors included
 ```
 
 | Script | |
@@ -488,7 +554,8 @@ python scripts/build_slides.py      # docs/slides.html
 | `content.py`, `content_works.py` | the source tables — places, shops, people, books, events |
 | `build_dataset.py` | turns them into Turtle, TriG and geometry |
 | `querycat.py` | the query catalogue: one object per lesson, and the `.rq` writer |
-| `queries_core.py`, `queries_paths.py`, `queries_geo.py`, `queries_rdf12.py`, `queries_forms.py`, `queries_debug.py`, `queries_extensions.py` | the 104 queries and their explanations |
+| `queries_core.py`, `queries_paths.py`, `queries_geo.py`, `queries_rdf12.py`, `queries_forms.py`, `queries_debug.py`, `queries_extensions.py`, `queries_federation.py`, `queries_blanknodes.py` | the 115 queries and their explanations |
+| `specs.py`, `check_links.py`, `build_standards.py` | the links into the standards, the check that every one still lands on its section, and the reading list in this file |
 | `engines.py` | runs a query on any of the three engines and normalises the answer |
 | `check_queries.py` | the cross-engine comparison |
 | `vocabulary.py` | the OWL 2 DL specification of the schema |

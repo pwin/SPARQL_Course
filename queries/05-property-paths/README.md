@@ -4,6 +4,13 @@ The feature that turns SPARQL from a table language into a graph language. A pat
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 
+**In the standards.** The sections this module is defined by:
+
+- [SPARQL 1.2 Query §9 Property Paths](https://www.w3.org/TR/sparql12-query/#x9-property-paths)
+- [SPARQL 1.2 Query §9.1 Property Path Syntax](https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax)
+- [SPARQL 1.2 Query §9.4 Arbitrary Length Path Matching](https://www.w3.org/TR/sparql12-query/#x9-4-arbitrary-length-path-matching)
+- [SPARQL 1.2 Query §18.5 Property Path Patterns](https://www.w3.org/TR/sparql12-query/#x18-5-property-path-patterns)
+
 | Query | Asks |
 |---|---|
 | [q27 Every area a shop sits inside](q27-every-area-a-shop-sits-inside.rq) | For one shop, list every containing place all the way up to Great Britain. |

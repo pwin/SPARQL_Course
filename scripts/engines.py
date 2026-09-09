@@ -264,6 +264,17 @@ _COMUNICA_JS = r"""
 import { Parser, Store } from 'n3';
 import { QueryEngine } from '@comunica/query-sparql';
 import { readFileSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+// Comunica pulls in undici the first time a query makes an HTTP request,
+// which for this course means the SERVICE queries in module 08.  The undici
+// bundled with the editor wants worker_threads.markAsUncloneable, which
+// arrived in Node 22; on Node 20 it is missing and the require throws before
+// the query ever runs.  A no-op stands in for it -- undici only uses it to
+// mark an object as unsafe to postMessage, which nothing here does.
+const _require = createRequire(import.meta.url);
+const _wt = _require('node:worker_threads');
+if (typeof _wt.markAsUncloneable !== 'function') _wt.markAsUncloneable = () => {};
 
 const [queryFile, ...dataFiles] = process.argv.slice(2);
 const store = new Store();

@@ -1,0 +1,84 @@
+# ==========================================================================
+#  Q106  Keeping the rows the remote side cannot answer
+# ==========================================================================
+#
+#  ASKS
+#    List all three book towns, with the population where DBpedia has one.
+#
+#  HOW IT WORKS
+#    The obvious fix for q105 dropping rows is to wrap the SERVICE in an
+#    OPTIONAL, and on Jena that is exactly right. In the browser editor it
+#    returns all three rows and no populations at all: Comunica does not
+#    push the outer binding into a SERVICE nested inside an OPTIONAL. Same
+#    query, same endpoint, different answer.
+#
+#  DIAGRAM
+#        OPTIONAL {
+#          SERVICE <https://dbpedia.org/sparql> {
+#            ?dbp dbo:populationTotal ?population
+#          }
+#        }
+#
+#        measured, this dataset, this endpoint:
+#
+#          +---------+-------+---------------------------------------+
+#          | Fuseki  | 3 rows| Sedbergh 2765, the other two blank  ok |
+#          | editor  | 3 rows| ALL THREE blank                       |
+#          | HOLOS   |   --  | refuses remote SERVICE entirely       |
+#          +---------+-------+---------------------------------------+
+#
+#        Comunica gets the row count right and the data wrong, which is
+#        the hardest kind of difference to notice.
+#
+#        Without the OPTIONAL (q105) both engines agree, because then the
+#        binding goes in as part of an ordinary join. The disagreement is
+#        specifically about OPTIONAL wrapping SERVICE.
+#
+#        q107 is the shape that works on both.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - OPTIONAL around SERVICE is the usual way to keep rows the remote
+#      side cannot answer, and it is not portable.
+#    - Check a federated query on the engine you will actually run it on.
+#      The row count agreeing proves nothing.
+#    - When it does not work, push the values in explicitly instead --
+#      q107.
+#
+#  NOTE
+#    engines-differ: and the difference is the lesson. Fuseki fills in
+#    Sedbergh's population; the browser editor returns the same three rows
+#    with the column empty, because Comunica does not carry the outer
+#    binding into a SERVICE inside an OPTIONAL.
+#
+#  NETWORK  calls a remote endpoint; needs the internet
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, fuseki
+#  SPEC     SPARQL 1.2 Federated Query
+#           https://www.w3.org/TR/sparql12-federated-query/
+#           SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX dbo:  <http://dbpedia.org/ontology/>
+
+SELECT ?name ?population
+WHERE {
+  ?town a          bs:Settlement ;
+        bs:isBookTown true ;
+        rdfs:label ?name ;
+        owl:sameAs ?dbp .
+  FILTER( LANG(?name) = "en" )
+
+  OPTIONAL {
+    SERVICE <https://dbpedia.org/sparql> {
+      ?dbp dbo:populationTotal ?population .
+    }
+  }
+}
+ORDER BY ?name

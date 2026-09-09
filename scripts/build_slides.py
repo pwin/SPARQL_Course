@@ -231,13 +231,15 @@ slide("plain", """
   <div class="hi"><b>05</b> Property paths &mdash; the module everything builds toward</div>
   <div class="hi"><b>06</b> Sub-queries &mdash; above average, top per group</div>
   <div><b>07</b> Other query forms &mdash; CONSTRUCT, ASK, DESCRIBE</div>
-  <div><b>08</b> Named graphs &mdash; provenance for free</div>
+  <div><b>08</b> Named graphs and federation &mdash; provenance, then SERVICE</div>
   <div><b>09</b> Geography with arithmetic &mdash; no trig, no square root</div>
   <div><b>10</b> GeoSPARQL proper &mdash; geof: functions</div>
   <div class="hi"><b>11</b> SPARQL 1.2 &mdash; saying things about statements</div>
   <div><b>12</b> Graphs in, graphs out &mdash; the three forms in earnest</div>
   <div><b>13</b> Planning and debugging &mdash; reading the plan</div>
   <div><b>14</b> Putting it together</div>
+  <div><b>15</b> Beyond the standard &mdash; afn:, spif:, fn:, math:</div>
+  <div class="hi"><b>16</b> Blank nodes &mdash; the nodes with no name</div>
 </div>
 """)
 
@@ -582,6 +584,126 @@ the trap that cost the most time:
     <p class="take"><b>Take away.</b> The dataset keeps <code>xsd:gYear</code>
       anyway, because the portability trap it creates is one of the best
       lessons here. A conformant copy ships alongside it.</p>
+  </div>
+</div>
+""")
+
+slide("plain", """
+<h2>Someone else's graph, over the network</h2>
+<div class="cols">
+  <div>
+    <p><code>SERVICE</code> evaluates a pattern at another endpoint and joins
+      the answer back. The towns in this dataset are real, and each one carries
+      <code>owl:sameAs</code> to its DBpedia resource &mdash; so the join is on
+      an identifier rather than on a name that happens to match.</p>
+""" + code("""?town owl:sameAs ?dbp .
+
+SERVICE <https://dbpedia.org/sparql> {
+  ?dbp dbo:populationTotal ?pop .
+}""") + """
+    <p class="take"><b>Take away.</b> Federate on IRIs, not on labels.</p>
+  </div>
+  <div>
+""" + ascii_box("""
+measured on the three engines:
+
+  SERVICE, plain          editor  yes
+                          fuseki  yes
+                          holos   refuses
+
+  OPTIONAL { SERVICE }    fuseki  yes
+                          editor  3 rows, all
+                                  columns empty
+
+  SERVICE SILENT,         fuseki  honours it
+  dead host               editor  raises anyway
+
+HOLOS refuses remote SERVICE on purpose. A
+SERVICE IRI is a URL a stranger chose, and an
+engine that follows it will fetch, from inside
+your network, whatever it names.
+""") + """
+    <p class="take"><b>And.</b> A join over the network is still a network
+      call: it is slow, it can fail, and it is a security question.</p>
+  </div>
+</div>
+""")
+
+slide("plain", """
+<h2>The nodes with no name</h2>
+<div class="cols">
+  <div>
+    <p>A blank node has identity <b>inside</b> a query and none outside it. The
+      label an engine prints is a nickname it invented while answering.</p>
+""" + ascii_box("""
+SELECT (COUNT(*) AS ?n)
+WHERE { _:b0 ?p ?o }
+
+               4826
+               ----
+       every triple in the file
+
+_:b0 in a pattern is not a reference.
+It is a variable you may not project,
+and it matches anything at all.
+""") + """
+  </div>
+  <div>
+    <p>Which matters because RDF writes all its structure this way. A Turtle
+      collection is a chain of them:</p>
+""" + code("""owl:members ( bs:Settlement bs:Region )
+
+# stored as
+_:c1 rdf:first bs:Settlement ;
+     rdf:rest  _:c2 .
+_:c2 rdf:first bs:Region ;
+     rdf:rest  rdf:nil .
+
+# read back with
+?axiom owl:members/rdf:rest*/rdf:first ?member""") + """
+    <p class="take"><b>Take away.</b> Reach a blank node by a path from
+      something named &mdash; or give it a name of your own. Never store the
+      label.</p>
+  </div>
+</div>
+""")
+
+slide("plain", """
+<h2>Where all this is written down</h2>
+<div class="cols">
+  <div>
+    <p>Every module in the course links to the sections that define it. Four
+      documents carry most of the weight:</p>
+    <ul class="ticks">
+      <li><b>SPARQL 1.2 Query Language</b> &mdash; the one to bookmark.
+        &sect;17.4 is the function reference.</li>
+      <li><b>RDF 1.2 Concepts</b> &mdash; what a triple, a literal, a blank
+        node and a triple term actually are.</li>
+      <li><b>RDF 1.2 Turtle</b> &mdash; the syntax every data file here is
+        written in.</li>
+      <li><b>OGC GeoSPARQL 1.1</b> &mdash; module 10, and an OGC standard
+        rather than a W3C one.</li>
+    </ul>
+  </div>
+  <div>
+""" + ascii_box("""
+  w3.org/TR/sparql12-query/
+  w3.org/TR/sparql12-federated-query/
+  w3.org/TR/sparql12-update/
+
+  w3.org/TR/rdf12-concepts/
+  w3.org/TR/rdf12-turtle/
+  w3.org/TR/rdf12-trig/
+
+  w3.org/TR/owl2-syntax/
+  w3.org/TR/shacl/
+  w3.org/TR/skos-reference/
+
+  docs.ogc.org/is/22-047r1/
+""") + """
+    <p class="take"><b>Take away.</b> The sections are shorter than their
+      reputation. When an engine and a tutorial disagree, this is the thing
+      that settles it.</p>
   </div>
 </div>
 """)

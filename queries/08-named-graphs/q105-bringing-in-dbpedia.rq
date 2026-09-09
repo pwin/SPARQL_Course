@@ -1,0 +1,84 @@
+# ==========================================================================
+#  Q105  Bringing in DBpedia
+# ==========================================================================
+#
+#  ASKS
+#    How many people live in each of the three book towns, according to
+#    DBpedia?
+#
+#  HOW IT WORKS
+#    SERVICE sends part of the query to another endpoint and joins the
+#    answer back. The join key is owl:sameAs: the shops are invented but
+#    the towns are real, and each one carries a link to its DBpedia
+#    resource, so the remote side is asked about a resource rather than a
+#    name.
+#
+#  DIAGRAM
+#        here                                    dbpedia.org
+#        ----                                    -----------
+#        ?town a bs:Settlement ;
+#              bs:isBookTown true ;
+#              rdfs:label ?name ;
+#              owl:sameAs ?dbp  ------------->  ?dbp dbo:populationTotal ?population
+#                                SERVICE
+#                  |                                        |
+#                  '--------------- joined on ?dbp ---------'
+#
+#        what comes back:
+#
+#          Sedbergh    2765
+#          Hay-on-Wye  (DBpedia has no populationTotal for it)
+#          Wigtown     (nor for this one)
+#
+#        So the join drops two of the three -- and that is not a bug in
+#        the query, it is what the remote data is like. q106 is about
+#        getting them back.
+#
+#        owl:sameAs is what makes this work. Matching "Sedbergh" the
+#        string against a remote label would find the right town by luck;
+#        matching the IRI finds it by identity.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - SERVICE evaluates a pattern at another endpoint and joins the
+#      result into the surrounding query.
+#    - Federate on identifiers, not on labels. owl:sameAs is the link
+#      that makes two datasets about the same thing joinable.
+#    - The remote side is someone else's data, with its own gaps. A join
+#      that drops rows is usually telling you about their coverage, not
+#      your query.
+#
+#  NOTE
+#    HOLOS refuses remote SERVICE outright -- see q108, which is about why.
+#    On the other two this returns one row, because DBpedia holds a
+#    population for Sedbergh and not for the other two book towns.
+#
+#  NETWORK  calls a remote endpoint; needs the internet
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, fuseki
+#  SPEC     SPARQL 1.2 Federated Query
+#           https://www.w3.org/TR/sparql12-federated-query/
+#           SPARQL 1.2 Query §13 RDF Dataset
+#           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs:   <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX owl:  <http://www.w3.org/2002/07/owl#>
+PREFIX dbo:  <http://dbpedia.org/ontology/>
+
+SELECT ?name ?population
+WHERE {
+  ?town a          bs:Settlement ;
+        bs:isBookTown true ;
+        rdfs:label ?name ;
+        owl:sameAs ?dbp .
+  FILTER( LANG(?name) = "en" )
+
+  SERVICE <https://dbpedia.org/sparql> {
+    ?dbp dbo:populationTotal ?population .
+  }
+}
+ORDER BY ?name
