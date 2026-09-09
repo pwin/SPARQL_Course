@@ -1,0 +1,56 @@
+# ==========================================================================
+#  Q04  The ten oldest shops
+# ==========================================================================
+#
+#  ASKS
+#    Which shops have been trading longest?
+#
+#  HOW IT WORKS
+#    ORDER BY sorts the result table after the pattern has matched, and
+#    LIMIT truncates it. Both act on the finished table, not on the
+#    matching -- so the engine still had to consider all 33 shops to know
+#    which ten come first.
+#
+#  DIAGRAM
+#        match  ─▶  33 rows  ─▶  ORDER BY ?founded  ─▶  LIMIT 10  ─▶  10 rows
+#                                  (ascending)
+#
+#        Order of evaluation, which is NOT the order you write them in:
+#          WHERE  ->  GROUP BY  ->  HAVING  ->  ORDER BY  ->  OFFSET/LIMIT
+#                                                 ^
+#                                SELECT's projection happens around here
+#
+#
+#  WHAT TO TAKE AWAY
+#    - ORDER BY and LIMIT are applied to the result table, after
+#      matching.
+#    - ORDER BY ?x is ascending; wrap it as DESC(?x) for the other
+#      direction.
+#    - LIMIT without ORDER BY gives you an arbitrary ten rows, not the
+#      first ten of anything. The two belong together.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?founded
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name ;
+        bs:founded ?founded .
+}
+ORDER BY ?founded
+LIMIT 10

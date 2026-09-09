@@ -1,0 +1,64 @@
+# ==========================================================================
+#  Q19  Why a FILTER inside OPTIONAL behaves oddly
+# ==========================================================================
+#
+#  ASKS
+#    Compare filtering inside an OPTIONAL with filtering after it.
+#
+#  HOW IT WORKS
+#    A FILTER inside OPTIONAL decides whether the optional part matches. A
+#    FILTER after it decides whether the whole row survives. The first
+#    keeps every shop and blanks out the small ones; the second throws the
+#    small ones away entirely.
+#
+#  DIAGRAM
+#        INSIDE                          AFTER
+#        OPTIONAL {                      OPTIONAL {
+#          ?shop bs:floorArea ?a           ?shop bs:floorArea ?a
+#          FILTER(?a > 250)              }
+#        }                               FILTER(?a > 250)
+#
+#        33 rows out                     8 rows out
+#        small shops kept,               small shops REMOVED --
+#        ?a unbound                      because an unbound ?a
+#                                        fails the comparison
+#
+#        Same words, different place, different answer.  This one catches
+#        everybody at least once.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A FILTER inside OPTIONAL constrains the optional match. Outside,
+#      it constrains the row.
+#    - A comparison on an unbound variable is an error, and an error in a
+#      FILTER means 'drop the row'.
+#    - If your OPTIONAL suddenly stops being optional, look for a FILTER
+#      that escaped from its braces.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  33 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?areaInside
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  OPTIONAL {
+    ?shop bs:floorArea ?areaInside .
+    FILTER( ?areaInside > 250 )
+  }
+}
+ORDER BY ?name

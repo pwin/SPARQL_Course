@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q13  How old is each shop today
+# ==========================================================================
+#
+#  ASKS
+#    How many years has each shop been trading?
+#
+#  HOW IT WORKS
+#    NOW() gives the current dateTime, YEAR() pulls the year out of it, and
+#    subtracting the founding year gives an age that changes as the
+#    calendar does. The result is computed at query time and stored
+#    nowhere.
+#
+#  DIAGRAM
+#            NOW()  ──▶  2026-09-09T...  ──YEAR()──▶  2026
+#                                                       │
+#          bs:founded "1979"^^xsd:gYear                 │
+#                  │                                    │
+#                  └─ xsd:integer(STR()) ──▶ 1979       │
+#                                         │             │
+#                                         └──── - ──────┘
+#                                               │
+#                                               ▼
+#                                             ?age = 47
+#
+#        Derived, not stored.  Run it next year and every number moves.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - NOW() is evaluated once per query, so every row sees the same
+#      instant.
+#    - The same gYear trap as q07, and here it's worse: a failed cast
+#      inside BIND leaves ?age unbound and keeps the row, so the query
+#      returns the right number of rows with an empty column.
+#    - YEAR, MONTH, DAY, HOURS, MINUTES and SECONDS take apart a
+#      dateTime.
+#    - Deriving values at query time is usually better than storing them,
+#      because stored ages go stale.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  12 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?founded ?age
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name ;
+        bs:founded ?founded .
+  BIND( YEAR(NOW()) - xsd:integer(STR(?founded)) AS ?age )
+}
+ORDER BY DESC(?age) ?name
+LIMIT 12

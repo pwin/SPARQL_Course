@@ -1,0 +1,75 @@
+# ==========================================================================
+#  Q40  Shops that punch above their weight
+# ==========================================================================
+#
+#  ASKS
+#    Which shops draw a bigger total audience than the average shop does?
+#
+#  HOW IT WORKS
+#    Three levels. The innermost totals attendance per shop; the middle one
+#    averages those totals into a single number; the outer query compares
+#    each shop against it. Each level is a plain query -- the difficulty is
+#    only in seeing which order they run in.
+#
+#  DIAGRAM
+#        innermost:  total per shop
+#            ex-libris 829, endpapers 520, cotton-quarto 443, ...
+#                              │
+#        middle:  average of those totals   ──▶  231.4   (one row)
+#                              │
+#        outer:  keep shops whose total exceeds it
+#                              ▼
+#            ┌───────────────┬───────┬────────┐
+#            │ Ex Libris     │  829  │ 231.4  │
+#            │ Endpapers     │  520  │ 231.4  │
+#            │ Cotton Quarto │  443  │ 231.4  │
+#            └───────────────┴───────┴────────┘
+#
+#        Note the middle query aggregates over the INNER query's rows,
+#        not over the events.  Averaging attendance directly would answer
+#        a different question: the average event, not the average shop.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Sub-queries nest as deeply as the question needs.
+#    - 'Average per shop' and 'average per event' are different numbers.
+#      Which one you get depends on what you grouped before averaging.
+#    - Build these from the inside out, and run each level on its own
+#      first.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  11 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?total ?averageShop
+WHERE {
+  {
+    SELECT ?shop (SUM(?a) AS ?total)
+    WHERE { ?e bs:heldAt ?shop ; bs:attendance ?a . }
+    GROUP BY ?shop
+  }
+  {
+    SELECT (ROUND(AVG(?t) * 10) / 10 AS ?averageShop)
+    WHERE {
+      SELECT ?s (SUM(?a) AS ?t)
+      WHERE { ?e bs:heldAt ?s ; bs:attendance ?a . }
+      GROUP BY ?s
+    }
+  }
+  ?shop rdfs:label ?shopName .
+  FILTER( ?total > ?averageShop )
+}
+ORDER BY DESC(?total)

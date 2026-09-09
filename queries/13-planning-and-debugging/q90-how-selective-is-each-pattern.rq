@@ -1,0 +1,83 @@
+# ==========================================================================
+#  Q90  How selective is each pattern
+# ==========================================================================
+#
+#  ASKS
+#    Before optimising anything: how many rows does each pattern in my
+#    query match on its own?
+#
+#  HOW IT WORKS
+#    An engine joins patterns in whatever order it thinks cheapest, and it
+#    decides using estimates. When it gets that wrong, the fix is usually
+#    to know the real numbers. Counting each pattern alone tells you which
+#    one is the filter and which one is the fan-out.
+#
+#  DIAGRAM
+#        count each pattern on its own, then read the spread:
+#
+#        ┌────────────────────────────────────┬────────┐
+#        │ ?s bs:hasCafe true                 │     22 │  ← selective
+#        │ ?s a bs:Bookshop                   │     33 │
+#        │ ?s bs:locatedIn ?o                 │     46 │
+#        │ ?s bs:stocks ?o                    │     95 │
+#        │ ?s rdfs:label ?o                   │    434 │  ← fans out
+#        │ ?s ?p ?o                           │  4,698 │
+#        └────────────────────────────────────┴────────┘
+#
+#        A join costs roughly the product of what it joins, so the order
+#        matters:
+#
+#          33 x 434   evaluated the wrong way round
+#          33 -> 33   evaluated the selective pattern first
+#
+#        Most engines get this right unaided.  When one does not, this
+#        table tells you what to tell it -- and gives you the numbers to
+#        argue with the plan in the README.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Measure before optimising. An estimate that's wrong by a factor of
+#      a thousand is the usual cause of a slow query.
+#    - The most selective pattern should be evaluated first; the engine
+#      normally arranges that, and this is how you check.
+#    - `?s ?p ?o` matches the whole store. Never leave one in a query you
+#      care about the speed of.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  6 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?pattern ?rows
+WHERE {
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s bs:hasCafe true . } }
+    BIND( "?s bs:hasCafe true"  AS ?pattern ) }
+  UNION
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s a bs:Bookshop . } }
+    BIND( "?s a bs:Bookshop"    AS ?pattern ) }
+  UNION
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s bs:locatedIn ?o . } }
+    BIND( "?s bs:locatedIn ?o"  AS ?pattern ) }
+  UNION
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s bs:stocks ?o . } }
+    BIND( "?s bs:stocks ?o"     AS ?pattern ) }
+  UNION
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s rdfs:label ?o . } }
+    BIND( "?s rdfs:label ?o"    AS ?pattern ) }
+  UNION
+  { { SELECT (COUNT(*) AS ?rows) WHERE { ?s ?p ?o . } }
+    BIND( "?s ?p ?o  (everything)" AS ?pattern ) }
+}
+ORDER BY ?rows

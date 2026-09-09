@@ -1,0 +1,55 @@
+# ==========================================================================
+#  Q02  Everything known about one shop
+# ==========================================================================
+#
+#  ASKS
+#    What does the dataset actually record about The Inkwell?
+#
+#  HOW IT WORKS
+#    Fixing the subject and leaving predicate and object as variables
+#    returns every statement with that subject. It's the fastest way to
+#    find out how a strange dataset is shaped, and worth doing before
+#    writing anything more ambitious.
+#
+#  DIAGRAM
+#        bt:shop-inkwell  ──── ?p ────▶  ?o
+#
+#             known                unknown
+#           (the subject)     (everything else)
+#
+#        Turn the pattern inside out and you learn the vocabulary:
+#          ?p = bs:founded    ?o = 1979
+#          ?p = bs:locatedIn  ?o = bt:place-wigtown
+#          ?p = bs:hasCafe    ?o = true          ... and so on
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Any position of a triple pattern can be a variable, including the
+#      predicate.
+#    - This is the single most useful exploratory query there's: run it
+#      against one resource before you try to query a thousand.
+#    - In the Turtle Editor Viewer you can do the same thing visually --
+#      pick the shop in the Subjects dropdown and look at the graph.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  20 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?p ?o
+WHERE {
+  bt:shop-inkwell ?p ?o .
+}
+ORDER BY ?p

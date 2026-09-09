@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q72  Where should the next shop go
+# ==========================================================================
+#
+#  ASKS
+#    Rank the shopless towns by how underserved they are: population, and
+#    distance to the nearest existing shop.
+#
+#  HOW IT WORKS
+#    Negation finds the towns without a shop; a sub-query finds each one's
+#    distance to the nearest shop on the National Grid; and a computed
+#    score combines the two. Nothing here's new -- it's q16, q54 and a
+#    BIND, assembled.
+#
+#  DIAGRAM
+#        ┌ towns with no shop ─────────────┐   q16
+#        │  FILTER NOT EXISTS {            │
+#        │    ?s bs:locatedIn ?town }      │
+#        └────────────┬────────────────────┘
+#                     │
+#        ┌ nearest shop, squared metres ───┐   q54
+#        │  MIN( (dx)² + (dy)² )           │
+#        └────────────┬────────────────────┘
+#                     │
+#        ┌ combine ────────────────────────┐
+#        │  score = population × km        │
+#        │          ───┬────    ─┬─        │
+#        │        demand     distance      │
+#        └─────────────────────────────────┘
+#
+#        A bigger town further from any shop scores higher.  The formula
+#        is a judgement, not a fact -- which is exactly why it belongs in
+#        the query and not in the data.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Complex questions are assemblies of simple ones. Write and test
+#      the parts separately.
+#    - Scoring formulas belong in queries: they encode a policy, and
+#      policies change more often than facts.
+#    - State the units. A score mixing people and kilometres is
+#      meaningful only for ranking, and should never be reported as a
+#      quantity.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?townName ?population ?nearestKm ?score
+WHERE {
+  ?town a bs:Settlement ;
+        rdfs:label ?townName ;
+        bs:population ?population ;
+        bs:easting ?te ; bs:northing ?tn .
+  FILTER( LANG(?townName) = "en" )
+  FILTER NOT EXISTS { ?anyShop bs:locatedIn ?town . }
+  {
+    SELECT ?town (MIN(?d2) AS ?closest)
+    WHERE {
+      ?town a bs:Settlement ; bs:easting ?e1 ; bs:northing ?n1 .
+      ?shop a bs:Bookshop  ; bs:easting ?e2 ; bs:northing ?n2 .
+      BIND( (?e2 - ?e1) * (?e2 - ?e1) + (?n2 - ?n1) * (?n2 - ?n1) AS ?d2 )
+    }
+    GROUP BY ?town
+  }
+  BIND( ROUND(?closest / 100000) / 10 AS ?nearestKm )
+  BIND( ROUND(?population * ?nearestKm / 1000) AS ?score )
+}
+ORDER BY DESC(?score)

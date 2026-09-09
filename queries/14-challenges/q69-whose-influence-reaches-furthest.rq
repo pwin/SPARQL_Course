@@ -1,0 +1,70 @@
+# ==========================================================================
+#  Q69  Whose influence reaches furthest
+# ==========================================================================
+#
+#  ASKS
+#    Which author has the largest number of literary descendants?
+#
+#  HOW IT WORKS
+#    Reachability plus aggregation. The inverse path ^bs:influencedBy+ runs
+#    down the influence graph from an author to everyone who inherits from
+#    them at any remove; counting the distinct endpoints ranks the authors.
+#    The two-cycle in the data means some authors appear among their own
+#    descendants, which is correct and worth noticing.
+#
+#  DIAGRAM
+#        influence points BACKWARDS -- from the later author to the earlier:
+#
+#            dilys-tremain  ──bs:influencedBy──▶  cerys-lloyd
+#
+#        so "who did X influence?" reverses it:
+#
+#            ?ancestor  ^bs:influencedBy+  ?descendant
+#                       ─────────┬───────
+#                       one or more hops, downstream
+#
+#        ┌────────────────┬─────────────┐
+#        │ rhona-blackwood│ many        │   the roots of the graph
+#        │ maud-ellery    │ many        │   reach almost everyone
+#        │ ...            │             │
+#        │ dilys-tremain  │ 0           │   the leaves reach nobody
+#        └────────────────┴─────────────┘
+#
+#        Watch for the mutual pair: tam-brodie and kirsty-lammond each
+#        influenced the other, so each is among their own descendants.
+#        COUNT(DISTINCT ?d) still terminates -- paths are cycle-safe.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Aggregating over a path result is how you measure a graph rather
+#      than just traverse it.
+#    - Reversing the path direction turns 'my ancestors' into 'my
+#      descendants' without touching the data.
+#    - COUNT(DISTINCT ...) matters here: several routes may reach the
+#      same descendant, and you want people, not paths.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?authorName (COUNT(DISTINCT ?descendant) AS ?reach)
+WHERE {
+  ?author a bs:Author ; rdfs:label ?authorName .
+  OPTIONAL { ?author ^bs:influencedBy+ ?descendant . }
+}
+GROUP BY ?author ?authorName
+ORDER BY DESC(?reach) ?authorName
+LIMIT 15

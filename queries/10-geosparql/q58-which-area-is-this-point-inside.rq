@@ -1,0 +1,81 @@
+# ==========================================================================
+#  Q58  Which area is this point inside
+# ==========================================================================
+#
+#  ASKS
+#    Verify that every settlement really does fall inside the polygon of
+#    the council area it claims to be in.
+#
+#  HOW IT WORKS
+#    geof:sfWithin tests one geometry against another using the Simple
+#    Features relation. Here it checks the dataset against itself: the
+#    bs:within link says a town is in a council area, and the geometry
+#    should agree. Zero rows means the data is consistent.
+#
+#  DIAGRAM
+#        two independent statements about the same fact:
+#
+#          symbolic:   bt:place-york  bs:within  bt:place-north-yorkshire
+#          geometric:  POINT(-1.0873 53.96)  inside  POLYGON((...))
+#
+#        this query asks whether they ever disagree:
+#
+#          ?s bs:within ?c
+#          FILTER( !geof:sfWithin(?pointOfS, ?polygonOfC) )
+#                   ▲
+#                   └── NOT within -> a contradiction
+#
+#        result: 0 rows.  The polygons were computed from the settlements
+#        they contain, so containment is true by construction -- and this
+#        query is how you prove it rather than assert it.
+#
+#        The Simple Features family: sfWithin, sfContains, sfIntersects,
+#        sfOverlaps, sfTouches, sfCrosses, sfDisjoint, sfEquals.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Topological relations are functions returning a boolean, usable
+#      directly in a FILTER.
+#    - A query that should return zero rows is a test. Keep it and run it
+#      whenever the data changes.
+#    - sfWithin, sfContains and sfIntersects cover most needs; the
+#      Egenhofer and RCC8 families are there when you need finer
+#      distinctions.
+#
+#  NOTE
+#    Returns zero rows when the data is sound, which is the point. Runs on
+#    Fuseki as well as HOLOS once scripts/setup-geosparql.ps1 has been run:
+#    Jena's GeoSPARQL handles the topological functions (sfWithin,
+#    sfIntersects, sfContains and the rest) perfectly well. Check it with
+#    the positive form -- FILTER(geof:sfWithin(...)) without the negation
+#    -- which finds all 30 settlements.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  holos, fuseki
+#  RETURNS  0 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?settlement ?area
+WHERE {
+  ?s a bs:Settlement ;
+     rdfs:label ?settlement ;
+     bs:within ?c ;
+     geo:hasDefaultGeometry/geo:asWKT ?point .
+  ?c a bs:CouncilArea ;
+     rdfs:label ?area ;
+     geo:hasDefaultGeometry/geo:asWKT ?polygon .
+  FILTER( LANG(?settlement) = "en" )
+  FILTER( !geof:sfWithin(?point, ?polygon) )
+}

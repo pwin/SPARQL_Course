@@ -1,0 +1,663 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  11  THE SAME PLACES ON THE BRITISH NATIONAL GRID  (ADVANCED)
+############################################################################
+#  Every settlement and shop again, in EPSG:27700 metres instead of
+#  degrees, both as a WKT geometry and as two plain decimals. The
+#  decimals matter: a projected grid is flat, so Pythagoras on eastings
+#  and northings is correct, while the same sum on degrees is not. An
+#  engine that reads the CRS URI in a WKT literal will answer distance
+#  and containment questions across both files; one that assumes CRS84
+#  will produce nonsense. That is the lesson. HOLOS reads all four
+#  systems; check your own engine before trusting the answers.
+#
+
+# ------------------------------------------------------------------------
+# Settlements
+# ------------------------------------------------------------------------
+bt:place-wigtown
+    geo:hasGeometry  bt:geom-wigtown-bng ;
+    bs:easting       "243518.0"^^xsd:decimal ;
+    bs:northing      "555419.7"^^xsd:decimal .
+
+bt:geom-wigtown-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Wigtown on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(243518.0 555419.7)"^^geo:wktLiteral .
+
+bt:place-edinburgh
+    geo:hasGeometry  bt:geom-edinburgh-bng ;
+    bs:easting       "325897.2"^^xsd:decimal ;
+    bs:northing      "674001.2"^^xsd:decimal .
+
+bt:geom-edinburgh-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Edinburgh on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(325897.2 674001.2)"^^geo:wktLiteral .
+
+bt:place-glasgow
+    geo:hasGeometry  bt:geom-glasgow-bng ;
+    bs:easting       "259175.8"^^xsd:decimal ;
+    bs:northing      "665739.7"^^xsd:decimal .
+
+bt:geom-glasgow-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Glasgow on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(259175.8 665739.7)"^^geo:wktLiteral .
+
+bt:place-st-andrews
+    geo:hasGeometry  bt:geom-st-andrews-bng ;
+    bs:easting       "350846.2"^^xsd:decimal ;
+    bs:northing      "716667.2"^^xsd:decimal .
+
+bt:geom-st-andrews-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "St Andrews on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(350846.2 716667.2)"^^geo:wktLiteral .
+
+bt:place-inverness
+    geo:hasGeometry  bt:geom-inverness-bng ;
+    bs:easting       "266700.2"^^xsd:decimal ;
+    bs:northing      "845245.4"^^xsd:decimal .
+
+bt:geom-inverness-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Inverness on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(266700.2 845245.4)"^^geo:wktLiteral .
+
+bt:place-portree
+    geo:hasGeometry  bt:geom-portree-bng ;
+    bs:easting       "148127.0"^^xsd:decimal ;
+    bs:northing      "843571.2"^^xsd:decimal .
+
+bt:geom-portree-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Portree on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(148127.0 843571.2)"^^geo:wktLiteral .
+
+bt:place-berwick
+    geo:hasGeometry  bt:geom-berwick-bng ;
+    bs:easting       "399765.9"^^xsd:decimal ;
+    bs:northing      "653051.4"^^xsd:decimal .
+
+bt:geom-berwick-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Berwick-upon-Tweed on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(399765.9 653051.4)"^^geo:wktLiteral .
+
+bt:place-sedbergh
+    geo:hasGeometry  bt:geom-sedbergh-bng ;
+    bs:easting       "365687.7"^^xsd:decimal ;
+    bs:northing      "491731.0"^^xsd:decimal .
+
+bt:geom-sedbergh-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Sedbergh on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(365687.7 491731.0)"^^geo:wktLiteral .
+
+bt:place-kendal
+    geo:hasGeometry  bt:geom-kendal-bng ;
+    bs:easting       "351582.0"^^xsd:decimal ;
+    bs:northing      "492748.8"^^xsd:decimal .
+
+bt:geom-kendal-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Kendal on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(351582.0 492748.8)"^^geo:wktLiteral .
+
+bt:place-keswick
+    geo:hasGeometry  bt:geom-keswick-bng ;
+    bs:easting       "326794.2"^^xsd:decimal ;
+    bs:northing      "523494.8"^^xsd:decimal .
+
+bt:geom-keswick-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Keswick on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(326794.2 523494.8)"^^geo:wktLiteral .
+
+bt:place-york
+    geo:hasGeometry  bt:geom-york-bng ;
+    bs:easting       "459983.0"^^xsd:decimal ;
+    bs:northing      "451931.4"^^xsd:decimal .
+
+bt:geom-york-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "York on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(459983.0 451931.4)"^^geo:wktLiteral .
+
+bt:place-whitby
+    geo:hasGeometry  bt:geom-whitby-bng ;
+    bs:easting       "489932.5"^^xsd:decimal ;
+    bs:northing      "510990.9"^^xsd:decimal .
+
+bt:geom-whitby-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Whitby on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(489932.5 510990.9)"^^geo:wktLiteral .
+
+bt:place-manchester
+    geo:hasGeometry  bt:geom-manchester-bng ;
+    bs:easting       "383997.4"^^xsd:decimal ;
+    bs:northing      "398258.3"^^xsd:decimal .
+
+bt:geom-manchester-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Manchester on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(383997.4 398258.3)"^^geo:wktLiteral .
+
+bt:place-liverpool
+    geo:hasGeometry  bt:geom-liverpool-bng ;
+    bs:easting       "334179.4"^^xsd:decimal ;
+    bs:northing      "390634.4"^^xsd:decimal .
+
+bt:geom-liverpool-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Liverpool on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(334179.4 390634.4)"^^geo:wktLiteral .
+
+bt:place-shrewsbury
+    geo:hasGeometry  bt:geom-shrewsbury-bng ;
+    bs:easting       "349240.6"^^xsd:decimal ;
+    bs:northing      "312402.9"^^xsd:decimal .
+
+bt:geom-shrewsbury-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Shrewsbury on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(349240.6 312402.9)"^^geo:wktLiteral .
+
+bt:place-ludlow
+    geo:hasGeometry  bt:geom-ludlow-bng ;
+    bs:easting       "351210.0"^^xsd:decimal ;
+    bs:northing      "274681.7"^^xsd:decimal .
+
+bt:geom-ludlow-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Ludlow on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(351210.0 274681.7)"^^geo:wktLiteral .
+
+bt:place-oxford
+    geo:hasGeometry  bt:geom-oxford-bng ;
+    bs:easting       "451338.3"^^xsd:decimal ;
+    bs:northing      "206183.5"^^xsd:decimal .
+
+bt:geom-oxford-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Oxford on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(451338.3 206183.5)"^^geo:wktLiteral .
+
+bt:place-cambridge
+    geo:hasGeometry  bt:geom-cambridge-bng ;
+    bs:easting       "545088.4"^^xsd:decimal ;
+    bs:northing      "258463.0"^^xsd:decimal .
+
+bt:geom-cambridge-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Cambridge on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(545088.4 258463.0)"^^geo:wktLiteral .
+
+bt:place-norwich
+    geo:hasGeometry  bt:geom-norwich-bng ;
+    bs:easting       "623243.6"^^xsd:decimal ;
+    bs:northing      "308787.5"^^xsd:decimal .
+
+bt:geom-norwich-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Norwich on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(623243.6 308787.5)"^^geo:wktLiteral .
+
+bt:place-london
+    geo:hasGeometry  bt:geom-london-bng ;
+    bs:easting       "530028.7"^^xsd:decimal ;
+    bs:northing      "180380.1"^^xsd:decimal .
+
+bt:geom-london-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "London on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(530028.7 180380.1)"^^geo:wktLiteral .
+
+bt:place-bath
+    geo:hasGeometry  bt:geom-bath-bng ;
+    bs:easting       "375111.9"^^xsd:decimal ;
+    bs:northing      "164733.5"^^xsd:decimal .
+
+bt:geom-bath-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Bath on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(375111.9 164733.5)"^^geo:wktLiteral .
+
+bt:place-exeter
+    geo:hasGeometry  bt:geom-exeter-bng ;
+    bs:easting       "291812.4"^^xsd:decimal ;
+    bs:northing      "92097.2"^^xsd:decimal .
+
+bt:geom-exeter-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Exeter on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(291812.4 92097.2)"^^geo:wktLiteral .
+
+bt:place-penzance
+    geo:hasGeometry  bt:geom-penzance-bng ;
+    bs:easting       "147254.9"^^xsd:decimal ;
+    bs:northing      "30272.5"^^xsd:decimal .
+
+bt:geom-penzance-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Penzance on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(147254.9 30272.5)"^^geo:wktLiteral .
+
+bt:place-hay-on-wye
+    geo:hasGeometry  bt:geom-hay-on-wye-bng ;
+    bs:easting       "322734.4"^^xsd:decimal ;
+    bs:northing      "242561.2"^^xsd:decimal .
+
+bt:geom-hay-on-wye-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Hay-on-Wye on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(322734.4 242561.2)"^^geo:wktLiteral .
+
+bt:place-aberystwyth
+    geo:hasGeometry  bt:geom-aberystwyth-bng ;
+    bs:easting       "258560.6"^^xsd:decimal ;
+    bs:northing      "281593.4"^^xsd:decimal .
+
+bt:geom-aberystwyth-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Aberystwyth on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(258560.6 281593.4)"^^geo:wktLiteral .
+
+bt:place-cardiff
+    geo:hasGeometry  bt:geom-cardiff-bng ;
+    bs:easting       "318218.0"^^xsd:decimal ;
+    bs:northing      "176508.9"^^xsd:decimal .
+
+bt:geom-cardiff-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Cardiff on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(318218.0 176508.9)"^^geo:wktLiteral .
+
+bt:place-durham
+    geo:hasGeometry  bt:geom-durham-bng ;
+    bs:easting       "427545.9"^^xsd:decimal ;
+    bs:northing      "542437.3"^^xsd:decimal .
+
+bt:geom-durham-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Durham on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(427545.9 542437.3)"^^geo:wktLiteral .
+
+bt:place-perth
+    geo:hasGeometry  bt:geom-perth-bng ;
+    bs:easting       "311776.0"^^xsd:decimal ;
+    bs:northing      "723445.1"^^xsd:decimal .
+
+bt:geom-perth-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Perth on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(311776.0 723445.1)"^^geo:wktLiteral .
+
+bt:place-fort-william
+    geo:hasGeometry  bt:geom-fort-william-bng ;
+    bs:easting       "210585.3"^^xsd:decimal ;
+    bs:northing      "774111.9"^^xsd:decimal .
+
+bt:geom-fort-william-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Fort William on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(210585.3 774111.9)"^^geo:wktLiteral .
+
+bt:place-truro
+    geo:hasGeometry  bt:geom-truro-bng ;
+    bs:easting       "182648.3"^^xsd:decimal ;
+    bs:northing      "44812.5"^^xsd:decimal .
+
+bt:geom-truro-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Truro on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(182648.3 44812.5)"^^geo:wktLiteral .
+
+
+# ------------------------------------------------------------------------
+# Bookshops
+# ------------------------------------------------------------------------
+bt:shop-inkwell
+    geo:hasGeometry  bt:geom-shop-inkwell-bng ;
+    bs:easting       "243639.1"^^xsd:decimal ;
+    bs:northing      "555594.8"^^xsd:decimal .
+
+bt:geom-shop-inkwell-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Inkwell on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(243639.1 555594.8)"^^geo:wktLiteral .
+
+bt:shop-marginalia
+    geo:hasGeometry  bt:geom-shop-marginalia-bng ;
+    bs:easting       "243477.2"^^xsd:decimal ;
+    bs:northing      "555852.2"^^xsd:decimal .
+
+bt:geom-shop-marginalia-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Marginalia on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(243477.2 555852.2)"^^geo:wktLiteral .
+
+bt:shop-colophon
+    geo:hasGeometry  bt:geom-shop-colophon-bng ;
+    bs:easting       "325941.7"^^xsd:decimal ;
+    bs:northing      "673716.6"^^xsd:decimal .
+
+bt:geom-shop-colophon-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Colophon Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(325941.7 673716.6)"^^geo:wktLiteral .
+
+bt:shop-broken-spine
+    geo:hasGeometry  bt:geom-shop-broken-spine-bng ;
+    bs:easting       "325648.1"^^xsd:decimal ;
+    bs:northing      "673933.1"^^xsd:decimal .
+
+bt:geom-shop-broken-spine-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Broken Spine on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(325648.1 673933.1)"^^geo:wktLiteral .
+
+bt:shop-quire
+    geo:hasGeometry  bt:geom-shop-quire-bng ;
+    bs:easting       "258803.3"^^xsd:decimal ;
+    bs:northing      "666014.7"^^xsd:decimal .
+
+bt:geom-shop-quire-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Quire on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(258803.3 666014.7)"^^geo:wktLiteral .
+
+bt:shop-verso
+    geo:hasGeometry  bt:geom-shop-verso-bng ;
+    bs:easting       "258796.9"^^xsd:decimal ;
+    bs:northing      "665800.0"^^xsd:decimal .
+
+bt:geom-shop-verso-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Verso and Recto on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(258796.9 665800.0)"^^geo:wktLiteral .
+
+bt:shop-gutter-gilt
+    geo:hasGeometry  bt:geom-shop-gutter-gilt-bng ;
+    bs:easting       "351117.4"^^xsd:decimal ;
+    bs:northing      "716759.8"^^xsd:decimal .
+
+bt:geom-shop-gutter-gilt-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Gutter and Gilt on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(351117.4 716759.8)"^^geo:wktLiteral .
+
+bt:shop-northern-light
+    geo:hasGeometry  bt:geom-shop-northern-light-bng ;
+    bs:easting       "266328.4"^^xsd:decimal ;
+    bs:northing      "845217.5"^^xsd:decimal .
+
+bt:geom-shop-northern-light-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Northern Light Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(266328.4 845217.5)"^^geo:wktLiteral .
+
+bt:shop-sea-margin
+    geo:hasGeometry  bt:geom-shop-sea-margin-bng ;
+    bs:easting       "148228.6"^^xsd:decimal ;
+    bs:northing      "844200.1"^^xsd:decimal .
+
+bt:geom-shop-sea-margin-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Sea Margin on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(148228.6 844200.1)"^^geo:wktLiteral .
+
+bt:shop-borderprint
+    geo:hasGeometry  bt:geom-shop-borderprint-bng ;
+    bs:easting       "399858.1"^^xsd:decimal ;
+    bs:northing      "652812.1"^^xsd:decimal .
+
+bt:geom-shop-borderprint-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Borderprint on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(399858.1 652812.1)"^^geo:wktLiteral .
+
+bt:shop-dales-folio
+    geo:hasGeometry  bt:geom-shop-dales-folio-bng ;
+    bs:easting       "365674.3"^^xsd:decimal ;
+    bs:northing      "491337.2"^^xsd:decimal .
+
+bt:geom-shop-dales-folio-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Dales Folio on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(365674.3 491337.2)"^^geo:wktLiteral .
+
+bt:shop-errata
+    geo:hasGeometry  bt:geom-shop-errata-bng ;
+    bs:easting       "365419.6"^^xsd:decimal ;
+    bs:northing      "492069.1"^^xsd:decimal .
+
+bt:geom-shop-errata-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Errata on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(365419.6 492069.1)"^^geo:wktLiteral .
+
+bt:shop-pressmark
+    geo:hasGeometry  bt:geom-shop-pressmark-bng ;
+    bs:easting       "352056.5"^^xsd:decimal ;
+    bs:northing      "492902.9"^^xsd:decimal .
+
+bt:geom-shop-pressmark-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Pressmark on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(352056.5 492902.9)"^^geo:wktLiteral .
+
+bt:shop-bookbarrow
+    geo:hasGeometry  bt:geom-shop-bookbarrow-bng ;
+    bs:easting       "327050.0"^^xsd:decimal ;
+    bs:northing      "524089.4"^^xsd:decimal .
+
+bt:geom-shop-bookbarrow-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Bookbarrow on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(327050.0 524089.4)"^^geo:wktLiteral .
+
+bt:shop-endpapers
+    geo:hasGeometry  bt:geom-shop-endpapers-bng ;
+    bs:easting       "460120.7"^^xsd:decimal ;
+    bs:northing      "451482.5"^^xsd:decimal .
+
+bt:geom-shop-endpapers-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Endpapers on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(460120.7 451482.5)"^^geo:wktLiteral .
+
+bt:shop-bookwyrm
+    geo:hasGeometry  bt:geom-shop-bookwyrm-bng ;
+    bs:easting       "459785.8"^^xsd:decimal ;
+    bs:northing      "451395.9"^^xsd:decimal .
+
+bt:geom-shop-bookwyrm-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Bookwyrm on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(459785.8 451395.9)"^^geo:wktLiteral .
+
+bt:shop-harbour-page
+    geo:hasGeometry  bt:geom-shop-harbour-page-bng ;
+    bs:easting       "489788.8"^^xsd:decimal ;
+    bs:northing      "510983.6"^^xsd:decimal .
+
+bt:geom-shop-harbour-page-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Harbour Page on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(489788.8 510983.6)"^^geo:wktLiteral .
+
+bt:shop-cotton-quarto
+    geo:hasGeometry  bt:geom-shop-cotton-quarto-bng ;
+    bs:easting       "383363.0"^^xsd:decimal ;
+    bs:northing      "398075.8"^^xsd:decimal .
+
+bt:geom-shop-cotton-quarto-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Cotton Quarto on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(383363.0 398075.8)"^^geo:wktLiteral .
+
+bt:shop-signature
+    geo:hasGeometry  bt:geom-shop-signature-bng ;
+    bs:easting       "333697.0"^^xsd:decimal ;
+    bs:northing      "390939.3"^^xsd:decimal .
+
+bt:geom-shop-signature-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Signature Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(333697.0 390939.3)"^^geo:wktLiteral .
+
+bt:shop-severn-leaf
+    geo:hasGeometry  bt:geom-shop-severn-leaf-bng ;
+    bs:easting       "349815.7"^^xsd:decimal ;
+    bs:northing      "312670.6"^^xsd:decimal .
+
+bt:geom-shop-severn-leaf-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Severn Leaf on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(349815.7 312670.6)"^^geo:wktLiteral .
+
+bt:shop-dog-eared
+    geo:hasGeometry  bt:geom-shop-dog-eared-bng ;
+    bs:easting       "351259.4"^^xsd:decimal ;
+    bs:northing      "274313.0"^^xsd:decimal .
+
+bt:geom-shop-dog-eared-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Dog-Eared on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(351259.4 274313.0)"^^geo:wktLiteral .
+
+bt:shop-candlemas
+    geo:hasGeometry  bt:geom-shop-candlemas-bng ;
+    bs:easting       "451223.8"^^xsd:decimal ;
+    bs:northing      "205699.6"^^xsd:decimal .
+
+bt:geom-shop-candlemas-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Candlemas Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(451223.8 205699.6)"^^geo:wktLiteral .
+
+bt:shop-chapter-verse
+    geo:hasGeometry  bt:geom-shop-chapter-verse-bng ;
+    bs:easting       "545205.5"^^xsd:decimal ;
+    bs:northing      "258364.0"^^xsd:decimal .
+
+bt:geom-shop-chapter-verse-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Chapter and Verse on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(545205.5 258364.0)"^^geo:wktLiteral .
+
+bt:shop-broads-bindery
+    geo:hasGeometry  bt:geom-shop-broads-bindery-bng ;
+    bs:easting       "623524.2"^^xsd:decimal ;
+    bs:northing      "308832.7"^^xsd:decimal .
+
+bt:geom-shop-broads-bindery-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Broads Bindery on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(623524.2 308832.7)"^^geo:wktLiteral .
+
+bt:shop-ex-libris
+    geo:hasGeometry  bt:geom-shop-ex-libris-bng ;
+    bs:easting       "529519.3"^^xsd:decimal ;
+    bs:northing      "180017.7"^^xsd:decimal .
+
+bt:geom-shop-ex-libris-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Ex Libris on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(529519.3 180017.7)"^^geo:wktLiteral .
+
+bt:shop-turn-the-page
+    geo:hasGeometry  bt:geom-shop-turn-the-page-bng ;
+    bs:easting       "530244.4"^^xsd:decimal ;
+    bs:northing      "180447.9"^^xsd:decimal .
+
+bt:geom-shop-turn-the-page-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Turn the Page on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(530244.4 180447.9)"^^geo:wktLiteral .
+
+bt:shop-crescent
+    geo:hasGeometry  bt:geom-shop-crescent-bng ;
+    bs:easting       "374849.1"^^xsd:decimal ;
+    bs:northing      "165074.0"^^xsd:decimal .
+
+bt:geom-shop-crescent-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Crescent Bookroom on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(374849.1 165074.0)"^^geo:wktLiteral .
+
+bt:shop-west-quay
+    geo:hasGeometry  bt:geom-shop-west-quay-bng ;
+    bs:easting       "291518.5"^^xsd:decimal ;
+    bs:northing      "92503.8"^^xsd:decimal .
+
+bt:geom-shop-west-quay-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "West Quay Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(291518.5 92503.8)"^^geo:wktLiteral .
+
+bt:shop-penwith
+    geo:hasGeometry  bt:geom-shop-penwith-bng ;
+    bs:easting       "147651.7"^^xsd:decimal ;
+    bs:northing      "30287.2"^^xsd:decimal .
+
+bt:geom-shop-penwith-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Penwith Pages on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(147651.7 30287.2)"^^geo:wktLiteral .
+
+bt:shop-castle-steps
+    geo:hasGeometry  bt:geom-shop-castle-steps-bng ;
+    bs:easting       "323416.6"^^xsd:decimal ;
+    bs:northing      "242486.1"^^xsd:decimal .
+
+bt:geom-shop-castle-steps-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Castle Steps Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(323416.6 242486.1)"^^geo:wktLiteral .
+
+bt:shop-clock-tower
+    geo:hasGeometry  bt:geom-shop-clock-tower-bng ;
+    bs:easting       "322418.5"^^xsd:decimal ;
+    bs:northing      "242132.2"^^xsd:decimal .
+
+bt:geom-shop-clock-tower-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "The Clock Tower on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(322418.5 242132.2)"^^geo:wktLiteral .
+
+bt:shop-cliff-road
+    geo:hasGeometry  bt:geom-shop-cliff-road-bng ;
+    bs:easting       "258801.5"^^xsd:decimal ;
+    bs:northing      "281591.0"^^xsd:decimal .
+
+bt:geom-shop-cliff-road-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Cliff Road Books on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(258801.5 281591.0)"^^geo:wktLiteral .
+
+bt:shop-taff-margin
+    geo:hasGeometry  bt:geom-shop-taff-margin-bng ;
+    bs:easting       "318308.9"^^xsd:decimal ;
+    bs:northing      "176593.1"^^xsd:decimal .
+
+bt:geom-shop-taff-margin-bng
+    a           sf:Point, geo:Geometry ;
+    rdfs:label  "Taff Margin on the National Grid"@en ;
+    geo:asWKT   "<http://www.opengis.net/def/crs/EPSG/0/27700> POINT(318308.9 176593.1)"^^geo:wktLiteral .
+

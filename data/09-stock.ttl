@@ -1,0 +1,830 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  09  STOCK, THE RDF 1.1 WAY
+############################################################################
+#  Ninety-five stock records. Each says how many copies a shop holds and
+#  at what price -- facts about a relationship, not about a thing. RDF
+#  1.1 has to invent a node to hang them on. File 10 says the same thing
+#  in RDF 1.2 with no invented node at all; comparing the two is the
+#  whole point of the SPARQL 1.2 module.
+#
+bt:stock-inkwell--the-book-town
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-inkwell ;
+    bs:ofWork      bt:book-the-book-town ;
+    bs:copies      "12"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-inkwell--a-margin-of-error
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-inkwell ;
+    bs:ofWork      bt:book-a-margin-of-error ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "10.99"^^xsd:decimal .
+
+bt:stock-inkwell--the-clyde-tapes
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-inkwell ;
+    bs:ofWork      bt:book-the-clyde-tapes ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "8.99"^^xsd:decimal .
+
+bt:stock-marginalia--gwreiddiau
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-marginalia ;
+    bs:ofWork      bt:book-gwreiddiau ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "11.50"^^xsd:decimal .
+
+bt:stock-marginalia--rootstock
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-marginalia ;
+    bs:ofWork      bt:book-rootstock ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "12.00"^^xsd:decimal .
+
+bt:stock-marginalia--cerrig-a-chysgod
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-marginalia ;
+    bs:ofWork      bt:book-cerrig-a-chysgod ;
+    bs:copies      "3"^^xsd:integer ;
+    bs:shelfPrice  "10.00"^^xsd:decimal .
+
+bt:stock-colophon--the-tenement-key
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-colophon ;
+    bs:ofWork      bt:book-the-tenement-key ;
+    bs:copies      "21"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-colophon--closes-and-wynds
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-colophon ;
+    bs:ofWork      bt:book-closes-and-wynds ;
+    bs:copies      "18"^^xsd:integer ;
+    bs:shelfPrice  "15.99"^^xsd:decimal .
+
+bt:stock-colophon--the-glasshouse
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-colophon ;
+    bs:ofWork      bt:book-the-glasshouse ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-colophon--cold-harbour
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-colophon ;
+    bs:ofWork      bt:book-cold-harbour ;
+    bs:copies      "4"^^xsd:integer ;
+    bs:shelfPrice  "18.00"^^xsd:decimal .
+
+bt:stock-broken-spine--the-clyde-tapes
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-broken-spine ;
+    bs:ofWork      bt:book-the-clyde-tapes ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "7.50"^^xsd:decimal .
+
+bt:stock-broken-spine--dead-reckoning
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-broken-spine ;
+    bs:ofWork      bt:book-dead-reckoning ;
+    bs:copies      "4"^^xsd:integer ;
+    bs:shelfPrice  "7.50"^^xsd:decimal .
+
+bt:stock-quire--machine-time
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-quire ;
+    bs:ofWork      bt:book-machine-time ;
+    bs:copies      "15"^^xsd:integer ;
+    bs:shelfPrice  "16.99"^^xsd:decimal .
+
+bt:stock-quire--the-canal-and-the-mill
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-quire ;
+    bs:ofWork      bt:book-the-canal-and-the-mill ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "15.50"^^xsd:decimal .
+
+bt:stock-verso--the-crossing-season
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-verso ;
+    bs:ofWork      bt:book-the-crossing-season ;
+    bs:copies      "14"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-verso--a-second-country
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-verso ;
+    bs:ofWork      bt:book-a-second-country ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-verso--the-dark-sea-ar
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-verso ;
+    bs:ofWork      bt:book-the-dark-sea-ar ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "17.50"^^xsd:decimal .
+
+bt:stock-gutter-gilt--links-and-lies
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-gutter-gilt ;
+    bs:ofWork      bt:book-links-and-lies ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "11.99"^^xsd:decimal .
+
+bt:stock-gutter-gilt--west-sands
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-gutter-gilt ;
+    bs:ofWork      bt:book-west-sands ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-northern-light--the-selkie-ledger
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-northern-light ;
+    bs:ofWork      bt:book-the-selkie-ledger ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "13.00"^^xsd:decimal .
+
+bt:stock-northern-light--sgeulachdan-mara
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-northern-light ;
+    bs:ofWork      bt:book-sgeulachdan-mara ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "14.00"^^xsd:decimal .
+
+bt:stock-northern-light--fell-and-force
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-northern-light ;
+    bs:ofWork      bt:book-fell-and-force ;
+    bs:copies      "12"^^xsd:integer ;
+    bs:shelfPrice  "12.50"^^xsd:decimal .
+
+bt:stock-sea-margin--the-selkie-ledger
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-sea-margin ;
+    bs:ofWork      bt:book-the-selkie-ledger ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "13.00"^^xsd:decimal .
+
+bt:stock-sea-margin--the-tarn-gd
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-sea-margin ;
+    bs:ofWork      bt:book-the-tarn-gd ;
+    bs:copies      "3"^^xsd:integer ;
+    bs:shelfPrice  "15.00"^^xsd:decimal .
+
+bt:stock-borderprint--north-of-the-tweed
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-borderprint ;
+    bs:ofWork      bt:book-north-of-the-tweed ;
+    bs:copies      "4"^^xsd:integer ;
+    bs:shelfPrice  "22.00"^^xsd:decimal .
+
+bt:stock-borderprint--whalebone-street
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-borderprint ;
+    bs:ofWork      bt:book-whalebone-street ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "13.50"^^xsd:decimal .
+
+bt:stock-dales-folio--fell-and-force
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-dales-folio ;
+    bs:ofWork      bt:book-fell-and-force ;
+    bs:copies      "16"^^xsd:integer ;
+    bs:shelfPrice  "12.50"^^xsd:decimal .
+
+bt:stock-dales-folio--the-limestone-year
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-dales-folio ;
+    bs:ofWork      bt:book-the-limestone-year ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-dales-folio--the-tarn
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-dales-folio ;
+    bs:ofWork      bt:book-the-tarn ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "14.50"^^xsd:decimal .
+
+bt:stock-errata--orbital-decay
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-errata ;
+    bs:ofWork      bt:book-orbital-decay ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "11.99"^^xsd:decimal .
+
+bt:stock-errata--the-long-station
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-errata ;
+    bs:ofWork      bt:book-the-long-station ;
+    bs:copies      "13"^^xsd:integer ;
+    bs:shelfPrice  "15.99"^^xsd:decimal .
+
+bt:stock-errata--the-third-map
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-errata ;
+    bs:ofWork      bt:book-the-third-map ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "12.50"^^xsd:decimal .
+
+bt:stock-pressmark--the-marches
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-pressmark ;
+    bs:ofWork      bt:book-the-marches ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-pressmark--the-flood-meadow
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-pressmark ;
+    bs:ofWork      bt:book-the-flood-meadow ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-bookbarrow--the-tarn
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-bookbarrow ;
+    bs:ofWork      bt:book-the-tarn ;
+    bs:copies      "14"^^xsd:integer ;
+    bs:shelfPrice  "14.50"^^xsd:decimal .
+
+bt:stock-bookbarrow--scree
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-bookbarrow ;
+    bs:ofWork      bt:book-scree ;
+    bs:copies      "12"^^xsd:integer ;
+    bs:shelfPrice  "15.50"^^xsd:decimal .
+
+bt:stock-endpapers--minster-yard
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-endpapers ;
+    bs:ofWork      bt:book-minster-yard ;
+    bs:copies      "19"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-endpapers--the-chapter-house
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-endpapers ;
+    bs:ofWork      bt:book-the-chapter-house ;
+    bs:copies      "17"^^xsd:integer ;
+    bs:shelfPrice  "10.99"^^xsd:decimal .
+
+bt:stock-endpapers--a-cold-coming
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-endpapers ;
+    bs:ofWork      bt:book-a-cold-coming ;
+    bs:copies      "15"^^xsd:integer ;
+    bs:shelfPrice  "11.99"^^xsd:decimal .
+
+bt:stock-endpapers--the-jet-workers
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-endpapers ;
+    bs:ofWork      bt:book-the-jet-workers ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "17.00"^^xsd:decimal .
+
+bt:stock-bookwyrm--y-mor-tywyll
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-bookwyrm ;
+    bs:ofWork      bt:book-y-mor-tywyll ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-bookwyrm--the-dark-sea
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-bookwyrm ;
+    bs:ofWork      bt:book-the-dark-sea ;
+    bs:copies      "13"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-bookwyrm--the-leat
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-bookwyrm ;
+    bs:ofWork      bt:book-the-leat ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "14.50"^^xsd:decimal .
+
+bt:stock-harbour-page--whalebone-street
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-harbour-page ;
+    bs:ofWork      bt:book-whalebone-street ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "13.50"^^xsd:decimal .
+
+bt:stock-harbour-page--the-jet-workers
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-harbour-page ;
+    bs:ofWork      bt:book-the-jet-workers ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "17.00"^^xsd:decimal .
+
+bt:stock-harbour-page--herring-and-hemp
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-harbour-page ;
+    bs:ofWork      bt:book-herring-and-hemp ;
+    bs:copies      "3"^^xsd:integer ;
+    bs:shelfPrice  "24.00"^^xsd:decimal .
+
+bt:stock-cotton-quarto--the-cotton-line
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cotton-quarto ;
+    bs:ofWork      bt:book-the-cotton-line ;
+    bs:copies      "22"^^xsd:integer ;
+    bs:shelfPrice  "18.99"^^xsd:decimal .
+
+bt:stock-cotton-quarto--smokestack
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cotton-quarto ;
+    bs:ofWork      bt:book-smokestack ;
+    bs:copies      "16"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-cotton-quarto--machine-time
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cotton-quarto ;
+    bs:ofWork      bt:book-machine-time ;
+    bs:copies      "20"^^xsd:integer ;
+    bs:shelfPrice  "16.99"^^xsd:decimal .
+
+bt:stock-cotton-quarto--dockhead
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cotton-quarto ;
+    bs:ofWork      bt:book-dockhead ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "21.00"^^xsd:decimal .
+
+bt:stock-signature--gwreiddiau
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-signature ;
+    bs:ofWork      bt:book-gwreiddiau ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "11.50"^^xsd:decimal .
+
+bt:stock-signature--stones-and-shadow
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-signature ;
+    bs:ofWork      bt:book-stones-and-shadow ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "12.00"^^xsd:decimal .
+
+bt:stock-signature--afon-hir
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-signature ;
+    bs:ofWork      bt:book-afon-hir ;
+    bs:copies      "4"^^xsd:integer ;
+    bs:shelfPrice  "19.00"^^xsd:decimal .
+
+bt:stock-severn-leaf--the-limestone-year
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-severn-leaf ;
+    bs:ofWork      bt:book-the-limestone-year ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-severn-leaf--hedgerow-alphabet
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-severn-leaf ;
+    bs:ofWork      bt:book-hedgerow-alphabet ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "20.00"^^xsd:decimal .
+
+bt:stock-dog-eared--minster-yard
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-dog-eared ;
+    bs:ofWork      bt:book-minster-yard ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-dog-eared--the-book-town
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-dog-eared ;
+    bs:ofWork      bt:book-the-book-town ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-candlemas--the-quarry-glass
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-candlemas ;
+    bs:ofWork      bt:book-the-quarry-glass ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "19.50"^^xsd:decimal .
+
+bt:stock-candlemas--evensong-for-a-thief
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-candlemas ;
+    bs:ofWork      bt:book-evensong-for-a-thief ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-candlemas--the-orrery
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-candlemas ;
+    bs:ofWork      bt:book-the-orrery ;
+    bs:copies      "12"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-chapter-verse--the-long-station
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-chapter-verse ;
+    bs:ofWork      bt:book-the-long-station ;
+    bs:copies      "18"^^xsd:integer ;
+    bs:shelfPrice  "15.99"^^xsd:decimal .
+
+bt:stock-chapter-verse--orbital-decay
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-chapter-verse ;
+    bs:ofWork      bt:book-orbital-decay ;
+    bs:copies      "14"^^xsd:integer ;
+    bs:shelfPrice  "11.99"^^xsd:decimal .
+
+bt:stock-chapter-verse--the-fen-tiger
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-chapter-verse ;
+    bs:ofWork      bt:book-the-fen-tiger ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-broads-bindery--saltmarsh-year
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-broads-bindery ;
+    bs:ofWork      bt:book-saltmarsh-year ;
+    bs:copies      "13"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-broads-bindery--the-broad-and-the-cut
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-broads-bindery ;
+    bs:ofWork      bt:book-the-broad-and-the-cut ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "13.50"^^xsd:decimal .
+
+bt:stock-broads-bindery--drainage
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-broads-bindery ;
+    bs:ofWork      bt:book-drainage ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-ex-libris--river-terminus
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-river-terminus ;
+    bs:copies      "24"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-ex-libris--the-glasshouse
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-the-glasshouse ;
+    bs:copies      "21"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-ex-libris--the-quiet-service
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-the-quiet-service ;
+    bs:copies      "19"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-ex-libris--a-second-country
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-a-second-country ;
+    bs:copies      "26"^^xsd:integer ;
+    bs:shelfPrice  "14.99"^^xsd:decimal .
+
+bt:stock-ex-libris--cold-harbour
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-cold-harbour ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "18.00"^^xsd:decimal .
+
+bt:stock-ex-libris--cold-harbour-he
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-ex-libris ;
+    bs:ofWork      bt:book-cold-harbour-he ;
+    bs:copies      "2"^^xsd:integer ;
+    bs:shelfPrice  "26.00"^^xsd:decimal .
+
+bt:stock-turn-the-page--the-crossing-season
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-turn-the-page ;
+    bs:ofWork      bt:book-the-crossing-season ;
+    bs:copies      "17"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-turn-the-page--the-dark-sea-ar
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-turn-the-page ;
+    bs:ofWork      bt:book-the-dark-sea-ar ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "17.50"^^xsd:decimal .
+
+bt:stock-turn-the-page--the-long-station-cy
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-turn-the-page ;
+    bs:ofWork      bt:book-the-long-station-cy ;
+    bs:copies      "4"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-crescent--the-orrery
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-crescent ;
+    bs:ofWork      bt:book-the-orrery ;
+    bs:copies      "15"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-crescent--pump-room-winter
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-crescent ;
+    bs:ofWork      bt:book-pump-room-winter ;
+    bs:copies      "13"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-crescent--the-fen-tiger
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-crescent ;
+    bs:ofWork      bt:book-the-fen-tiger ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "12.99"^^xsd:decimal .
+
+bt:stock-west-quay--the-marches
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-west-quay ;
+    bs:ofWork      bt:book-the-marches ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-west-quay--granite-and-rain
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-west-quay ;
+    bs:ofWork      bt:book-granite-and-rain ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "15.50"^^xsd:decimal .
+
+bt:stock-penwith--the-tin-coast
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-penwith ;
+    bs:ofWork      bt:book-the-tin-coast ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "13.50"^^xsd:decimal .
+
+bt:stock-penwith--wrecking
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-penwith ;
+    bs:ofWork      bt:book-wrecking ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "14.50"^^xsd:decimal .
+
+bt:stock-penwith--the-leat
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-penwith ;
+    bs:ofWork      bt:book-the-leat ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "14.50"^^xsd:decimal .
+
+bt:stock-castle-steps--the-mountain-book
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-castle-steps ;
+    bs:ofWork      bt:book-the-mountain-book ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "15.00"^^xsd:decimal .
+
+bt:stock-castle-steps--llyfr-y-mynydd
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-castle-steps ;
+    bs:ofWork      bt:book-llyfr-y-mynydd ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-castle-steps--coal-and-chapel
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-castle-steps ;
+    bs:ofWork      bt:book-coal-and-chapel ;
+    bs:copies      "7"^^xsd:integer ;
+    bs:shelfPrice  "17.50"^^xsd:decimal .
+
+bt:stock-castle-steps--the-book-town-cy
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-castle-steps ;
+    bs:ofWork      bt:book-the-book-town-cy ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "12.00"^^xsd:decimal .
+
+bt:stock-clock-tower--the-book-town
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-clock-tower ;
+    bs:ofWork      bt:book-the-book-town ;
+    bs:copies      "11"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-clock-tower--minster-yard
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-clock-tower ;
+    bs:ofWork      bt:book-minster-yard ;
+    bs:copies      "6"^^xsd:integer ;
+    bs:shelfPrice  "9.99"^^xsd:decimal .
+
+bt:stock-cliff-road--cerrig-a-chysgod
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cliff-road ;
+    bs:ofWork      bt:book-cerrig-a-chysgod ;
+    bs:copies      "8"^^xsd:integer ;
+    bs:shelfPrice  "10.00"^^xsd:decimal .
+
+bt:stock-cliff-road--y-mor-tywyll
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cliff-road ;
+    bs:ofWork      bt:book-y-mor-tywyll ;
+    bs:copies      "10"^^xsd:integer ;
+    bs:shelfPrice  "13.99"^^xsd:decimal .
+
+bt:stock-cliff-road--the-long-station-cy
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-cliff-road ;
+    bs:ofWork      bt:book-the-long-station-cy ;
+    bs:copies      "5"^^xsd:integer ;
+    bs:shelfPrice  "16.00"^^xsd:decimal .
+
+bt:stock-taff-margin--coal-and-chapel
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-taff-margin ;
+    bs:ofWork      bt:book-coal-and-chapel ;
+    bs:copies      "12"^^xsd:integer ;
+    bs:shelfPrice  "17.50"^^xsd:decimal .
+
+bt:stock-taff-margin--the-tramroad
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-taff-margin ;
+    bs:ofWork      bt:book-the-tramroad ;
+    bs:copies      "9"^^xsd:integer ;
+    bs:shelfPrice  "15.00"^^xsd:decimal .
+
+bt:stock-taff-margin--rootstock
+    a              bs:StockRecord ;
+    bs:atShop      bt:shop-taff-margin ;
+    bs:ofWork      bt:book-rootstock ;
+    bs:copies      "14"^^xsd:integer ;
+    bs:shelfPrice  "12.00"^^xsd:decimal .
+
+
+# ------------------------------------------------------------------------
+# The plain link, so simple queries stay simple
+# ------------------------------------------------------------------------
+bt:shop-inkwell
+    bs:stocks  bt:book-the-book-town, bt:book-a-margin-of-error, bt:book-the-clyde-tapes .
+
+bt:shop-marginalia
+    bs:stocks  bt:book-gwreiddiau, bt:book-rootstock, bt:book-cerrig-a-chysgod .
+
+bt:shop-colophon
+    bs:stocks  bt:book-the-tenement-key, bt:book-closes-and-wynds, bt:book-the-glasshouse, bt:book-cold-harbour .
+
+bt:shop-broken-spine
+    bs:stocks  bt:book-the-clyde-tapes, bt:book-dead-reckoning .
+
+bt:shop-quire
+    bs:stocks  bt:book-machine-time, bt:book-the-canal-and-the-mill .
+
+bt:shop-verso
+    bs:stocks  bt:book-the-crossing-season, bt:book-a-second-country, bt:book-the-dark-sea-ar .
+
+bt:shop-gutter-gilt
+    bs:stocks  bt:book-links-and-lies, bt:book-west-sands .
+
+bt:shop-northern-light
+    bs:stocks  bt:book-the-selkie-ledger, bt:book-sgeulachdan-mara, bt:book-fell-and-force .
+
+bt:shop-sea-margin
+    bs:stocks  bt:book-the-selkie-ledger, bt:book-the-tarn-gd .
+
+bt:shop-borderprint
+    bs:stocks  bt:book-north-of-the-tweed, bt:book-whalebone-street .
+
+bt:shop-dales-folio
+    bs:stocks  bt:book-fell-and-force, bt:book-the-limestone-year, bt:book-the-tarn .
+
+bt:shop-errata
+    bs:stocks  bt:book-orbital-decay, bt:book-the-long-station, bt:book-the-third-map .
+
+bt:shop-pressmark
+    bs:stocks  bt:book-the-marches, bt:book-the-flood-meadow .
+
+bt:shop-bookbarrow
+    bs:stocks  bt:book-the-tarn, bt:book-scree .
+
+bt:shop-endpapers
+    bs:stocks  bt:book-minster-yard, bt:book-the-chapter-house, bt:book-a-cold-coming, bt:book-the-jet-workers .
+
+bt:shop-bookwyrm
+    bs:stocks  bt:book-y-mor-tywyll, bt:book-the-dark-sea, bt:book-the-leat .
+
+bt:shop-harbour-page
+    bs:stocks  bt:book-whalebone-street, bt:book-the-jet-workers, bt:book-herring-and-hemp .
+
+bt:shop-cotton-quarto
+    bs:stocks  bt:book-the-cotton-line, bt:book-smokestack, bt:book-machine-time, bt:book-dockhead .
+
+bt:shop-signature
+    bs:stocks  bt:book-gwreiddiau, bt:book-stones-and-shadow, bt:book-afon-hir .
+
+bt:shop-severn-leaf
+    bs:stocks  bt:book-the-limestone-year, bt:book-hedgerow-alphabet .
+
+bt:shop-dog-eared
+    bs:stocks  bt:book-minster-yard, bt:book-the-book-town .
+
+bt:shop-candlemas
+    bs:stocks  bt:book-the-quarry-glass, bt:book-evensong-for-a-thief, bt:book-the-orrery .
+
+bt:shop-chapter-verse
+    bs:stocks  bt:book-the-long-station, bt:book-orbital-decay, bt:book-the-fen-tiger .
+
+bt:shop-broads-bindery
+    bs:stocks  bt:book-saltmarsh-year, bt:book-the-broad-and-the-cut, bt:book-drainage .
+
+bt:shop-ex-libris
+    bs:stocks  bt:book-river-terminus, bt:book-the-glasshouse, bt:book-the-quiet-service, bt:book-a-second-country, bt:book-cold-harbour, bt:book-cold-harbour-he .
+
+bt:shop-turn-the-page
+    bs:stocks  bt:book-the-crossing-season, bt:book-the-dark-sea-ar, bt:book-the-long-station-cy .
+
+bt:shop-crescent
+    bs:stocks  bt:book-the-orrery, bt:book-pump-room-winter, bt:book-the-fen-tiger .
+
+bt:shop-west-quay
+    bs:stocks  bt:book-the-marches, bt:book-granite-and-rain .
+
+bt:shop-penwith
+    bs:stocks  bt:book-the-tin-coast, bt:book-wrecking, bt:book-the-leat .
+
+bt:shop-castle-steps
+    bs:stocks  bt:book-the-mountain-book, bt:book-llyfr-y-mynydd, bt:book-coal-and-chapel, bt:book-the-book-town-cy .
+
+bt:shop-clock-tower
+    bs:stocks  bt:book-the-book-town, bt:book-minster-yard .
+
+bt:shop-cliff-road
+    bs:stocks  bt:book-cerrig-a-chysgod, bt:book-y-mor-tywyll, bt:book-the-long-station-cy .
+
+bt:shop-taff-margin
+    bs:stocks  bt:book-coal-and-chapel, bt:book-the-tramroad, bt:book-rootstock .
+
+
+# ------------------------------------------------------------------------
+# Sources that make claims about this dataset
+# ------------------------------------------------------------------------
+bt:source-trail-guide-2024
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "The Bookshop Trail Guide, 2024 edition"@en ;
+    bs:sourceKind  "guidebook" ;
+    bs:confidence  "0.90"^^xsd:decimal .
+
+bt:source-trail-guide-2019
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "The Bookshop Trail Guide, 2019 edition"@en ;
+    bs:sourceKind  "guidebook" ;
+    bs:confidence  "0.60"^^xsd:decimal .
+
+bt:source-county-survey
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "County Booksellers Survey"@en ;
+    bs:sourceKind  "survey" ;
+    bs:confidence  "0.95"^^xsd:decimal .
+
+bt:source-shop-website
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "Shop's own website"@en ;
+    bs:sourceKind  "self-reported" ;
+    bs:confidence  "0.75"^^xsd:decimal .
+
+bt:source-national-register
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "National Register of Booksellers"@en ;
+    bs:sourceKind  "register" ;
+    bs:confidence  "0.99"^^xsd:decimal .
+
+bt:source-local-paper
+    a              bs:Source, prov:Entity ;
+    rdfs:label     "The Marches Advertiser"@en ;
+    bs:sourceKind  "newspaper" ;
+    bs:confidence  "0.50"^^xsd:decimal .
+

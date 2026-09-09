@@ -1,0 +1,71 @@
+# ==========================================================================
+#  Q66  Taking a triple term apart
+# ==========================================================================
+#
+#  ASKS
+#    Pull the subject, predicate and object out of every disputed
+#    statement.
+#
+#  HOW IT WORKS
+#    SPARQL 1.2 adds functions over triple terms: isTRIPLE tests for one,
+#    and SUBJECT, PREDICATE and OBJECT take it apart. Together they let a
+#    query reason about statements it did not know the shape of in advance.
+#
+#  DIAGRAM
+#        ?t = <<( bt:shop-ex-libris bs:founded "1921"^^xsd:gYear )>>
+#
+#            isTRIPLE(?t)     ──▶  true
+#            SUBJECT(?t)      ──▶  bt:shop-ex-libris
+#            PREDICATE(?t)    ──▶  bs:founded
+#            OBJECT(?t)       ──▶  "1921"^^xsd:gYear
+#
+#        and in the other direction:
+#
+#            TRIPLE(?s, ?p, ?o)  ──▶  a new triple term
+#
+#        ┌──────────────────────────────────────────────┐
+#        │ these work on ANY triple term, whatever its  │
+#        │ shape -- so a query can inspect statements   │
+#        │ whose predicate it does not know             │
+#        └──────────────────────────────────────────────┘
+#
+#        Verified on all three engines: isTRIPLE, SUBJECT, PREDICATE,
+#        OBJECT and TRIPLE all evaluate.  VERSION() does not -- Jena has
+#        it, the other two do not.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - isTRIPLE, SUBJECT, PREDICATE, OBJECT and TRIPLE are the SPARQL 1.2
+#      term functions.
+#    - They make generic, shape-agnostic queries over statements
+#      possible.
+#    - Test with isTRIPLE before decomposing: SUBJECT of a non-triple is
+#      an error, and an error in a FILTER quietly drops the row.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?sourceName ?subject ?predicate ?object
+WHERE {
+  ?source bs:disputes ?t .
+  FILTER( isTRIPLE(?t) )
+  BIND( SUBJECT(?t)   AS ?subject )
+  BIND( PREDICATE(?t) AS ?predicate )
+  BIND( OBJECT(?t)    AS ?object )
+  ?source rdfs:label ?sourceName .
+}
+ORDER BY ?subject

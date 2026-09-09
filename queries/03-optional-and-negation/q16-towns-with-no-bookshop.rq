@@ -1,0 +1,59 @@
+# ==========================================================================
+#  Q16  Towns with no bookshop
+# ==========================================================================
+#
+#  ASKS
+#    Which settlements on the map have no bookshop at all?
+#
+#  HOW IT WORKS
+#    NOT EXISTS tests whether a pattern has any match, using the current
+#    row's bindings. It binds nothing itself -- it's a pure test -- so
+#    ?shop inside the braces is invisible outside them.
+#
+#  DIAGRAM
+#        for each ?town:
+#        ┌──────────────────────────────────────────┐
+#        │  does ANY ?shop have bs:locatedIn ?town? │
+#        └──────────────────────────────────────────┘
+#                  │                     │
+#                 yes                    no
+#                  │                     │
+#               dropped              ✓ kept
+#
+#        Durham, Perth, Fort William, Truro
+#
+#        NOT EXISTS is evaluated per row, with ?town already bound.  That
+#        is what makes it a correlated test rather than a set difference.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - NOT EXISTS asks 'is there any match?' and contributes no bindings.
+#    - It's correlated: variables bound outside are visible inside.
+#    - Prefer it to OPTIONAL + !BOUND when you want nothing from the
+#      inner pattern -- it says what you mean.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?townName
+WHERE {
+  ?town a          bs:Settlement ;
+        rdfs:label ?townName .
+  FILTER( LANG(?townName) = "en" )
+  FILTER NOT EXISTS { ?shop bs:locatedIn ?town . }
+}
+ORDER BY ?townName

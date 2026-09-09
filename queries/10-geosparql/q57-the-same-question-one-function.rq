@@ -1,0 +1,79 @@
+# ==========================================================================
+#  Q57  The same question, one function
+# ==========================================================================
+#
+#  ASKS
+#    How far is each shop from Hay-on-Wye, in kilometres?
+#
+#  HOW IT WORKS
+#    geof:distance takes two geometries and a unit and returns a real
+#    great-circle distance. Everything q53 approximated with scaling and
+#    squaring becomes a single function call -- provided the engine
+#    implements it.
+#
+#  DIAGRAM
+#        q53, portable:                  q57, GeoSPARQL:
+#
+#        BIND((?lat - 52.076)*111.19     geof:distance(?g1, ?g2, uom:metre)
+#              AS ?dy)
+#        BIND((?long + 3.1288)*66.70
+#              AS ?dx)
+#        BIND(?dx*?dx + ?dy*?dy
+#              AS ?d2)
+#        ORDER BY ?d2                    ORDER BY ?metres
+#
+#        squared kilometres,             metres, exact,
+#        approximate,                    on the ellipsoid
+#        runs everywhere                 needs GeoSPARQL
+#
+#        The geometry lives on a separate node, which is why the path has
+#        two steps:
+#
+#            ?shop ──geo:hasDefaultGeometry──▶ ?g ──geo:asWKT──▶ "POINT(...)"
+#
+#
+#  WHAT TO TAKE AWAY
+#    - geof:distance replaces a page of arithmetic, and is exact.
+#    - GeoSPARQL puts the geometry on its own node: reach the literal
+#      with geo:hasDefaultGeometry/geo:asWKT.
+#    - The unit is an argument. Ask for metres and you get metres;
+#      there's no implicit default worth relying on.
+#
+#  NOTE
+#    HOLOS only, and for a precise reason. Comunica has no geof: functions
+#    at all. Jena does have them -- run scripts/setup-geosparql.ps1 and the
+#    whole library appears -- but in this 6.2.0 build every function that
+#    returns a LINEAR measure comes back unbound: geof:distance in metres
+#    or kilometres, geof:area, geof:length. No error, no warning, HTTP 200,
+#    just an empty column. geof:distance in degrees or radians does work,
+#    as do all the topological functions and all the geometry constructors.
+#    So q58 runs on Fuseki and this one doesn't. Module 09 answers the same
+#    question with arithmetic, on every engine.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  holos
+#  RETURNS  12 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name (ROUND(?metres / 100) / 10 AS ?km)
+WHERE {
+  bt:place-hay-on-wye geo:hasDefaultGeometry/geo:asWKT ?origin .
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name ;
+        geo:hasDefaultGeometry/geo:asWKT ?here .
+  BIND( geof:distance(?origin, ?here, <http://www.opengis.net/def/uom/OGC/1.0/metre>) AS ?metres )
+}
+ORDER BY ?metres
+LIMIT 12

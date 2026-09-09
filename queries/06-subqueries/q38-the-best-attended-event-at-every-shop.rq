@@ -1,0 +1,76 @@
+# ==========================================================================
+#  Q38  The best-attended event at every shop
+# ==========================================================================
+#
+#  ASKS
+#    For each shop, which single event drew the biggest crowd?
+#
+#  HOW IT WORKS
+#    Two passes. The inner query finds the maximum attendance per shop,
+#    collapsing the events away. The outer query then re-joins that maximum
+#    against the events to recover which event it was -- the detail the
+#    aggregate had to throw away.
+#
+#  DIAGRAM
+#        step 1: what is the maximum, per shop?
+#
+#          SELECT ?shop (MAX(?a) AS ?best)
+#          GROUP BY ?shop
+#                        ┌──────────┬─────┐
+#                        │ ex-libris│ 320 │
+#                        │ endpapers│ 210 │
+#                        └──────────┴─────┘
+#                              │
+#        step 2: join back to find WHICH event that was
+#
+#          ?event bs:heldAt ?shop ; bs:attendance ?best
+#                                                 ────┬
+#                           the join condition ───────┘
+#
+#                        ┌──────────┬─────┬──────────────────┐
+#                        │ ex-libris│ 320 │ Launch with Ines │
+#                        └──────────┴─────┴──────────────────┘
+#
+#        "Group, then join back" is the standard shape for top-N-per-group.
+#        A tie produces two rows, which is usually what you want.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Aggregating discards the detail. Joining the aggregate back
+#      recovers it.
+#    - This shape -- group to find an extreme, re-join to identify it --
+#      is one of the most reusable in SPARQL.
+#    - Ties give several rows. If you need exactly one, you must say how
+#      to break the tie.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?eventLabel ?attendance
+WHERE {
+  {
+    SELECT ?shop (MAX(?a) AS ?attendance)
+    WHERE { ?e bs:heldAt ?shop ; bs:attendance ?a . }
+    GROUP BY ?shop
+  }
+  ?event bs:heldAt     ?shop ;
+         bs:attendance ?attendance ;
+         rdfs:label    ?eventLabel .
+  ?shop  rdfs:label    ?shopName .
+}
+ORDER BY DESC(?attendance)
+LIMIT 15

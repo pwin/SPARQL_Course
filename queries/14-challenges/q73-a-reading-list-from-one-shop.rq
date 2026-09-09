@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q73  A reading list from one shop
+# ==========================================================================
+#
+#  ASKS
+#    Starting at The Sea Margin, build a reading list: everything it
+#    stocks, plus everything by the authors who influenced those books'
+#    authors.
+#
+#  HOW IT WORKS
+#    Two hops of a different kind, joined. From the shop to its stock is
+#    one link; from a book to its author's influences is a path; from those
+#    authors back to their works is an inverse. UNION keeps the shop's own
+#    stock and the wider recommendations in one list, labelled by where
+#    each came from.
+#
+#  DIAGRAM
+#        branch 1 -- what the shop actually has
+#
+#          bt:shop-sea-margin ──bs:stocks──▶ ?work
+#
+#        branch 2 -- what its authors were reading
+#
+#          bt:shop-sea-margin ──bs:stocks──▶ ?stocked
+#                                              │ bs:author
+#                                              ▼
+#                                           ?author
+#                                              │ bs:influencedBy+
+#                                              ▼
+#                                           ?ancestor
+#                                              │ ^bs:author
+#                                              ▼
+#                                            ?work
+#
+#        ┌────────────────────┬──────────────────┐
+#        │ The Selkie Ledger  │ in stock         │
+#        │ An Lochan          │ in stock         │
+#        │ The Shieling       │ recommended      │
+#        │ Cold Harbour       │ recommended      │
+#        └────────────────────┴──────────────────┘
+#
+#        A recommendation engine in fourteen lines, and no machine
+#        learning anywhere near it.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Chaining a forward link, a transitive path and an inverse link is
+#      the shape of most graph recommendations.
+#    - UNION with a labelling BIND keeps provenance in the result: the
+#      reader can see why each row is there.
+#    - This is what a graph database is for. The equivalent in SQL needs
+#      a recursive CTE and a good deal more typing.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  23 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?title ?authorName ?why
+WHERE {
+  {
+    bt:shop-sea-margin bs:stocks ?work .
+    BIND( "in stock" AS ?why )
+  }
+  UNION
+  {
+    bt:shop-sea-margin bs:stocks ?stocked .
+    ?stocked bs:author ?author .
+    ?author bs:influencedBy+ ?ancestor .
+    ?work bs:author ?ancestor .
+    BIND( "recommended: an influence on this shop's authors" AS ?why )
+  }
+  ?work   rdfs:label ?title .
+  ?work   bs:author  ?writer .
+  ?writer rdfs:label ?authorName .
+}
+ORDER BY ?why ?authorName ?title

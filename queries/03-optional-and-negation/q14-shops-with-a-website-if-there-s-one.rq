@@ -1,0 +1,62 @@
+# ==========================================================================
+#  Q14  Shops, with a website if there's one
+# ==========================================================================
+#
+#  ASKS
+#    List every shop, showing its website where one is recorded.
+#
+#  HOW IT WORKS
+#    Without OPTIONAL, the pattern would silently drop the shops that have
+#    no website. OPTIONAL tries the inner pattern and, when it does not
+#    match, keeps the row anyway with ?site left unbound.
+#
+#  DIAGRAM
+#        required                     optional
+#        ┌────────────────────┐      ┌──────────────────────┐
+#        │ ?shop a bs:Bookshop│─────▶│ ?shop bs:website ?site│
+#        │ ?shop rdfs:label ? │      └──────────────────────┘
+#        └────────────────────┘                │
+#                 33 rows            ┌─────────┴──────────┐
+#                                    ▼                    ▼
+#                             matched: ?site bound   no match:
+#                                                    ?site UNBOUND
+#                                                    row still kept
+#                                         │
+#                                         ▼
+#                                      33 rows
+#
+#        Drop the OPTIONAL and you get fewer rows -- and no warning.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - OPTIONAL is a left join. The left side is kept whatever happens on
+#      the right.
+#    - An unbound variable isn't an empty string and not zero. It's
+#      absent, and BOUND() is how you test for it.
+#    - The commonest bug in SPARQL is a missing OPTIONAL quietly
+#      shrinking the answer.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  33 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?site
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  OPTIONAL { ?shop bs:website ?site . }
+}
+ORDER BY ?name

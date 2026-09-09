@@ -1,0 +1,60 @@
+# ==========================================================================
+#  Q20  How many shops in each town
+# ==========================================================================
+#
+#  ASKS
+#    Count the bookshops town by town.
+#
+#  HOW IT WORKS
+#    GROUP BY collapses the matching rows into one row per distinct
+#    ?townName, and COUNT reports how many went into each. Every expression
+#    in SELECT must then be either a grouping key or an aggregate --
+#    there's nowhere else for a value to come from.
+#
+#  DIAGRAM
+#        rows after matching          after GROUP BY ?townName
+#        ┌──────────┬──────────┐      ┌──────────┬───────┐
+#        │ Wigtown  │ Inkwell  │      │ Wigtown  │   2   │
+#        │ Wigtown  │Marginalia│  ──▶ │ Edinburgh│   2   │
+#        │ Edinburgh│ Colophon │      │ Hay-on-W │   2   │
+#        │ Edinburgh│ Broken S │      │ York     │   2   │
+#        │ York     │ Endpapers│      │ ...      │  ...  │
+#        │ ...      │ ...      │      └──────────┴───────┘
+#        └──────────┴──────────┘        one row per group
+#
+#        SELECT may name ?townName (the key) and COUNT(...) (an aggregate).
+#        Naming ?shop would be a syntax error: which of the two?
+#
+#
+#  WHAT TO TAKE AWAY
+#    - GROUP BY turns many rows into one row per key.
+#    - Anything in SELECT must be a grouping key or wrapped in an
+#      aggregate.
+#    - COUNT(?x) counts rows where ?x is bound; COUNT(*) counts rows.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  26 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?townName (COUNT(?shop) AS ?shops)
+WHERE {
+  ?shop a            bs:Bookshop ;
+        bs:locatedIn ?town .
+  ?town rdfs:label   ?townName .
+  FILTER( LANG(?townName) = "en" )
+}
+GROUP BY ?townName
+ORDER BY DESC(?shops) ?townName

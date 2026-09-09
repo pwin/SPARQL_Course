@@ -1,0 +1,675 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  04  BOOKSHOPS
+############################################################################
+#  Thirty-three invented shops in real towns. Every shop has a point
+#  geometry a few hundred metres from the town centre, so two shops in
+#  the same town are genuinely a short walk apart. Not every shop has a
+#  website: that gap is what OPTIONAL is for.
+#
+bt:shop-inkwell
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Inkwell"@en ;
+    bs:locatedIn            bt:place-wigtown ;
+    bs:founded              "1979"^^xsd:gYear ;
+    bs:floorArea            "140.0"^^xsd:decimal ;
+    bs:staffCount           "4"^^xsd:integer ;
+    bs:specialises          bt:genre-crime-fiction ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/inkwell"^^xsd:anyURI ;
+    wgs84:lat               "54.87061"^^xsd:decimal ;
+    wgs84:long              "-4.43821"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-inkwell ;
+    geo:hasDefaultGeometry  bt:geom-shop-inkwell .
+
+bt:geom-shop-inkwell
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.43821 54.87061)"^^geo:wktLiteral .
+
+bt:shop-marginalia
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Marginalia"@en ;
+    bs:locatedIn            bt:place-wigtown ;
+    bs:founded              "1994"^^xsd:gYear ;
+    bs:floorArea            "85.0"^^xsd:decimal ;
+    bs:staffCount           "2"^^xsd:integer ;
+    bs:specialises          bt:genre-poetry ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    wgs84:lat               "54.87287"^^xsd:decimal ;
+    wgs84:long              "-4.44087"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-marginalia ;
+    geo:hasDefaultGeometry  bt:geom-shop-marginalia .
+
+bt:geom-shop-marginalia
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.44087 54.87287)"^^geo:wktLiteral .
+
+bt:shop-colophon
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Colophon Books"@en ;
+    bs:locatedIn            bt:place-edinburgh ;
+    bs:founded              "1963"^^xsd:gYear ;
+    bs:floorArea            "320.0"^^xsd:decimal ;
+    bs:staffCount           "11"^^xsd:integer ;
+    bs:specialises          bt:genre-literary-fiction ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/colophon"^^xsd:anyURI ;
+    wgs84:lat               "55.95075"^^xsd:decimal ;
+    wgs84:long              "-3.18751"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-colophon ;
+    geo:hasDefaultGeometry  bt:geom-shop-colophon .
+
+bt:geom-shop-colophon
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.18751 55.95075)"^^geo:wktLiteral .
+
+bt:shop-broken-spine
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Broken Spine"@en ;
+    bs:locatedIn            bt:place-edinburgh ;
+    bs:founded              "2008"^^xsd:gYear ;
+    bs:floorArea            "95.0"^^xsd:decimal ;
+    bs:staffCount           "3"^^xsd:integer ;
+    bs:specialises          bt:genre-tartan-noir ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/broken-spine"^^xsd:anyURI ;
+    wgs84:lat               "55.95265"^^xsd:decimal ;
+    wgs84:long              "-3.19227"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-broken-spine ;
+    geo:hasDefaultGeometry  bt:geom-shop-broken-spine .
+
+bt:geom-shop-broken-spine
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.19227 55.95265)"^^geo:wktLiteral .
+
+bt:shop-quire
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Quire"@en ;
+    bs:locatedIn            bt:place-glasgow ;
+    bs:founded              "1987"^^xsd:gYear ;
+    bs:floorArea            "260.0"^^xsd:decimal ;
+    bs:staffCount           "9"^^xsd:integer ;
+    bs:specialises          bt:genre-graphic-novels ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/quire"^^xsd:anyURI ;
+    wgs84:lat               "55.86656"^^xsd:decimal ;
+    wgs84:long              "-4.25789"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-quire ;
+    geo:hasDefaultGeometry  bt:geom-shop-quire .
+
+bt:geom-shop-quire
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.25789 55.86656)"^^geo:wktLiteral .
+
+bt:shop-verso
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Verso and Recto"@en ;
+    bs:locatedIn            bt:place-glasgow ;
+    bs:founded              "2015"^^xsd:gYear ;
+    bs:floorArea            "110.0"^^xsd:decimal ;
+    bs:staffCount           "4"^^xsd:integer ;
+    bs:specialises          bt:genre-translated-fiction ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/verso"^^xsd:anyURI ;
+    wgs84:lat               "55.86463"^^xsd:decimal ;
+    wgs84:long              "-4.25788"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-verso ;
+    geo:hasDefaultGeometry  bt:geom-shop-verso .
+
+bt:geom-shop-verso
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.25788 55.86463)"^^geo:wktLiteral .
+
+bt:shop-gutter-gilt
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Gutter and Gilt"@en ;
+    bs:locatedIn            bt:place-st-andrews ;
+    bs:founded              "1955"^^xsd:gYear ;
+    bs:floorArea            "130.0"^^xsd:decimal ;
+    bs:staffCount           "5"^^xsd:integer ;
+    bs:specialises          bt:genre-history ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/gutter-gilt"^^xsd:anyURI ;
+    wgs84:lat               "56.34066"^^xsd:decimal ;
+    wgs84:long              "-2.79233"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-gutter-gilt ;
+    geo:hasDefaultGeometry  bt:geom-shop-gutter-gilt .
+
+bt:geom-shop-gutter-gilt
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.79233 56.34066)"^^geo:wktLiteral .
+
+bt:shop-northern-light
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Northern Light Books"@en ;
+    bs:locatedIn            bt:place-inverness ;
+    bs:founded              "1998"^^xsd:gYear ;
+    bs:floorArea            "175.0"^^xsd:decimal ;
+    bs:staffCount           "6"^^xsd:integer ;
+    bs:specialises          bt:genre-nature-writing ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/northern-light"^^xsd:anyURI ;
+    wgs84:lat               "57.47744"^^xsd:decimal ;
+    wgs84:long              "-4.23088"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-northern-light ;
+    geo:hasDefaultGeometry  bt:geom-shop-northern-light .
+
+bt:geom-shop-northern-light
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.23088 57.47744)"^^geo:wktLiteral .
+
+bt:shop-sea-margin
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Sea Margin"@en ;
+    bs:locatedIn            bt:place-portree ;
+    bs:founded              "2011"^^xsd:gYear ;
+    bs:floorArea            "60.0"^^xsd:decimal ;
+    bs:staffCount           "2"^^xsd:integer ;
+    bs:specialises          bt:genre-folk-fantasy ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/sea-margin"^^xsd:anyURI ;
+    wgs84:lat               "57.41819"^^xsd:decimal ;
+    wgs84:long              "-6.19476"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-sea-margin ;
+    geo:hasDefaultGeometry  bt:geom-shop-sea-margin .
+
+bt:geom-shop-sea-margin
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-6.19476 57.41819)"^^geo:wktLiteral .
+
+bt:shop-borderprint
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Borderprint"@en ;
+    bs:locatedIn            bt:place-berwick ;
+    bs:founded              "1972"^^xsd:gYear ;
+    bs:floorArea            "105.0"^^xsd:decimal ;
+    bs:staffCount           "3"^^xsd:integer ;
+    bs:specialises          bt:genre-maritime-history ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/borderprint"^^xsd:anyURI ;
+    wgs84:lat               "55.76865"^^xsd:decimal ;
+    wgs84:long              "-2.00383"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-borderprint ;
+    geo:hasDefaultGeometry  bt:geom-shop-borderprint .
+
+bt:geom-shop-borderprint
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.00383 55.76865)"^^geo:wktLiteral .
+
+bt:shop-dales-folio
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Dales Folio"@en ;
+    bs:locatedIn            bt:place-sedbergh ;
+    bs:founded              "1968"^^xsd:gYear ;
+    bs:floorArea            "150.0"^^xsd:decimal ;
+    bs:staffCount           "4"^^xsd:integer ;
+    bs:specialises          bt:genre-nature-writing ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    wgs84:lat               "54.31646"^^xsd:decimal ;
+    wgs84:long              "-2.52916"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-dales-folio ;
+    geo:hasDefaultGeometry  bt:geom-shop-dales-folio .
+
+bt:geom-shop-dales-folio
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.52916 54.31646)"^^geo:wktLiteral .
+
+bt:shop-errata
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Errata"@en ;
+    bs:locatedIn            bt:place-sedbergh ;
+    bs:founded              "2001"^^xsd:gYear ;
+    bs:floorArea            "70.0"^^xsd:decimal ;
+    bs:staffCount           "2"^^xsd:integer ;
+    bs:specialises          bt:genre-science-fiction ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/errata"^^xsd:anyURI ;
+    wgs84:lat               "54.32302"^^xsd:decimal ;
+    wgs84:long              "-2.53316"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-errata ;
+    geo:hasDefaultGeometry  bt:geom-shop-errata .
+
+bt:geom-shop-errata
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.53316 54.32302)"^^geo:wktLiteral .
+
+bt:shop-pressmark
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Pressmark"@en ;
+    bs:locatedIn            bt:place-kendal ;
+    bs:founded              "1983"^^xsd:gYear ;
+    bs:floorArea            "190.0"^^xsd:decimal ;
+    bs:staffCount           "6"^^xsd:integer ;
+    bs:specialises          bt:genre-travel-writing ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/pressmark"^^xsd:anyURI ;
+    wgs84:lat               "54.32943"^^xsd:decimal ;
+    wgs84:long              "-2.73873"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-pressmark ;
+    geo:hasDefaultGeometry  bt:geom-shop-pressmark .
+
+bt:geom-shop-pressmark
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.73873 54.32943)"^^geo:wktLiteral .
+
+bt:shop-bookbarrow
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Bookbarrow"@en ;
+    bs:locatedIn            bt:place-keswick ;
+    bs:founded              "1990"^^xsd:gYear ;
+    bs:floorArea            "80.0"^^xsd:decimal ;
+    bs:staffCount           "3"^^xsd:integer ;
+    bs:specialises          bt:genre-mountaineering ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/bookbarrow"^^xsd:anyURI ;
+    wgs84:lat               "54.60668"^^xsd:decimal ;
+    wgs84:long              "-3.13089"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-bookbarrow ;
+    geo:hasDefaultGeometry  bt:geom-shop-bookbarrow .
+
+bt:geom-shop-bookbarrow
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.13089 54.60668)"^^geo:wktLiteral .
+
+bt:shop-endpapers
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Endpapers"@en ;
+    bs:locatedIn            bt:place-york ;
+    bs:founded              "1949"^^xsd:gYear ;
+    bs:floorArea            "400.0"^^xsd:decimal ;
+    bs:staffCount           "14"^^xsd:integer ;
+    bs:specialises          bt:genre-history ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/endpapers"^^xsd:anyURI ;
+    wgs84:lat               "53.95595"^^xsd:decimal ;
+    wgs84:long              "-1.08529"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-endpapers ;
+    geo:hasDefaultGeometry  bt:geom-shop-endpapers .
+
+bt:geom-shop-endpapers
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.08529 53.95595)"^^geo:wktLiteral .
+
+bt:shop-bookwyrm
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Bookwyrm"@en ;
+    bs:locatedIn            bt:place-york ;
+    bs:founded              "2013"^^xsd:gYear ;
+    bs:floorArea            "120.0"^^xsd:decimal ;
+    bs:staffCount           "5"^^xsd:integer ;
+    bs:specialises          bt:genre-fantasy ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/bookwyrm"^^xsd:anyURI ;
+    wgs84:lat               "53.95521"^^xsd:decimal ;
+    wgs84:long              "-1.09041"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-bookwyrm ;
+    geo:hasDefaultGeometry  bt:geom-shop-bookwyrm .
+
+bt:geom-shop-bookwyrm
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.09041 53.95521)"^^geo:wktLiteral .
+
+bt:shop-harbour-page
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Harbour Page"@en ;
+    bs:locatedIn            bt:place-whitby ;
+    bs:founded              "1996"^^xsd:gYear ;
+    bs:floorArea            "90.0"^^xsd:decimal ;
+    bs:staffCount           "3"^^xsd:integer ;
+    bs:specialises          bt:genre-maritime-history ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/harbour-page"^^xsd:anyURI ;
+    wgs84:lat               "54.48626"^^xsd:decimal ;
+    wgs84:long              "-0.61552"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-harbour-page ;
+    geo:hasDefaultGeometry  bt:geom-shop-harbour-page .
+
+bt:geom-shop-harbour-page
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-0.61552 54.48626)"^^geo:wktLiteral .
+
+bt:shop-cotton-quarto
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Cotton Quarto"@en ;
+    bs:locatedIn            bt:place-manchester ;
+    bs:founded              "1974"^^xsd:gYear ;
+    bs:floorArea            "380.0"^^xsd:decimal ;
+    bs:staffCount           "15"^^xsd:integer ;
+    bs:specialises          bt:genre-industrial-history ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/cotton-quarto"^^xsd:anyURI ;
+    wgs84:lat               "53.47914"^^xsd:decimal ;
+    wgs84:long              "-2.25215"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-cotton-quarto ;
+    geo:hasDefaultGeometry  bt:geom-shop-cotton-quarto .
+
+bt:geom-shop-cotton-quarto
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.25215 53.47914)"^^geo:wktLiteral .
+
+bt:shop-signature
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Signature Books"@en ;
+    bs:locatedIn            bt:place-liverpool ;
+    bs:founded              "2004"^^xsd:gYear ;
+    bs:floorArea            "210.0"^^xsd:decimal ;
+    bs:staffCount           "8"^^xsd:integer ;
+    bs:specialises          bt:genre-poetry ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    wgs84:lat               "53.41108"^^xsd:decimal ;
+    wgs84:long              "-2.99892"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-signature ;
+    geo:hasDefaultGeometry  bt:geom-shop-signature .
+
+bt:geom-shop-signature
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.99892 53.41108)"^^geo:wktLiteral .
+
+bt:shop-severn-leaf
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Severn Leaf"@en ;
+    bs:locatedIn            bt:place-shrewsbury ;
+    bs:founded              "1966"^^xsd:gYear ;
+    bs:floorArea            "160.0"^^xsd:decimal ;
+    bs:staffCount           "5"^^xsd:integer ;
+    bs:specialises          bt:genre-geology ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/severn-leaf"^^xsd:anyURI ;
+    wgs84:lat               "52.70936"^^xsd:decimal ;
+    wgs84:long              "-2.74423"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-severn-leaf ;
+    geo:hasDefaultGeometry  bt:geom-shop-severn-leaf .
+
+bt:geom-shop-severn-leaf
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.74423 52.70936)"^^geo:wktLiteral .
+
+bt:shop-dog-eared
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Dog-Eared"@en ;
+    bs:locatedIn            bt:place-ludlow ;
+    bs:founded              "1988"^^xsd:gYear ;
+    bs:floorArea            "75.0"^^xsd:decimal ;
+    bs:staffCount           "2"^^xsd:integer ;
+    bs:specialises          bt:genre-cosy-crime ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/dog-eared"^^xsd:anyURI ;
+    wgs84:lat               "52.36469"^^xsd:decimal ;
+    wgs84:long              "-2.71722"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-dog-eared ;
+    geo:hasDefaultGeometry  bt:geom-shop-dog-eared .
+
+bt:geom-shop-dog-eared
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.71722 52.36469)"^^geo:wktLiteral .
+
+bt:shop-candlemas
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Candlemas Books"@en ;
+    bs:locatedIn            bt:place-oxford ;
+    bs:founded              "1931"^^xsd:gYear ;
+    bs:floorArea            "290.0"^^xsd:decimal ;
+    bs:staffCount           "12"^^xsd:integer ;
+    bs:specialises          bt:genre-classics ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/candlemas"^^xsd:anyURI ;
+    wgs84:lat               "51.74766"^^xsd:decimal ;
+    wgs84:long              "-1.25943"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-candlemas ;
+    geo:hasDefaultGeometry  bt:geom-shop-candlemas .
+
+bt:geom-shop-candlemas
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.25943 51.74766)"^^geo:wktLiteral .
+
+bt:shop-chapter-verse
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Chapter and Verse"@en ;
+    bs:locatedIn            bt:place-cambridge ;
+    bs:founded              "1958"^^xsd:gYear ;
+    bs:floorArea            "240.0"^^xsd:decimal ;
+    bs:staffCount           "10"^^xsd:integer ;
+    bs:specialises          bt:genre-science-fiction ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/chapter-verse"^^xsd:anyURI ;
+    wgs84:lat               "52.20438"^^xsd:decimal ;
+    wgs84:long              "0.12347"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-chapter-verse ;
+    geo:hasDefaultGeometry  bt:geom-shop-chapter-verse .
+
+bt:geom-shop-chapter-verse
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(0.12347 52.20438)"^^geo:wktLiteral .
+
+bt:shop-broads-bindery
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Broads Bindery"@en ;
+    bs:locatedIn            bt:place-norwich ;
+    bs:founded              "1992"^^xsd:gYear ;
+    bs:floorArea            "115.0"^^xsd:decimal ;
+    bs:staffCount           "4"^^xsd:integer ;
+    bs:specialises          bt:genre-nature-writing ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/broads-bindery"^^xsd:anyURI ;
+    wgs84:lat               "52.63119"^^xsd:decimal ;
+    wgs84:long              "1.30157"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-broads-bindery ;
+    geo:hasDefaultGeometry  bt:geom-shop-broads-bindery .
+
+bt:geom-shop-broads-bindery
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(1.30157 52.63119)"^^geo:wktLiteral .
+
+bt:shop-ex-libris
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Ex Libris"@en ;
+    bs:locatedIn            bt:place-london ;
+    bs:founded              "1919"^^xsd:gYear ;
+    bs:floorArea            "520.0"^^xsd:decimal ;
+    bs:staffCount           "22"^^xsd:integer ;
+    bs:specialises          bt:genre-literary-fiction ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    wgs84:lat               "51.50426"^^xsd:decimal ;
+    wgs84:long              "-0.13527"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-ex-libris ;
+    geo:hasDefaultGeometry  bt:geom-shop-ex-libris .
+
+bt:geom-shop-ex-libris
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-0.13527 51.50426)"^^geo:wktLiteral .
+
+bt:shop-turn-the-page
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Turn the Page"@en ;
+    bs:locatedIn            bt:place-london ;
+    bs:founded              "2018"^^xsd:gYear ;
+    bs:floorArea            "130.0"^^xsd:decimal ;
+    bs:staffCount           "6"^^xsd:integer ;
+    bs:specialises          bt:genre-translated-fiction ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/turn-the-page"^^xsd:anyURI ;
+    wgs84:lat               "51.50796"^^xsd:decimal ;
+    wgs84:long              "-0.12467"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-turn-the-page ;
+    geo:hasDefaultGeometry  bt:geom-shop-turn-the-page .
+
+bt:geom-shop-turn-the-page
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-0.12467 51.50796)"^^geo:wktLiteral .
+
+bt:shop-crescent
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Crescent Bookroom"@en ;
+    bs:locatedIn            bt:place-bath ;
+    bs:founded              "1961"^^xsd:gYear ;
+    bs:floorArea            "200.0"^^xsd:decimal ;
+    bs:staffCount           "7"^^xsd:integer ;
+    bs:specialises          bt:genre-historical-fiction ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/crescent"^^xsd:anyURI ;
+    wgs84:lat               "51.38415"^^xsd:decimal ;
+    wgs84:long              "-2.3628"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-crescent ;
+    geo:hasDefaultGeometry  bt:geom-shop-crescent .
+
+bt:geom-shop-crescent
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.36280 51.38415)"^^geo:wktLiteral .
+
+bt:shop-west-quay
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "West Quay Books"@en ;
+    bs:locatedIn            bt:place-exeter ;
+    bs:founded              "1985"^^xsd:gYear ;
+    bs:floorArea            "145.0"^^xsd:decimal ;
+    bs:staffCount           "5"^^xsd:integer ;
+    bs:specialises          bt:genre-travel-writing ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/west-quay"^^xsd:anyURI ;
+    wgs84:lat               "50.722"^^xsd:decimal ;
+    wgs84:long              "-3.53818"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-west-quay ;
+    geo:hasDefaultGeometry  bt:geom-shop-west-quay .
+
+bt:geom-shop-west-quay
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.53818 50.72200)"^^geo:wktLiteral .
+
+bt:shop-penwith
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Penwith Pages"@en ;
+    bs:locatedIn            bt:place-penzance ;
+    bs:founded              "2006"^^xsd:gYear ;
+    bs:floorArea            "65.0"^^xsd:decimal ;
+    bs:staffCount           "2"^^xsd:integer ;
+    bs:specialises          bt:genre-folk-fantasy ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/penwith"^^xsd:anyURI ;
+    wgs84:lat               "50.1189"^^xsd:decimal ;
+    wgs84:long              "-5.53147"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-penwith ;
+    geo:hasDefaultGeometry  bt:geom-shop-penwith .
+
+bt:geom-shop-penwith
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-5.53147 50.11890)"^^geo:wktLiteral .
+
+bt:shop-castle-steps
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Castle Steps Books"@en ;
+    bs:locatedIn            bt:place-hay-on-wye ;
+    bs:founded              "1962"^^xsd:gYear ;
+    bs:floorArea            "230.0"^^xsd:decimal ;
+    bs:staffCount           "8"^^xsd:integer ;
+    bs:specialises          bt:genre-history ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              true ;
+    wgs84:lat               "52.07542"^^xsd:decimal ;
+    wgs84:long              "-3.11883"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-castle-steps ;
+    geo:hasDefaultGeometry  bt:geom-shop-castle-steps .
+
+bt:geom-shop-castle-steps
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.11883 52.07542)"^^geo:wktLiteral .
+
+bt:shop-clock-tower
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "The Clock Tower"@en ;
+    bs:locatedIn            bt:place-hay-on-wye ;
+    bs:founded              "1977"^^xsd:gYear ;
+    bs:floorArea            "180.0"^^xsd:decimal ;
+    bs:staffCount           "6"^^xsd:integer ;
+    bs:specialises          bt:genre-cosy-crime ;
+    bs:sellsSecondHand      true ;
+    bs:hasCafe              false ;
+    bs:website              "https://example.org/shops/clock-tower"^^xsd:anyURI ;
+    wgs84:lat               "52.0721"^^xsd:decimal ;
+    wgs84:long              "-3.13331"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-clock-tower ;
+    geo:hasDefaultGeometry  bt:geom-shop-clock-tower .
+
+bt:geom-shop-clock-tower
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.13331 52.07210)"^^geo:wktLiteral .
+
+bt:shop-cliff-road
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Cliff Road Books"@en ;
+    bs:locatedIn            bt:place-aberystwyth ;
+    bs:founded              "2000"^^xsd:gYear ;
+    bs:floorArea            "95.0"^^xsd:decimal ;
+    bs:staffCount           "3"^^xsd:integer ;
+    bs:specialises          bt:genre-poetry ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    bs:website              "https://example.org/shops/cliff-road"^^xsd:anyURI ;
+    wgs84:lat               "52.41404"^^xsd:decimal ;
+    wgs84:long              "-4.07746"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-cliff-road ;
+    geo:hasDefaultGeometry  bt:geom-shop-cliff-road .
+
+bt:geom-shop-cliff-road
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.07746 52.41404)"^^geo:wktLiteral .
+
+bt:shop-taff-margin
+    a                       bs:Bookshop, geo:Feature ;
+    rdfs:label              "Taff Margin"@en ;
+    bs:locatedIn            bt:place-cardiff ;
+    bs:founded              "1994"^^xsd:gYear ;
+    bs:floorArea            "210.0"^^xsd:decimal ;
+    bs:staffCount           "9"^^xsd:integer ;
+    bs:specialises          bt:genre-graphic-novels ;
+    bs:sellsSecondHand      false ;
+    bs:hasCafe              true ;
+    wgs84:lat               "51.48237"^^xsd:decimal ;
+    wgs84:long              "-3.17781"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shop-taff-margin ;
+    geo:hasDefaultGeometry  bt:geom-shop-taff-margin .
+
+bt:geom-shop-taff-margin
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.17781 51.48237)"^^geo:wktLiteral .
+

@@ -1,0 +1,610 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  07  EVENTS
+############################################################################
+#  Fifty-nine events across 2025. Attendance and ticket price are what
+#  the aggregation and sub-query modules work on: totals per shop,
+#  averages per region, the best-attended event in each country.
+#
+bt:event-inkwell-2025-03-08
+    a               bs:Event ;
+    rdfs:label      "Reading with Rab Fingal"@en ;
+    bs:heldAt       bt:shop-inkwell ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-03-08"^^xsd:date ;
+    bs:featuring    bt:author-rab-fingal ;
+    bs:attendance   "48"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-inkwell-2025-06-14
+    a               bs:Event ;
+    rdfs:label      "Signing with Rab Fingal"@en ;
+    bs:heldAt       bt:shop-inkwell ;
+    bs:eventKind    "Signing" ;
+    bs:eventDate    "2025-06-14"^^xsd:date ;
+    bs:featuring    bt:author-rab-fingal ;
+    bs:attendance   "72"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-inkwell-2025-09-27
+    a               bs:Event ;
+    rdfs:label      "Panel with Kirsty Lammond"@en ;
+    bs:heldAt       bt:shop-inkwell ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-09-27"^^xsd:date ;
+    bs:featuring    bt:author-kirsty-lammond ;
+    bs:attendance   "110"^^xsd:integer ;
+    bs:ticketPrice  "8.50"^^xsd:decimal .
+
+bt:event-marginalia-2025-04-19
+    a               bs:Event ;
+    rdfs:label      "Reading with Cerys Lloyd"@en ;
+    bs:heldAt       bt:shop-marginalia ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-04-19"^^xsd:date ;
+    bs:featuring    bt:author-cerys-lloyd ;
+    bs:attendance   "26"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-marginalia-2025-08-02
+    a               bs:Event ;
+    rdfs:label      "Workshop with Owain Preece"@en ;
+    bs:heldAt       bt:shop-marginalia ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-08-02"^^xsd:date ;
+    bs:featuring    bt:author-owain-preece ;
+    bs:attendance   "18"^^xsd:integer ;
+    bs:ticketPrice  "22.00"^^xsd:decimal .
+
+bt:event-colophon-2025-02-11
+    a               bs:Event ;
+    rdfs:label      "Launch with Tam Brodie"@en ;
+    bs:heldAt       bt:shop-colophon ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-02-11"^^xsd:date ;
+    bs:featuring    bt:author-tam-brodie ;
+    bs:attendance   "185"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-colophon-2025-05-30
+    a               bs:Event ;
+    rdfs:label      "Lecture with Ines Calloway"@en ;
+    bs:heldAt       bt:shop-colophon ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-05-30"^^xsd:date ;
+    bs:featuring    bt:author-ines-calloway ;
+    bs:attendance   "140"^^xsd:integer ;
+    bs:ticketPrice  "12.00"^^xsd:decimal .
+
+bt:event-colophon-2025-10-16
+    a               bs:Event ;
+    rdfs:label      "Book Club with Agnes Varden"@en ;
+    bs:heldAt       bt:shop-colophon ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-10-16"^^xsd:date ;
+    bs:featuring    bt:author-agnes-varden ;
+    bs:attendance   "34"^^xsd:integer ;
+    bs:ticketPrice  "4.00"^^xsd:decimal .
+
+bt:event-broken-spine-2025-07-05
+    a               bs:Event ;
+    rdfs:label      "Reading with Tam Brodie"@en ;
+    bs:heldAt       bt:shop-broken-spine ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-07-05"^^xsd:date ;
+    bs:featuring    bt:author-tam-brodie ;
+    bs:attendance   "55"^^xsd:integer ;
+    bs:ticketPrice  "6.00"^^xsd:decimal .
+
+bt:event-quire-2025-03-22
+    a               bs:Event ;
+    rdfs:label      "Panel with Yara Tesfaye"@en ;
+    bs:heldAt       bt:shop-quire ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-03-22"^^xsd:date ;
+    bs:featuring    bt:author-yara-tesfaye ;
+    bs:attendance   "130"^^xsd:integer ;
+    bs:ticketPrice  "9.00"^^xsd:decimal .
+
+bt:event-quire-2025-11-08
+    a               bs:Event ;
+    rdfs:label      "Workshop with Marek Oyelaran"@en ;
+    bs:heldAt       bt:shop-quire ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-11-08"^^xsd:date ;
+    bs:featuring    bt:author-marek-oyelaran ;
+    bs:attendance   "24"^^xsd:integer ;
+    bs:ticketPrice  "30.00"^^xsd:decimal .
+
+bt:event-verso-2025-05-17
+    a               bs:Event ;
+    rdfs:label      "Launch with Noor Haddad"@en ;
+    bs:heldAt       bt:shop-verso ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-05-17"^^xsd:date ;
+    bs:featuring    bt:author-noor-haddad ;
+    bs:attendance   "95"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-verso-2025-09-13
+    a               bs:Event ;
+    rdfs:label      "Reading with Noor Haddad"@en ;
+    bs:heldAt       bt:shop-verso ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-09-13"^^xsd:date ;
+    bs:featuring    bt:author-noor-haddad ;
+    bs:attendance   "61"^^xsd:integer ;
+    bs:ticketPrice  "7.00"^^xsd:decimal .
+
+bt:event-gutter-gilt-2025-04-26
+    a               bs:Event ;
+    rdfs:label      "Lecture with Sandy Cleghorn"@en ;
+    bs:heldAt       bt:shop-gutter-gilt ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-04-26"^^xsd:date ;
+    bs:featuring    bt:author-sandy-cleghorn ;
+    bs:attendance   "88"^^xsd:integer ;
+    bs:ticketPrice  "10.00"^^xsd:decimal .
+
+bt:event-northern-light-2025-06-07
+    a               bs:Event ;
+    rdfs:label      "Reading with Torin MacKay"@en ;
+    bs:heldAt       bt:shop-northern-light ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-06-07"^^xsd:date ;
+    bs:featuring    bt:author-torin-mackay ;
+    bs:attendance   "42"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-northern-light-2025-08-23
+    a               bs:Event ;
+    rdfs:label      "Workshop with Fenella Drew"@en ;
+    bs:heldAt       bt:shop-northern-light ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-08-23"^^xsd:date ;
+    bs:featuring    bt:author-fenella-drew ;
+    bs:attendance   "20"^^xsd:integer ;
+    bs:ticketPrice  "25.00"^^xsd:decimal .
+
+bt:event-sea-margin-2025-07-19
+    a               bs:Event ;
+    rdfs:label      "Reading with Torin MacKay"@en ;
+    bs:heldAt       bt:shop-sea-margin ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-07-19"^^xsd:date ;
+    bs:featuring    bt:author-torin-mackay ;
+    bs:attendance   "31"^^xsd:integer ;
+    bs:ticketPrice  "4.00"^^xsd:decimal .
+
+bt:event-borderprint-2025-02-28
+    a               bs:Event ;
+    rdfs:label      "Book Club with Juno Verrall"@en ;
+    bs:heldAt       bt:shop-borderprint ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-02-28"^^xsd:date ;
+    bs:featuring    bt:author-juno-verrall ;
+    bs:attendance   "22"^^xsd:integer ;
+    bs:ticketPrice  "3.00"^^xsd:decimal .
+
+bt:event-dales-folio-2025-05-10
+    a               bs:Event ;
+    rdfs:label      "Lecture with Fenella Drew"@en ;
+    bs:heldAt       bt:shop-dales-folio ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-05-10"^^xsd:date ;
+    bs:featuring    bt:author-fenella-drew ;
+    bs:attendance   "76"^^xsd:integer ;
+    bs:ticketPrice  "11.00"^^xsd:decimal .
+
+bt:event-dales-folio-2025-10-04
+    a               bs:Event ;
+    rdfs:label      "Reading with Bram Tillotson"@en ;
+    bs:heldAt       bt:shop-dales-folio ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-10-04"^^xsd:date ;
+    bs:featuring    bt:author-bram-tillotson ;
+    bs:attendance   "58"^^xsd:integer ;
+    bs:ticketPrice  "6.00"^^xsd:decimal .
+
+bt:event-errata-2025-03-15
+    a               bs:Event ;
+    rdfs:label      "Panel with Marek Oyelaran"@en ;
+    bs:heldAt       bt:shop-errata ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-03-15"^^xsd:date ;
+    bs:featuring    bt:author-marek-oyelaran ;
+    bs:attendance   "45"^^xsd:integer ;
+    bs:ticketPrice  "8.00"^^xsd:decimal .
+
+bt:event-pressmark-2025-06-21
+    a               bs:Event ;
+    rdfs:label      "Reading with Magnus Thole"@en ;
+    bs:heldAt       bt:shop-pressmark ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-06-21"^^xsd:date ;
+    bs:featuring    bt:author-magnus-thole ;
+    bs:attendance   "67"^^xsd:integer ;
+    bs:ticketPrice  "6.50"^^xsd:decimal .
+
+bt:event-bookbarrow-2025-09-06
+    a               bs:Event ;
+    rdfs:label      "Workshop with Bram Tillotson"@en ;
+    bs:heldAt       bt:shop-bookbarrow ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-09-06"^^xsd:date ;
+    bs:featuring    bt:author-bram-tillotson ;
+    bs:attendance   "16"^^xsd:integer ;
+    bs:ticketPrice  "28.00"^^xsd:decimal .
+
+bt:event-endpapers-2025-01-25
+    a               bs:Event ;
+    rdfs:label      "Launch with Agnes Varden"@en ;
+    bs:heldAt       bt:shop-endpapers ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-01-25"^^xsd:date ;
+    bs:featuring    bt:author-agnes-varden ;
+    bs:attendance   "210"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-endpapers-2025-04-12
+    a               bs:Event ;
+    rdfs:label      "Lecture with Juno Verrall"@en ;
+    bs:heldAt       bt:shop-endpapers ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-04-12"^^xsd:date ;
+    bs:featuring    bt:author-juno-verrall ;
+    bs:attendance   "165"^^xsd:integer ;
+    bs:ticketPrice  "14.00"^^xsd:decimal .
+
+bt:event-endpapers-2025-11-22
+    a               bs:Event ;
+    rdfs:label      "Panel with Delia Stannard"@en ;
+    bs:heldAt       bt:shop-endpapers ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-11-22"^^xsd:date ;
+    bs:featuring    bt:author-delia-stannard ;
+    bs:attendance   "145"^^xsd:integer ;
+    bs:ticketPrice  "10.00"^^xsd:decimal .
+
+bt:event-bookwyrm-2025-05-03
+    a               bs:Event ;
+    rdfs:label      "Book Club with Elin Morgan"@en ;
+    bs:heldAt       bt:shop-bookwyrm ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-05-03"^^xsd:date ;
+    bs:featuring    bt:author-elin-morgan ;
+    bs:attendance   "38"^^xsd:integer ;
+    bs:ticketPrice  "3.50"^^xsd:decimal .
+
+bt:event-bookwyrm-2025-08-16
+    a               bs:Event ;
+    rdfs:label      "Reading with Dilys Tremain"@en ;
+    bs:heldAt       bt:shop-bookwyrm ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-08-16"^^xsd:date ;
+    bs:featuring    bt:author-dilys-tremain ;
+    bs:attendance   "52"^^xsd:integer ;
+    bs:ticketPrice  "5.50"^^xsd:decimal .
+
+bt:event-harbour-page-2025-07-12
+    a               bs:Event ;
+    rdfs:label      "Reading with Juno Verrall"@en ;
+    bs:heldAt       bt:shop-harbour-page ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-07-12"^^xsd:date ;
+    bs:featuring    bt:author-juno-verrall ;
+    bs:attendance   "44"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-cotton-quarto-2025-02-08
+    a               bs:Event ;
+    rdfs:label      "Launch with Yara Tesfaye"@en ;
+    bs:heldAt       bt:shop-cotton-quarto ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-02-08"^^xsd:date ;
+    bs:featuring    bt:author-yara-tesfaye ;
+    bs:attendance   "240"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-cotton-quarto-2025-06-28
+    a               bs:Event ;
+    rdfs:label      "Panel with Hal Morrow"@en ;
+    bs:heldAt       bt:shop-cotton-quarto ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-06-28"^^xsd:date ;
+    bs:featuring    bt:author-hal-morrow ;
+    bs:attendance   "175"^^xsd:integer ;
+    bs:ticketPrice  "12.00"^^xsd:decimal .
+
+bt:event-cotton-quarto-2025-10-11
+    a               bs:Event ;
+    rdfs:label      "Workshop with Yara Tesfaye"@en ;
+    bs:heldAt       bt:shop-cotton-quarto ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-10-11"^^xsd:date ;
+    bs:featuring    bt:author-yara-tesfaye ;
+    bs:attendance   "28"^^xsd:integer ;
+    bs:ticketPrice  "35.00"^^xsd:decimal .
+
+bt:event-signature-2025-03-29
+    a               bs:Event ;
+    rdfs:label      "Reading with Cerys Lloyd"@en ;
+    bs:heldAt       bt:shop-signature ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-03-29"^^xsd:date ;
+    bs:featuring    bt:author-cerys-lloyd ;
+    bs:attendance   "63"^^xsd:integer ;
+    bs:ticketPrice  "6.00"^^xsd:decimal .
+
+bt:event-signature-2025-09-20
+    a               bs:Event ;
+    rdfs:label      "Panel with Owain Preece"@en ;
+    bs:heldAt       bt:shop-signature ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-09-20"^^xsd:date ;
+    bs:featuring    bt:author-owain-preece ;
+    bs:attendance   "84"^^xsd:integer ;
+    bs:ticketPrice  "9.50"^^xsd:decimal .
+
+bt:event-severn-leaf-2025-04-05
+    a               bs:Event ;
+    rdfs:label      "Lecture with Perrin Oakes"@en ;
+    bs:heldAt       bt:shop-severn-leaf ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-04-05"^^xsd:date ;
+    bs:featuring    bt:author-perrin-oakes ;
+    bs:attendance   "49"^^xsd:integer ;
+    bs:ticketPrice  "8.00"^^xsd:decimal .
+
+bt:event-dog-eared-2025-05-24
+    a               bs:Event ;
+    rdfs:label      "Book Club with Rab Fingal"@en ;
+    bs:heldAt       bt:shop-dog-eared ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-05-24"^^xsd:date ;
+    bs:featuring    bt:author-rab-fingal ;
+    bs:attendance   "19"^^xsd:integer ;
+    bs:ticketPrice  "3.00"^^xsd:decimal .
+
+bt:event-candlemas-2025-02-22
+    a               bs:Event ;
+    rdfs:label      "Lecture with Selina Frayne"@en ;
+    bs:heldAt       bt:shop-candlemas ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-02-22"^^xsd:date ;
+    bs:featuring    bt:author-selina-frayne ;
+    bs:attendance   "132"^^xsd:integer ;
+    bs:ticketPrice  "15.00"^^xsd:decimal .
+
+bt:event-candlemas-2025-07-26
+    a               bs:Event ;
+    rdfs:label      "Launch with Delia Stannard"@en ;
+    bs:heldAt       bt:shop-candlemas ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-07-26"^^xsd:date ;
+    bs:featuring    bt:author-delia-stannard ;
+    bs:attendance   "158"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-chapter-verse-2025-03-01
+    a               bs:Event ;
+    rdfs:label      "Panel with Marek Oyelaran"@en ;
+    bs:heldAt       bt:shop-chapter-verse ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-03-01"^^xsd:date ;
+    bs:featuring    bt:author-marek-oyelaran ;
+    bs:attendance   "120"^^xsd:integer ;
+    bs:ticketPrice  "11.00"^^xsd:decimal .
+
+bt:event-chapter-verse-2025-06-11
+    a               bs:Event ;
+    rdfs:label      "Workshop with Delia Stannard"@en ;
+    bs:heldAt       bt:shop-chapter-verse ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-06-11"^^xsd:date ;
+    bs:featuring    bt:author-delia-stannard ;
+    bs:attendance   "26"^^xsd:integer ;
+    bs:ticketPrice  "26.00"^^xsd:decimal .
+
+bt:event-chapter-verse-2025-10-25
+    a               bs:Event ;
+    rdfs:label      "Reading with Priya Nandakumar"@en ;
+    bs:heldAt       bt:shop-chapter-verse ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-10-25"^^xsd:date ;
+    bs:featuring    bt:author-priya-nandakumar ;
+    bs:attendance   "71"^^xsd:integer ;
+    bs:ticketPrice  "7.00"^^xsd:decimal .
+
+bt:event-broads-bindery-2025-05-31
+    a               bs:Event ;
+    rdfs:label      "Reading with Priya Nandakumar"@en ;
+    bs:heldAt       bt:shop-broads-bindery ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-05-31"^^xsd:date ;
+    bs:featuring    bt:author-priya-nandakumar ;
+    bs:attendance   "57"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-ex-libris-2025-01-18
+    a               bs:Event ;
+    rdfs:label      "Launch with Ines Calloway"@en ;
+    bs:heldAt       bt:shop-ex-libris ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-01-18"^^xsd:date ;
+    bs:featuring    bt:author-ines-calloway ;
+    bs:attendance   "320"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-ex-libris-2025-04-30
+    a               bs:Event ;
+    rdfs:label      "Panel with Noor Haddad"@en ;
+    bs:heldAt       bt:shop-ex-libris ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-04-30"^^xsd:date ;
+    bs:featuring    bt:author-noor-haddad ;
+    bs:attendance   "265"^^xsd:integer ;
+    bs:ticketPrice  "16.00"^^xsd:decimal .
+
+bt:event-ex-libris-2025-09-03
+    a               bs:Event ;
+    rdfs:label      "Lecture with Marek Oyelaran"@en ;
+    bs:heldAt       bt:shop-ex-libris ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-09-03"^^xsd:date ;
+    bs:featuring    bt:author-marek-oyelaran ;
+    bs:attendance   "198"^^xsd:integer ;
+    bs:ticketPrice  "18.00"^^xsd:decimal .
+
+bt:event-ex-libris-2025-11-15
+    a               bs:Event ;
+    rdfs:label      "Book Club with Hal Morrow"@en ;
+    bs:heldAt       bt:shop-ex-libris ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-11-15"^^xsd:date ;
+    bs:featuring    bt:author-hal-morrow ;
+    bs:attendance   "46"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-turn-the-page-2025-06-04
+    a               bs:Event ;
+    rdfs:label      "Reading with Noor Haddad"@en ;
+    bs:heldAt       bt:shop-turn-the-page ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-06-04"^^xsd:date ;
+    bs:featuring    bt:author-noor-haddad ;
+    bs:attendance   "89"^^xsd:integer ;
+    bs:ticketPrice  "8.00"^^xsd:decimal .
+
+bt:event-turn-the-page-2025-10-18
+    a               bs:Event ;
+    rdfs:label      "Signing with Yara Tesfaye"@en ;
+    bs:heldAt       bt:shop-turn-the-page ;
+    bs:eventKind    "Signing" ;
+    bs:eventDate    "2025-10-18"^^xsd:date ;
+    bs:featuring    bt:author-yara-tesfaye ;
+    bs:attendance   "102"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-crescent-2025-03-12
+    a               bs:Event ;
+    rdfs:label      "Lecture with Selina Frayne"@en ;
+    bs:heldAt       bt:shop-crescent ;
+    bs:eventKind    "Lecture" ;
+    bs:eventDate    "2025-03-12"^^xsd:date ;
+    bs:featuring    bt:author-selina-frayne ;
+    bs:attendance   "94"^^xsd:integer ;
+    bs:ticketPrice  "12.00"^^xsd:decimal .
+
+bt:event-crescent-2025-08-09
+    a               bs:Event ;
+    rdfs:label      "Reading with Magnus Thole"@en ;
+    bs:heldAt       bt:shop-crescent ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-08-09"^^xsd:date ;
+    bs:featuring    bt:author-magnus-thole ;
+    bs:attendance   "68"^^xsd:integer ;
+    bs:ticketPrice  "6.00"^^xsd:decimal .
+
+bt:event-west-quay-2025-05-21
+    a               bs:Event ;
+    rdfs:label      "Reading with Dilys Tremain"@en ;
+    bs:heldAt       bt:shop-west-quay ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-05-21"^^xsd:date ;
+    bs:featuring    bt:author-dilys-tremain ;
+    bs:attendance   "41"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-penwith-2025-07-02
+    a               bs:Event ;
+    rdfs:label      "Reading with Orla Finnerty"@en ;
+    bs:heldAt       bt:shop-penwith ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-07-02"^^xsd:date ;
+    bs:featuring    bt:author-orla-finnerty ;
+    bs:attendance   "35"^^xsd:integer ;
+    bs:ticketPrice  "4.50"^^xsd:decimal .
+
+bt:event-penwith-2025-09-14
+    a               bs:Event ;
+    rdfs:label      "Workshop with Orla Finnerty"@en ;
+    bs:heldAt       bt:shop-penwith ;
+    bs:eventKind    "Workshop" ;
+    bs:eventDate    "2025-09-14"^^xsd:date ;
+    bs:featuring    bt:author-orla-finnerty ;
+    bs:attendance   "14"^^xsd:integer ;
+    bs:ticketPrice  "24.00"^^xsd:decimal .
+
+bt:event-castle-steps-2025-05-26
+    a               bs:Event ;
+    rdfs:label      "Launch with Cerys Lloyd"@en ;
+    bs:heldAt       bt:shop-castle-steps ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-05-26"^^xsd:date ;
+    bs:featuring    bt:author-cerys-lloyd ;
+    bs:attendance   "190"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+
+bt:event-castle-steps-2025-08-30
+    a               bs:Event ;
+    rdfs:label      "Panel with Elin Morgan"@en ;
+    bs:heldAt       bt:shop-castle-steps ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-08-30"^^xsd:date ;
+    bs:featuring    bt:author-elin-morgan ;
+    bs:attendance   "115"^^xsd:integer ;
+    bs:ticketPrice  "10.00"^^xsd:decimal .
+
+bt:event-clock-tower-2025-04-08
+    a               bs:Event ;
+    rdfs:label      "Book Club with Rab Fingal"@en ;
+    bs:heldAt       bt:shop-clock-tower ;
+    bs:eventKind    "Book Club" ;
+    bs:eventDate    "2025-04-08"^^xsd:date ;
+    bs:featuring    bt:author-rab-fingal ;
+    bs:attendance   "29"^^xsd:integer ;
+    bs:ticketPrice  "3.00"^^xsd:decimal .
+
+bt:event-cliff-road-2025-06-18
+    a               bs:Event ;
+    rdfs:label      "Reading with Elin Morgan"@en ;
+    bs:heldAt       bt:shop-cliff-road ;
+    bs:eventKind    "Reading" ;
+    bs:eventDate    "2025-06-18"^^xsd:date ;
+    bs:featuring    bt:author-elin-morgan ;
+    bs:attendance   "47"^^xsd:integer ;
+    bs:ticketPrice  "5.00"^^xsd:decimal .
+
+bt:event-taff-margin-2025-03-06
+    a               bs:Event ;
+    rdfs:label      "Panel with Bryn Caradoc"@en ;
+    bs:heldAt       bt:shop-taff-margin ;
+    bs:eventKind    "Panel" ;
+    bs:eventDate    "2025-03-06"^^xsd:date ;
+    bs:featuring    bt:author-bryn-caradoc ;
+    bs:attendance   "78"^^xsd:integer ;
+    bs:ticketPrice  "9.00"^^xsd:decimal .
+
+bt:event-taff-margin-2025-11-01
+    a               bs:Event ;
+    rdfs:label      "Launch with Cerys Lloyd"@en ;
+    bs:heldAt       bt:shop-taff-margin ;
+    bs:eventKind    "Launch" ;
+    bs:eventDate    "2025-11-01"^^xsd:date ;
+    bs:featuring    bt:author-cerys-lloyd ;
+    bs:attendance   "124"^^xsd:integer ;
+    bs:ticketPrice  "0.00"^^xsd:decimal .
+

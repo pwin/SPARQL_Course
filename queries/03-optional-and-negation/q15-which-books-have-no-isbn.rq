@@ -1,0 +1,66 @@
+# ==========================================================================
+#  Q15  Which books have no ISBN
+# ==========================================================================
+#
+#  ASKS
+#    Find the books with no ISBN recorded, and say why.
+#
+#  HOW IT WORKS
+#    OPTIONAL brings the ISBN in when there's one; !BOUND(?isbn) then keeps
+#    only the rows where it did not arrive. This 'optional then test for
+#    unbound' shape is the classic way to express absence, and still the
+#    clearest when you also want a value from the row.
+#
+#  DIAGRAM
+#        ?work rdfs:label ?title            74 works
+#                    │
+#                    ▼
+#        OPTIONAL { ?work bs:isbn ?isbn }
+#                    │
+#            ┌───────┴────────┐
+#            ▼                ▼
+#        ?isbn bound      ?isbn UNBOUND
+#            │                │
+#            │                ▼
+#            │       FILTER(!BOUND(?isbn))  ✓ kept
+#            ▼
+#          dropped
+#
+#        Every book published before 1970 lands on the right-hand branch,
+#        because ISBNs did not exist yet.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - OPTIONAL + !BOUND is the 'anti-join': rows where the optional part
+#      failed.
+#    - NOT EXISTS says the same thing more directly when you don't need
+#      anything from inside the optional block.
+#    - Absence in the data usually means something. Here it means the
+#      book is older than the ISBN system.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  11 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?title ?year
+WHERE {
+  ?work a                  bs:Work ;
+        rdfs:label         ?title ;
+        bs:publicationYear ?year .
+  OPTIONAL { ?work bs:isbn ?isbn . }
+  FILTER( !BOUND(?isbn) )
+}
+ORDER BY ?year

@@ -1,0 +1,64 @@
+# ==========================================================================
+#  Q46  Describe a resource
+# ==========================================================================
+#
+#  ASKS
+#    Give me everything that describes The Quire.
+#
+#  HOW IT WORKS
+#    DESCRIBE hands back a graph the engine thinks describes the resource.
+#    What counts as a description is up to the engine, which makes DESCRIBE
+#    convenient for exploring and unwise to rely on in code that must
+#    behave identically everywhere.
+#
+#  DIAGRAM
+#        DESCRIBE bt:shop-quire
+#
+#        most engines return the "concise bounded description":
+#
+#            bt:shop-quire ?p ?o           <- all outgoing statements
+#                  plus, for any ?o that is a blank node,
+#                  that node's statements too, recursively
+#
+#        what you get is NOT specified:
+#          Jena              outgoing statements
+#          HOLOS             outgoing statements
+#          Comunica          outgoing statements
+#          another engine    might include incoming ones too
+#
+#        For anything reproducible, write the CONSTRUCT you actually
+#        mean.  DESCRIBE is for looking around.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - DESCRIBE returns a graph chosen by the engine, and the
+#      specification deliberately leaves the choice open.
+#    - It's excellent for exploring an unfamiliar endpoint.
+#    - Never build a pipeline on it: write the CONSTRUCT you mean
+#      instead.
+#
+#  NOTE
+#    engines-differ: and that's the lesson. Measured on this dataset, the
+#    three engines return different graphs for the same DESCRIBE. Nothing
+#    is broken -- the specification leaves the choice to the engine. This
+#    is the only query in the course whose answer is allowed to vary, and
+#    the only one where that's the point.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  18 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+DESCRIBE bt:shop-quire

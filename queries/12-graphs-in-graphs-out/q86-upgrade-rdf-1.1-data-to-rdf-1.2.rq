@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q86  Upgrade RDF 1.1 data to RDF 1.2
+# ==========================================================================
+#
+#  ASKS
+#    Turn the 95 StockRecord nodes into RDF 1.2 annotations, automatically.
+#
+#  HOW IT WORKS
+#    This is the migration module 11 argues for, written as one query.
+#    TRIPLE() builds a triple term from three variables; IRI() mints a
+#    stable reifier from the record's own name; and the template emits the
+#    base triple, the rdf:reifies link and the annotations. Run it against
+#    the 1.1 file and the output is the 1.2 file's stock section.
+#
+#  DIAGRAM
+#        in  (RDF 1.1, an invented node)      out  (RDF 1.2)
+#
+#        bt:stock-inkwell--the-book-town      bt:shop-inkwell bs:stocks
+#            a bs:StockRecord ;                   bt:book-the-book-town .
+#            bs:atShop     ?shop ;
+#            bs:ofWork     ?work ;            bt:reifier-inkwell--the-book-town
+#            bs:copies     12 ;                   rdf:reifies <<( ?shop bs:stocks
+#            bs:shelfPrice 9.99 .                                  ?work )>> ;
+#                                                 bs:copies     12 ;
+#                                                 bs:shelfPrice 9.99 .
+#
+#        the two functions that make it work:
+#
+#          BIND( TRIPLE(?shop, bs:stocks, ?work) AS ?statement )
+#                ──────┬─────                         builds a triple term
+#                      └── SPARQL 1.2
+#
+#          BIND( IRI(CONCAT("...reifier-", ?suffix)) AS ?reifier )
+#                ─┬─                                    a stable name, so
+#                 └── re-running gives the same IRIs     the output is idempotent
+#
+#        A blank node would work too, and would produce a different
+#        graph every run.  For a migration you want the same one.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - TRIPLE(s, p, o) constructs a triple term in an expression, which
+#      is how you get one into a CONSTRUCT template -- templates can't
+#      call functions themselves.
+#    - IRI(CONCAT(...)) mints names from data. Deriving them from
+#      something stable makes the transformation repeatable.
+#    - A whole modelling migration can be one query. Run it, check the
+#      output, load it, drop the old nodes.
+#
+#  NOTE
+#    Reads the RDF 1.1 file and writes RDF 1.2, so it needs a SPARQL 1.2
+#    engine to run even though its input is 1.1. All three qualify.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  380 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?shop    bs:stocks     ?work .
+  ?reifier rdf:reifies   ?statement ;
+           bs:copies     ?copies ;
+           bs:shelfPrice ?price .
+}
+WHERE {
+  ?record a             bs:StockRecord ;
+          bs:atShop     ?shop ;
+          bs:ofWork     ?work ;
+          bs:copies     ?copies ;
+          bs:shelfPrice ?price .
+
+  BIND( TRIPLE(?shop, bs:stocks, ?work) AS ?statement )
+  BIND( IRI(CONCAT("https://example.org/bookshop-trail/reifier-",
+                   STRAFTER(STR(?record),
+                            "https://example.org/bookshop-trail/stock-")))
+        AS ?reifier )
+}

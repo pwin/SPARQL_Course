@@ -1,0 +1,377 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  05  AUTHORS AND PUBLISHERS
+############################################################################
+#  The influence graph is a directed graph with long chains, a diamond,
+#  and one mutual pair -- because a learner has to discover that
+#  bs:influencedBy+ copes with a cycle and a hand-rolled recursive join
+#  does not. Publisher imprints nest three deep.
+#
+
+# ------------------------------------------------------------------------
+# Publishers
+# ------------------------------------------------------------------------
+bt:pub-lodestone-group
+    a             bs:Publisher ;
+    rdfs:label    "Lodestone Group"@en ;
+    bs:founded    "1988"^^xsd:gYear ;
+    bs:locatedIn  bt:place-london .
+
+bt:pub-northwind
+    a             bs:Publisher ;
+    rdfs:label    "Northwind Press"@en ;
+    bs:imprintOf  bt:pub-lodestone-group ;
+    bs:founded    "1971"^^xsd:gYear ;
+    bs:locatedIn  bt:place-edinburgh .
+
+bt:pub-saltmarsh
+    a             bs:Publisher ;
+    rdfs:label    "Saltmarsh Books"@en ;
+    bs:imprintOf  bt:pub-northwind ;
+    bs:founded    "1996"^^xsd:gYear ;
+    bs:locatedIn  bt:place-norwich .
+
+bt:pub-bell-rock
+    a             bs:Publisher ;
+    rdfs:label    "Bell Rock Editions"@en ;
+    bs:imprintOf  bt:pub-northwind ;
+    bs:founded    "2003"^^xsd:gYear ;
+    bs:locatedIn  bt:place-st-andrews .
+
+bt:pub-cairn
+    a             bs:Publisher ;
+    rdfs:label    "Cairn Publishing"@en ;
+    bs:imprintOf  bt:pub-lodestone-group ;
+    bs:founded    "1979"^^xsd:gYear ;
+    bs:locatedIn  bt:place-inverness .
+
+bt:pub-drovers-road
+    a             bs:Publisher ;
+    rdfs:label    "Drovers Road Press"@en ;
+    bs:imprintOf  bt:pub-cairn ;
+    bs:founded    "2009"^^xsd:gYear ;
+    bs:locatedIn  bt:place-hay-on-wye .
+
+bt:pub-thornfield
+    a             bs:Publisher ;
+    rdfs:label    "Thornfield House"@en ;
+    bs:founded    "1934"^^xsd:gYear ;
+    bs:locatedIn  bt:place-oxford .
+
+bt:pub-pica
+    a             bs:Publisher ;
+    rdfs:label    "Pica Books"@en ;
+    bs:imprintOf  bt:pub-thornfield ;
+    bs:founded    "1990"^^xsd:gYear ;
+    bs:locatedIn  bt:place-cambridge .
+
+bt:pub-wrenline
+    a             bs:Publisher ;
+    rdfs:label    "Wrenline"@en ;
+    bs:imprintOf  bt:pub-pica ;
+    bs:founded    "2012"^^xsd:gYear ;
+    bs:locatedIn  bt:place-bath .
+
+bt:pub-greenslate
+    a             bs:Publisher ;
+    rdfs:label    "Greenslate"@en ;
+    bs:founded    "2001"^^xsd:gYear ;
+    bs:locatedIn  bt:place-cardiff .
+
+bt:pub-cwm-press
+    a             bs:Publisher ;
+    rdfs:label    "Cwm Press"@en ;
+    bs:imprintOf  bt:pub-greenslate ;
+    bs:founded    "2014"^^xsd:gYear ;
+    bs:locatedIn  bt:place-aberystwyth .
+
+bt:pub-harbourmaster
+    a             bs:Publisher ;
+    rdfs:label    "Harbourmaster Books"@en ;
+    bs:founded    "1962"^^xsd:gYear ;
+    bs:locatedIn  bt:place-whitby .
+
+bt:pub-tide-and-tiller
+    a             bs:Publisher ;
+    rdfs:label    "Tide and Tiller"@en ;
+    bs:imprintOf  bt:pub-harbourmaster ;
+    bs:founded    "1998"^^xsd:gYear ;
+    bs:locatedIn  bt:place-penzance .
+
+
+# ------------------------------------------------------------------------
+# Authors
+# ------------------------------------------------------------------------
+bt:author-rhona-blackwood
+    a            bs:Author, bs:Person ;
+    rdfs:label   "Rhona Blackwood"@en ;
+    bs:born      "1901"^^xsd:gYear ;
+    bs:died      "1978"^^xsd:gYear ;
+    bs:basedIn   bt:place-edinburgh ;
+    bs:writesIn  "en" .
+
+bt:author-iolo-vaughan
+    a            bs:Author, bs:Person ;
+    rdfs:label   "Iolo Vaughan"@en ;
+    bs:born      "1908"^^xsd:gYear ;
+    bs:died      "1981"^^xsd:gYear ;
+    bs:basedIn   bt:place-aberystwyth ;
+    bs:writesIn  "cy" .
+
+bt:author-gerard-tyne
+    a            bs:Author, bs:Person ;
+    rdfs:label   "Gerard Tyne"@en ;
+    bs:born      "1912"^^xsd:gYear ;
+    bs:died      "1990"^^xsd:gYear ;
+    bs:basedIn   bt:place-berwick ;
+    bs:writesIn  "en" .
+
+bt:author-maud-ellery
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Maud Ellery"@en ;
+    bs:born          "1918"^^xsd:gYear ;
+    bs:died          "1994"^^xsd:gYear ;
+    bs:basedIn       bt:place-oxford ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-rhona-blackwood .
+
+bt:author-callum-strachan
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Callum Strachan"@en ;
+    bs:born          "1922"^^xsd:gYear ;
+    bs:died          "2001"^^xsd:gYear ;
+    bs:basedIn       bt:place-inverness ;
+    bs:writesIn      "gd" ;
+    bs:influencedBy  bt:author-rhona-blackwood .
+
+bt:author-perrin-oakes
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Perrin Oakes"@en ;
+    bs:born          "1925"^^xsd:gYear ;
+    bs:died          "2004"^^xsd:gYear ;
+    bs:basedIn       bt:place-ludlow ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-gerard-tyne .
+
+bt:author-nesta-hywel
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Nesta Hywel"@en ;
+    bs:born          "1930"^^xsd:gYear ;
+    bs:died          "2011"^^xsd:gYear ;
+    bs:basedIn       bt:place-hay-on-wye ;
+    bs:writesIn      "cy" ;
+    bs:influencedBy  bt:author-iolo-vaughan .
+
+bt:author-dermot-lisle
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Dermot Lisle"@en ;
+    bs:born          "1933"^^xsd:gYear ;
+    bs:died          "2016"^^xsd:gYear ;
+    bs:basedIn       bt:place-liverpool ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-maud-ellery, bt:author-gerard-tyne .
+
+bt:author-agnes-varden
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Agnes Varden"@en ;
+    bs:born          "1937"^^xsd:gYear ;
+    bs:basedIn       bt:place-york ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-maud-ellery .
+
+bt:author-torin-mackay
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Torin MacKay"@en ;
+    bs:born          "1940"^^xsd:gYear ;
+    bs:basedIn       bt:place-portree ;
+    bs:writesIn      "gd" ;
+    bs:influencedBy  bt:author-callum-strachan .
+
+bt:author-bryn-caradoc
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Bryn Caradoc"@en ;
+    bs:born          "1944"^^xsd:gYear ;
+    bs:basedIn       bt:place-cardiff ;
+    bs:writesIn      "cy" ;
+    bs:influencedBy  bt:author-nesta-hywel .
+
+bt:author-selina-frayne
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Selina Frayne"@en ;
+    bs:born          "1947"^^xsd:gYear ;
+    bs:basedIn       bt:place-bath ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-perrin-oakes, bt:author-maud-ellery .
+
+bt:author-hal-morrow
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Hal Morrow"@en ;
+    bs:born          "1951"^^xsd:gYear ;
+    bs:basedIn       bt:place-manchester ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-dermot-lisle .
+
+bt:author-ines-calloway
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Ines Calloway"@en ;
+    bs:born          "1954"^^xsd:gYear ;
+    bs:basedIn       bt:place-london ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-agnes-varden, bt:author-dermot-lisle .
+
+bt:author-fenella-drew
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Fenella Drew"@en ;
+    bs:born          "1958"^^xsd:gYear ;
+    bs:basedIn       bt:place-sedbergh ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-agnes-varden .
+
+bt:author-owain-preece
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Owain Preece"@en ;
+    bs:born          "1960"^^xsd:gYear ;
+    bs:basedIn       bt:place-shrewsbury ;
+    bs:writesIn      "cy" ;
+    bs:influencedBy  bt:author-bryn-caradoc .
+
+bt:author-kirsty-lammond
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Kirsty Lammond"@en ;
+    bs:born          "1962"^^xsd:gYear ;
+    bs:basedIn       bt:place-glasgow ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-torin-mackay, bt:author-hal-morrow, bt:author-tam-brodie .
+
+bt:author-marek-oyelaran
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Marek Oyelaran"@en ;
+    bs:born          "1965"^^xsd:gYear ;
+    bs:basedIn       bt:place-london ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-ines-calloway .
+
+bt:author-delia-stannard
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Delia Stannard"@en ;
+    bs:born          "1967"^^xsd:gYear ;
+    bs:basedIn       bt:place-cambridge ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-selina-frayne .
+
+bt:author-rab-fingal
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Rab Fingal"@en ;
+    bs:born          "1969"^^xsd:gYear ;
+    bs:basedIn       bt:place-wigtown ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-kirsty-lammond .
+
+bt:author-juno-verrall
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Juno Verrall"@en ;
+    bs:born          "1971"^^xsd:gYear ;
+    bs:basedIn       bt:place-whitby ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-fenella-drew, bt:author-ines-calloway .
+
+bt:author-elin-morgan
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Elin Morgan"@en ;
+    bs:born          "1974"^^xsd:gYear ;
+    bs:basedIn       bt:place-aberystwyth ;
+    bs:writesIn      "cy" ;
+    bs:influencedBy  bt:author-owain-preece .
+
+bt:author-sandy-cleghorn
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Sandy Cleghorn"@en ;
+    bs:born          "1976"^^xsd:gYear ;
+    bs:basedIn       bt:place-st-andrews ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-rab-fingal .
+
+bt:author-priya-nandakumar
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Priya Nandakumar"@en ;
+    bs:born          "1978"^^xsd:gYear ;
+    bs:basedIn       bt:place-norwich ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-marek-oyelaran, bt:author-delia-stannard .
+
+bt:author-tam-brodie
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Tam Brodie"@en ;
+    bs:born          "1980"^^xsd:gYear ;
+    bs:basedIn       bt:place-edinburgh ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-kirsty-lammond, bt:author-rab-fingal .
+
+bt:author-cerys-lloyd
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Cerys Lloyd"@en ;
+    bs:born          "1982"^^xsd:gYear ;
+    bs:basedIn       bt:place-hay-on-wye ;
+    bs:writesIn      "cy" ;
+    bs:influencedBy  bt:author-elin-morgan .
+
+bt:author-noor-haddad
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Noor Haddad"@en ;
+    bs:born          "1984"^^xsd:gYear ;
+    bs:basedIn       bt:place-london ;
+    bs:writesIn      "ar" ;
+    bs:influencedBy  bt:author-marek-oyelaran .
+
+bt:author-bram-tillotson
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Bram Tillotson"@en ;
+    bs:born          "1986"^^xsd:gYear ;
+    bs:basedIn       bt:place-keswick ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-juno-verrall .
+
+bt:author-orla-finnerty
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Orla Finnerty"@en ;
+    bs:born          "1988"^^xsd:gYear ;
+    bs:basedIn       bt:place-penzance ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-priya-nandakumar .
+
+bt:author-magnus-thole
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Magnus Thole"@en ;
+    bs:born          "1990"^^xsd:gYear ;
+    bs:basedIn       bt:place-kendal ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-bram-tillotson, bt:author-sandy-cleghorn .
+
+bt:author-yara-tesfaye
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Yara Tesfaye"@en ;
+    bs:born          "1992"^^xsd:gYear ;
+    bs:basedIn       bt:place-manchester ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-noor-haddad, bt:author-orla-finnerty .
+
+bt:author-dilys-tremain
+    a                bs:Author, bs:Person ;
+    rdfs:label       "Dilys Tremain"@en ;
+    bs:born          "1995"^^xsd:gYear ;
+    bs:basedIn       bt:place-exeter ;
+    bs:writesIn      "en" ;
+    bs:influencedBy  bt:author-cerys-lloyd, bt:author-magnus-thole .
+

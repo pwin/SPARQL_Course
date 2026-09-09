@@ -1,0 +1,60 @@
+# ==========================================================================
+#  Q35  Everything except the links you name
+# ==========================================================================
+#
+#  ASKS
+#    What does a shop point at, other than its geometry and its stock?
+#
+#  HOW IT WORKS
+#    A negated property set matches any predicate not in the list. It's the
+#    way to say 'all the other links', which is useful when exploring, and
+#    useful when you want to follow a graph outward without dragging in the
+#    bulky parts.
+#
+#  DIAGRAM
+#        !( bs:stocks | geo:hasGeometry | geo:hasDefaultGeometry )
+#        ▲  ─────────────────┬──────────────────────────────────
+#        │                   └── the predicates to exclude
+#        └── "any predicate BUT these"
+#
+#        bt:shop-colophon
+#            ├─ rdf:type            ✓ kept
+#            ├─ rdfs:label          ✓ kept
+#            ├─ bs:locatedIn        ✓ kept
+#            ├─ bs:stocks           ✗ excluded
+#            └─ geo:hasGeometry     ✗ excluded
+#
+#        Use ^ inside the set to exclude an incoming link:
+#            !( ^bs:heldAt )
+#
+#
+#  WHAT TO TAKE AWAY
+#    - !(a|b|c) matches any predicate outside the set.
+#    - The negated set is the only place a path may not contain a nested
+#      expression -- it takes a plain list of predicates.
+#    - Handy for exploring: follow everything except the parts you
+#      already understand.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?p ?o
+WHERE {
+  bt:shop-colophon !( bs:stocks | geo:hasGeometry | geo:hasDefaultGeometry ) ?o .
+  bt:shop-colophon ?p ?o .
+}
+ORDER BY ?p

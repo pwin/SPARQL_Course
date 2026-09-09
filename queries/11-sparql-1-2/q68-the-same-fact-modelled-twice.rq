@@ -1,0 +1,76 @@
+# ==========================================================================
+#  Q68  The same fact, modelled twice
+# ==========================================================================
+#
+#  ASKS
+#    Stock levels are in this dataset twice over -- once the RDF 1.1 way
+#    and once the 1.2 way. Compare them.
+#
+#  HOW IT WORKS
+#    The 1.1 model invents a bs:StockRecord node to carry copies and price.
+#    The 1.2 model annotates the bs:stocks link directly. Both answer the
+#    question; the query shows what each costs to write, and confirms they
+#    agree.
+#
+#  DIAGRAM
+#        RDF 1.1 -- invent a node                RDF 1.2 -- annotate the link
+#
+#        bt:stock-inkwell--the-book-town         bt:shop-inkwell
+#          a bs:StockRecord ;                        bs:stocks bt:book-the-book-town
+#          bs:atShop     bt:shop-inkwell ;           {| bs:copies 12 ;
+#          bs:ofWork     bt:book-... ;                  bs:shelfPrice 9.99 |} .
+#          bs:copies     12 ;
+#          bs:shelfPrice 9.99 .
+#
+#        5 triples, 1 invented IRI                3 triples, 1 blank reifier
+#        the link is implicit                     the link is a real triple
+#        every query goes via the record          simple queries stay simple
+#
+#        querying them:
+#
+#          ?r bs:atShop ?shop ;                   ?shop bs:stocks ?work
+#             bs:ofWork ?work ;                       {| bs:copies ?n |} .
+#             bs:copies ?n .
+#
+#        Neither is wrong.  The 1.1 form is better when the relationship
+#        has its own identity and lifecycle; the 1.2 form is better when
+#        you just want to say a bit more about a link that already exists.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - The n-ary relation pattern -- invent a node -- is how RDF 1.1 says
+#      anything about a relationship, and it works.
+#    - RDF 1.2 annotations remove the invented node, keeping the
+#      relationship queryable as a plain triple.
+#    - Model with an intermediate node when the relationship is a thing
+#      in its own right; annotate when it's only a link you want to
+#      qualify.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  24 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?title ?copiesVia11 ?copiesVia12
+WHERE {
+  ?record a         bs:StockRecord ;
+          bs:atShop ?shop ;
+          bs:ofWork ?work ;
+          bs:copies ?copiesVia11 .
+  ?shop bs:stocks ?work {| bs:copies ?copiesVia12 |} .
+  ?shop rdfs:label ?shopName .
+  ?work rdfs:label ?title .
+}
+ORDER BY ?shopName ?title

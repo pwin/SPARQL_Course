@@ -1,0 +1,74 @@
+# ==========================================================================
+#  Q89  Invent a relationship the data doesn't have
+# ==========================================================================
+#
+#  ASKS
+#    Link every pair of shops that share a town.
+#
+#  HOW IT WORKS
+#    Nothing in the data says two shops are neighbours; it says only which
+#    town each is in. The relationship is implied by the join, and
+#    CONSTRUCT is what turns an implication into a triple you can then
+#    traverse with a property path like any other.
+#
+#  DIAGRAM
+#        what the data says:
+#
+#          shop-inkwell    bs:locatedIn  place-wigtown
+#          shop-marginalia bs:locatedIn  place-wigtown
+#
+#        what it implies, and does not state:
+#
+#          shop-inkwell  bs:sameTownAs  shop-marginalia
+#
+#        the join that finds it:
+#
+#          ?a bs:locatedIn ?town .
+#          ?b bs:locatedIn ?town .        <- same ?town: that IS the relationship
+#          FILTER( STR(?a) < STR(?b) )    <- each pair once, not twice
+#
+#        7 pairs, one per two-shop town: Wigtown, Edinburgh, Glasgow,
+#        Sedbergh, York, London and Hay-on-Wye.  14 triples, because the
+#        template asserts the link in both directions.
+#
+#        Load the result alongside the source and bs:sameTownAs is now
+#        an ordinary predicate -- paths, counts and all.  This is how a
+#        graph grows a shortcut it uses often.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A relationship implied by a shared value becomes a real edge the
+#      moment you CONSTRUCT it.
+#    - STR(?a) < STR(?b) is the standard guard for emitting an unordered
+#      pair once rather than twice, and it also stops a thing pairing
+#      with itself.
+#    - Materialising a frequently-walked shortcut is a legitimate
+#      optimisation. Just be sure you can rebuild it when the source
+#      changes.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  14 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?a bs:sameTownAs ?b .
+  ?b bs:sameTownAs ?a .
+}
+WHERE {
+  ?a a bs:Bookshop ; bs:locatedIn ?town .
+  ?b a bs:Bookshop ; bs:locatedIn ?town .
+  FILTER( STR(?a) < STR(?b) )
+}

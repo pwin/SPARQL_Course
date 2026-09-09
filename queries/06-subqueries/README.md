@@ -1,0 +1,14 @@
+# Module 06 · Sub-queries
+
+A SELECT inside a WHERE clause. It runs first, produces a small table, and the outer query joins against it. This is how you say 'above average', 'the top three in each group', and 'the one with the most'.
+
+Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
+
+| Query | Asks |
+|---|---|
+| [q37 Books priced above average](q37-books-priced-above-average.rq) | Which books cost more than the average book? |
+| [q38 The best-attended event at every shop](q38-the-best-attended-event-at-every-shop.rq) | For each shop, which single event drew the biggest crowd? |
+| [q39 An aggregate over an aggregate](q39-an-aggregate-over-an-aggregate.rq) | On average, how many books does each of a publisher's authors write? |
+| [q40 Shops that punch above their weight](q40-shops-that-punch-above-their-weight.rq) | Which shops draw a bigger total audience than the average shop does? |
+| [q41 Limiting the inner query, not the outer one](q41-limiting-the-inner-query-not-the-outer-one.rq) | Show every book by the three most prolific authors. |
+| [q42 Authors more prolific than the person who inspired them](q42-authors-more-prolific-than-the-person-who-inspired-them.rq) | Which authors wrote more books than the author who influenced them? |

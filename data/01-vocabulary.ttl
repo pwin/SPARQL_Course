@@ -1,0 +1,713 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  01  VOCABULARY  (OWL 2 DL)
+############################################################################
+#  The schema, described in RDF so the dataset can explain itself. Query
+#  this file to find out what the data holds: it is the first thing worth
+#  asking a strange endpoint. It is also a valid OWL 2 DL ontology, which
+#  is stricter than it looks -- every class, property and datatype is
+#  declared, every property is exactly one of object, datatype or
+#  annotation, and nothing transitive is declared functional. Run
+#  scripts/check_owl.py to have that checked rather than believed.
+#
+<https://example.org/bookshop-trail/schema>
+    a                owl:Ontology ;
+    rdfs:label       "The Bookshop Trail schema"@en ;
+    rdfs:comment     "A teaching vocabulary for a fictional network of independent bookshops at real British locations. Conforms to OWL 2 DL."@en ;
+    owl:versionInfo  "2.0.0" .
+
+
+# ------------------------------------------------------------------------
+# Datatypes. OWL 2 DL requires even the XSD ones to be declared; an undeclared datatype is the commonest way a hand-written vocabulary falls out of the profile
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# Classes
+# ------------------------------------------------------------------------
+bs:Place
+    a             owl:Class ;
+    rdfs:label    "Place"@en ;
+    rdfs:comment  "Anywhere on the map: a settlement, a council area, a region or a country."@en .
+
+bs:Settlement
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Place ;
+    rdfs:label       "Settlement"@en ;
+    rdfs:comment     "A town or city. The only kind of Place a bookshop sits in."@en .
+
+bs:CouncilArea
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Place ;
+    rdfs:label       "CouncilArea"@en ;
+    rdfs:comment     "A local authority area."@en .
+
+bs:Region
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Place ;
+    rdfs:label       "Region"@en ;
+    rdfs:comment     "A grouping of council areas. England has them; Scotland and Wales, in this dataset, do not."@en .
+
+bs:Country
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Place ;
+    rdfs:label       "Country"@en ;
+    rdfs:comment     "Scotland, England or Wales."@en .
+
+bs:Bookshop
+    a             owl:Class ;
+    rdfs:label    "Bookshop"@en ;
+    rdfs:comment  "An independent bookshop on the trail."@en .
+
+bs:Person
+    a             owl:Class ;
+    rdfs:label    "Person"@en ;
+    rdfs:comment  "A human being."@en .
+
+bs:Author
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Person ;
+    rdfs:label       "Author"@en ;
+    rdfs:comment     "Someone who wrote at least one work in this dataset."@en .
+
+bs:Publisher
+    a             owl:Class ;
+    rdfs:label    "Publisher"@en ;
+    rdfs:comment  "A publishing house or one of its imprints."@en .
+
+bs:Work
+    a             owl:Class ;
+    rdfs:label    "Work"@en ;
+    rdfs:comment  "A book. Translations are Works in their own right."@en .
+
+bs:Translation
+    a                owl:Class ;
+    rdfs:subClassOf  bs:Work ;
+    rdfs:label       "Translation"@en ;
+    rdfs:comment     "A work that is a translation of another work."@en .
+
+bs:Series
+    a             owl:Class ;
+    rdfs:label    "Series"@en ;
+    rdfs:comment  "An ordered set of works."@en .
+
+bs:Event
+    a             owl:Class ;
+    rdfs:label    "Event"@en ;
+    rdfs:comment  "Something that happened at a bookshop on a given day."@en .
+
+bs:TrailSegment
+    a             owl:Class ;
+    rdfs:label    "TrailSegment"@en ;
+    rdfs:comment  "A walkable link between two bookshops."@en .
+
+bs:StockRecord
+    a             owl:Class ;
+    rdfs:label    "StockRecord"@en ;
+    rdfs:comment  "How many copies of a work a shop holds, and at what price. The RDF 1.1 way of saying something about a relationship."@en .
+
+bs:Source
+    a             owl:Class ;
+    rdfs:label    "Source"@en ;
+    rdfs:comment  "Something that makes claims: a guidebook, a survey, a newspaper."@en .
+
+bs:DataIssue
+    a             owl:Class ;
+    rdfs:label    "DataIssue"@en ;
+    rdfs:comment  "A finding produced by the validation report in q88. Nothing in the shipped data has this type; the CONSTRUCT mints them."@en .
+
+
+# ------------------------------------------------------------------------
+# Classes borrowed from other vocabularies. Declared here because the profile is checked over the imports closure, and nothing is imported
+# ------------------------------------------------------------------------
+skos:Concept
+    a             owl:Class ;
+    rdfs:comment  "A concept in the genre scheme."@en .
+
+skos:ConceptScheme
+    a             owl:Class ;
+    rdfs:comment  "The genre scheme itself."@en .
+
+geo:Feature
+    a             owl:Class ;
+    rdfs:comment  "A GeoSPARQL feature: something with a geometry."@en .
+
+geo:Geometry
+    a             owl:Class ;
+    rdfs:comment  "A GeoSPARQL geometry."@en .
+
+sf:Point
+    a             owl:Class ;
+    rdfs:comment  "A Simple Features point."@en .
+
+sf:Polygon
+    a             owl:Class ;
+    rdfs:comment  "A Simple Features polygon."@en .
+
+sf:LineString
+    a             owl:Class ;
+    rdfs:comment  "A Simple Features line."@en .
+
+prov:Entity
+    a             owl:Class ;
+    rdfs:comment  "A PROV entity, used for the named graphs and the sources."@en .
+
+
+# ------------------------------------------------------------------------
+# Disjointness. Nothing in this dataset is both a place and a bookshop, and saying so is what lets a reasoner detect it if something ever is
+# ------------------------------------------------------------------------
+[] a owl:AllDisjointClasses ;
+   owl:members ( bs:Place bs:Bookshop bs:Person bs:Publisher bs:Work bs:Series bs:Event bs:TrailSegment bs:StockRecord bs:Source bs:DataIssue ) .
+
+[] a owl:AllDisjointClasses ;
+   owl:members ( bs:Settlement bs:CouncilArea bs:Region bs:Country ) .
+
+
+# ------------------------------------------------------------------------
+# Object properties: the range of every one is a class
+# ------------------------------------------------------------------------
+bs:within
+    a             owl:ObjectProperty, owl:TransitiveProperty ;
+    rdfs:domain   bs:Place ;
+    rdfs:range    bs:Place ;
+    rdfs:label    "within"@en ;
+    rdfs:comment  "Directly inside another place. Chain it with + or * to reach any ancestor. Transitive, and therefore non-simple: OWL 2 DL forbids declaring it functional or counting it in a cardinality restriction."@en .
+
+bs:locatedIn
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   [ a owl:Class ; owl:unionOf ( bs:Bookshop bs:Publisher ) ] ;
+    rdfs:range    bs:Settlement ;
+    rdfs:label    "locatedIn"@en ;
+    rdfs:comment  "The settlement a shop or publisher trades in."@en .
+
+bs:specialises
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    skos:Concept ;
+    rdfs:label    "specialises"@en ;
+    rdfs:comment  "The genre the shop is known for."@en .
+
+bs:connectsTo
+    a             owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "connectsTo"@en ;
+    rdfs:comment  "A trail segment runs between these two shops. Walkable in either direction, but asserted once, so queries need connectsTo|^connectsTo."@en .
+
+bs:segmentFrom
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:TrailSegment ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "segmentFrom"@en ;
+    rdfs:comment  "One end of a trail segment."@en .
+
+bs:segmentTo
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:TrailSegment ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "segmentTo"@en ;
+    rdfs:comment  "The other end of a trail segment."@en .
+
+bs:basedIn
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Person ;
+    rdfs:range    bs:Settlement ;
+    rdfs:label    "basedIn"@en ;
+    rdfs:comment  "Where the person lives or lived."@en .
+
+bs:influencedBy
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Author ;
+    rdfs:range    bs:Author ;
+    rdfs:label    "influencedBy"@en ;
+    rdfs:comment  "Whom this author read first. Deliberately NOT transitive: influence fades, and the course wants bs:influencedBy+ to be the learner's job rather than the reasoner's."@en .
+
+bs:wrote
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Author ;
+    rdfs:range    bs:Work ;
+    rdfs:label    "wrote"@en ;
+    rdfs:comment  "Inverse of bs:author."@en .
+
+bs:author
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    bs:Author ;
+    rdfs:label    "author"@en ;
+    rdfs:comment  "Who wrote it."@en .
+
+bs:publishedBy
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    bs:Publisher ;
+    rdfs:label    "publishedBy"@en ;
+    rdfs:comment  "The imprint that published it."@en .
+
+bs:imprintOf
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Publisher ;
+    rdfs:range    bs:Publisher ;
+    rdfs:label    "imprintOf"@en ;
+    rdfs:comment  "This publisher is an imprint of that one. Chains run three deep. Not declared transitive, so that q44 has something to CONSTRUCT."@en .
+
+bs:hasImprint
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Publisher ;
+    rdfs:range    bs:Publisher ;
+    rdfs:label    "hasImprint"@en ;
+    rdfs:comment  "Asserted nowhere in the data: it exists so a reasoner can infer it, and so ^bs:imprintOf has something to be compared with."@en .
+
+bs:genre
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    skos:Concept ;
+    rdfs:label    "genre"@en ;
+    rdfs:comment  "A concept from the genre scheme."@en .
+
+bs:translationOf
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Translation ;
+    rdfs:range    bs:Work ;
+    rdfs:label    "translationOf"@en ;
+    rdfs:comment  "The work this is a translation of."@en .
+
+bs:translatedBy
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Translation ;
+    rdfs:range    bs:Author ;
+    rdfs:label    "translatedBy"@en ;
+    rdfs:comment  "Who translated it. Not always recorded."@en .
+
+bs:inSeries
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    bs:Series ;
+    rdfs:label    "inSeries"@en ;
+    rdfs:comment  "The series this work belongs to."@en .
+
+bs:heldAt
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "heldAt"@en ;
+    rdfs:comment  "Where the event happened."@en .
+
+bs:featuring
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:range    bs:Author ;
+    rdfs:label    "featuring"@en ;
+    rdfs:comment  "The author who appeared."@en .
+
+bs:stocks
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    bs:Work ;
+    rdfs:label    "stocks"@en ;
+    rdfs:comment  "The shop has this work on the shelves."@en .
+
+bs:atShop
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:StockRecord ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "atShop"@en ;
+    rdfs:comment  "The shop this stock record is about."@en .
+
+bs:ofWork
+    a             owl:ObjectProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:StockRecord ;
+    rdfs:range    bs:Work ;
+    rdfs:label    "ofWork"@en ;
+    rdfs:comment  "The work this stock record is about."@en .
+
+bs:claimedBy
+    a             owl:ObjectProperty ;
+    rdfs:range    bs:Source ;
+    rdfs:label    "claimedBy"@en ;
+    rdfs:comment  "Which source asserted the annotated statement. Its subject is an RDF 1.2 reifier, so no domain is stated."@en .
+
+bs:about
+    a             owl:ObjectProperty ;
+    rdfs:domain   bs:DataIssue ;
+    rdfs:label    "about"@en ;
+    rdfs:comment  "What a validation finding is about. Range unstated because a finding may be about a work or a shop."@en .
+
+bs:sameTownAs
+    a             owl:ObjectProperty, owl:SymmetricProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    bs:Bookshop ;
+    rdfs:label    "sameTownAs"@en ;
+    rdfs:comment  "Two shops in the same town. Asserted nowhere: q89 constructs it."@en .
+
+
+# ------------------------------------------------------------------------
+# Datatype properties: the range of every one is a datatype
+# ------------------------------------------------------------------------
+bs:founded
+    a             owl:DatatypeProperty ;
+    rdfs:domain   [ a owl:Class ; owl:unionOf ( bs:Bookshop bs:Publisher ) ] ;
+    rdfs:label    "founded"@en ;
+    rdfs:comment  "The year the shop or publisher opened. NOT functional: the RDF 1.2 layer records rival claims about four of them, and a functional declaration would make those a contradiction rather than a disagreement.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:gYear, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:floorArea
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "floorArea"@en ;
+    rdfs:comment  "Selling floor in square metres."@en .
+
+bs:staffCount
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "staffCount"@en ;
+    rdfs:comment  "People on the payroll."@en .
+
+bs:sellsSecondHand
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    xsd:boolean ;
+    rdfs:label    "sellsSecondHand"@en ;
+    rdfs:comment  "Whether the shop deals in second-hand books."@en .
+
+bs:hasCafe
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    xsd:boolean ;
+    rdfs:label    "hasCafe"@en ;
+    rdfs:comment  "Whether there is a cafe on the premises."@en .
+
+bs:website
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Bookshop ;
+    rdfs:range    xsd:anyURI ;
+    rdfs:label    "website"@en ;
+    rdfs:comment  "The shop's own site. Not every shop has one."@en .
+
+bs:distanceKm
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:TrailSegment ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "distanceKm"@en ;
+    rdfs:comment  "Straight-line distance between the two ends, in kilometres."@en .
+
+bs:waymarked
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:TrailSegment ;
+    rdfs:range    xsd:boolean ;
+    rdfs:label    "waymarked"@en ;
+    rdfs:comment  "Whether the segment has signposts."@en .
+
+bs:born
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Person ;
+    rdfs:label    "born"@en ;
+    rdfs:comment  "Year of birth.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:gYear, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:died
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Person ;
+    rdfs:label    "died"@en ;
+    rdfs:comment  "Year of death. Absent for the living.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:gYear, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:writesIn
+    a             owl:DatatypeProperty ;
+    rdfs:domain   bs:Author ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "writesIn"@en ;
+    rdfs:comment  "BCP 47 code of the language the author writes in."@en .
+
+bs:publicationYear
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:label    "publicationYear"@en ;
+    rdfs:comment  "Year of first publication of this edition.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:gYear, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:pages
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "pages"@en ;
+    rdfs:comment  "Extent in pages."@en .
+
+bs:rrp
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "rrp"@en ;
+    rdfs:comment  "Recommended retail price in pounds."@en .
+
+bs:isbn
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "isbn"@en ;
+    rdfs:comment  "ISBN-13. Books published before 1970 do not have one."@en .
+
+bs:originalLanguage
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "originalLanguage"@en ;
+    rdfs:comment  "The language the work was written in."@en .
+
+bs:seriesPosition
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "seriesPosition"@en ;
+    rdfs:comment  "Position within the series, counting from 1."@en .
+
+bs:eventKind
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "eventKind"@en ;
+    rdfs:comment  "Reading, Signing, Launch, Workshop, Panel, Book Club or Lecture."@en .
+
+bs:eventDate
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:label    "eventDate"@en ;
+    rdfs:comment  "The day it happened.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:date, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:attendance
+    a             owl:DatatypeProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "attendance"@en ;
+    rdfs:comment  "How many people came. NOT functional, for the same reason as bs:founded: sources disagree."@en .
+
+bs:ticketPrice
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Event ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "ticketPrice"@en ;
+    rdfs:comment  "Price in pounds. Zero means free."@en .
+
+bs:copies
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:StockRecord ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "copies"@en ;
+    rdfs:comment  "Copies held."@en .
+
+bs:shelfPrice
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:StockRecord ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "shelfPrice"@en ;
+    rdfs:comment  "What this shop charges, which may differ from the RRP."@en .
+
+bs:population
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Settlement ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "population"@en ;
+    rdfs:comment  "Resident population."@en .
+
+bs:isBookTown
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Settlement ;
+    rdfs:range    xsd:boolean ;
+    rdfs:label    "isBookTown"@en ;
+    rdfs:comment  "Whether the town is a recognised book town."@en .
+
+bs:easting
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Place ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "easting"@en ;
+    rdfs:comment  "British National Grid easting in metres (EPSG:27700). Plane coordinates, so ordinary arithmetic on them is correct."@en .
+
+bs:northing
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Place ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "northing"@en ;
+    rdfs:comment  "British National Grid northing in metres (EPSG:27700)."@en .
+
+bs:sourceKind
+    a             owl:DatatypeProperty, owl:FunctionalProperty ;
+    rdfs:domain   bs:Source ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "sourceKind"@en ;
+    rdfs:comment  "guidebook, survey, register, newspaper or self-reported."@en .
+
+bs:rating
+    a             owl:DatatypeProperty ;
+    rdfs:domain   bs:Work ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "rating"@en ;
+    rdfs:comment  "A score out of ten. Always annotated with who gave it."@en .
+
+bs:confidence
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:decimal ;
+    rdfs:label    "confidence"@en ;
+    rdfs:comment  "How much a claim is trusted, from 0 to 1. Stated on a Source, and on an RDF 1.2 reifier, so no domain is declared."@en .
+
+bs:statedOn
+    a             owl:DatatypeProperty ;
+    rdfs:label    "statedOn"@en ;
+    rdfs:comment  "The date a claim was made. Subject is a reifier.No range is declared, and that is deliberate: the shipped 1.1 data types this as xsd:date, which is not in the OWL 2 datatype map, so declaring the range would put the specification outside OWL 2 DL. Declaring xsd:integer instead would be worse -- it would be false of the data. See data/bookshop-trail-owl-dl.ttl."@en .
+
+bs:critic
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "critic"@en ;
+    rdfs:comment  "The reviewer's name."@en .
+
+bs:publication
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "publication"@en ;
+    rdfs:comment  "Where the review appeared."@en .
+
+bs:townName
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "townName"@en ;
+    rdfs:comment  "Used only by the CONSTRUCT templates in modules 07 and 12; never asserted in the shipped data."@en .
+
+bs:countryName
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "countryName"@en ;
+    rdfs:comment  "As bs:townName."@en .
+
+bs:specialism
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "specialism"@en ;
+    rdfs:comment  "As bs:townName."@en .
+
+bs:eventCount
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "eventCount"@en ;
+    rdfs:comment  "As bs:townName."@en .
+
+bs:shopCount
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "shopCount"@en ;
+    rdfs:comment  "As bs:townName."@en .
+
+bs:workCount
+    a             owl:DatatypeProperty ;
+    rdfs:range    xsd:integer ;
+    rdfs:label    "workCount"@en ;
+    rdfs:comment  "As bs:townName."@en .
+
+bs:message
+    a             owl:DatatypeProperty ;
+    rdfs:domain   bs:DataIssue ;
+    rdfs:range    xsd:string ;
+    rdfs:label    "message"@en ;
+    rdfs:comment  "What a validation finding says."@en .
+
+
+# ------------------------------------------------------------------------
+# Annotation properties. This is where the OWL specification stops and RDF 1.2 begins
+# ------------------------------------------------------------------------
+bs:disputes
+    a             owl:AnnotationProperty ;
+    rdfs:label    "disputes"@en ;
+    rdfs:comment  "A triple term this source says is wrong. Declared an annotation property because its object is an RDF 1.2 triple term, which OWL 2 has no way to type. This is the boundary of the DL specification, and it is where the RDF 1.2 layer begins."@en .
+
+
+# ------------------------------------------------------------------------
+# Properties borrowed from other vocabularies
+# ------------------------------------------------------------------------
+skos:broader
+    a            owl:ObjectProperty ;
+    rdfs:domain  skos:Concept ;
+    rdfs:range   skos:Concept .
+
+skos:narrower
+    a            owl:ObjectProperty ;
+    rdfs:domain  skos:Concept ;
+    rdfs:range   skos:Concept .
+
+skos:inScheme
+    a            owl:ObjectProperty ;
+    rdfs:domain  skos:Concept ;
+    rdfs:range   skos:ConceptScheme .
+
+skos:topConceptOf
+    a            owl:ObjectProperty ;
+    rdfs:domain  skos:Concept ;
+    rdfs:range   skos:ConceptScheme .
+
+skos:hasTopConcept
+    a            owl:ObjectProperty ;
+    rdfs:domain  skos:ConceptScheme ;
+    rdfs:range   skos:Concept .
+
+geo:hasGeometry
+    a            owl:ObjectProperty ;
+    rdfs:domain  geo:Feature ;
+    rdfs:range   geo:Geometry .
+
+geo:hasDefaultGeometry
+    a            owl:ObjectProperty ;
+    rdfs:domain  geo:Feature ;
+    rdfs:range   geo:Geometry .
+
+wgs84:lat
+    a           owl:DatatypeProperty ;
+    rdfs:range  xsd:decimal .
+
+wgs84:long
+    a           owl:DatatypeProperty ;
+    rdfs:range  xsd:decimal .
+
+skos:prefLabel
+    a  owl:AnnotationProperty .
+
+skos:altLabel
+    a  owl:AnnotationProperty .
+
+skos:scopeNote
+    a  owl:AnnotationProperty .
+
+skos:note
+    a  owl:AnnotationProperty .
+
+skos:notation
+    a  owl:AnnotationProperty .
+
+dct:title
+    a  owl:AnnotationProperty .
+
+dct:description
+    a  owl:AnnotationProperty .
+
+dct:isPartOf
+    a  owl:AnnotationProperty .
+
+geo:asWKT
+    a  owl:AnnotationProperty .
+
+
+# ------------------------------------------------------------------------
+# Inverses. bs:hasImprint is asserted nowhere in the data, so a reasoner has something to do and q44 has something to CONSTRUCT
+# ------------------------------------------------------------------------
+bs:wrote
+    owl:inverseOf  bs:author .
+
+bs:hasImprint
+    owl:inverseOf  bs:imprintOf .
+

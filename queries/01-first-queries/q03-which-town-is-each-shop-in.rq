@@ -1,0 +1,57 @@
+# ==========================================================================
+#  Q03  Which town is each shop in
+# ==========================================================================
+#
+#  ASKS
+#    Pair every shop with the name of the town it trades in.
+#
+#  HOW IT WORKS
+#    Three patterns chained through two join variables. ?shop links the
+#    first two, ?town links the second and third. The engine is free to
+#    evaluate them in any order it likes; what matters to you is only that
+#    the shared variables line up.
+#
+#  DIAGRAM
+#        ?shop ──rdfs:label──▶ ?shopName
+#          │
+#          └──bs:locatedIn──▶ ?town ──rdfs:label──▶ ?townName
+#
+#        Two joins:  ?shop  ties lines 1 and 2
+#                    ?town  ties lines 2 and 3
+#
+#        A chain like this is how you walk one hop at a time.  Module 05
+#        replaces the whole chain with a single path expression.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Chaining patterns walks the graph one edge at a time.
+#    - Semicolon repeats the subject; a full stop starts a new one. This
+#      is Turtle syntax reused inside SPARQL.
+#    - Labels live on the thing, not on the link. To show a name you
+#      almost always need one extra pattern per resource.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  45 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?townName
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?shopName ;
+        bs:locatedIn ?town .
+  ?town rdfs:label   ?townName .
+}
+ORDER BY ?townName ?shopName

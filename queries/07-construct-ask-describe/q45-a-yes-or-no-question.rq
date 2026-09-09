@@ -1,0 +1,61 @@
+# ==========================================================================
+#  Q45  A yes or no question
+# ==========================================================================
+#
+#  ASKS
+#    Is there a bookshop in Wales with a cafe?
+#
+#  HOW IT WORKS
+#    ASK returns a single boolean. The engine may stop at the first match,
+#    so it's the cheapest way to test for existence -- and much better than
+#    running a SELECT and counting the rows yourself.
+#
+#  DIAGRAM
+#        ASK {
+#          ?shop bs:locatedIn/bs:within+ bt:place-wales ;
+#                bs:hasCafe true .
+#        }
+#
+#                  ┌─────────────┐
+#                  │  any match? │
+#                  └──────┬──────┘
+#                         │
+#                ┌────────┴────────┐
+#                ▼                 ▼
+#              true              false
+#
+#        One value comes back, not a table.  The engine is allowed to
+#        stop looking the moment it finds one solution.
+#
+#        In the editor the result appears as a single true/false rather
+#        than a results grid.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - ASK answers existence questions and returns one boolean.
+#    - It's cheaper than SELECT because the engine can stop at the first
+#      solution.
+#    - Use it for tests -- in a script, or in a validation step -- not
+#      for fetching data.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+ASK {
+  ?shop bs:locatedIn/bs:within+ bt:place-wales ;
+        bs:hasCafe             true .
+}

@@ -1,0 +1,90 @@
+# ==========================================================================
+#  Q74  A trust report
+# ==========================================================================
+#
+#  ASKS
+#    Produce a report of every disputed fact in the dataset, the rival
+#    claims, and which source the evidence favours.
+#
+#  HOW IT WORKS
+#    The capstone. Annotations supply the claims, a sub-query finds the
+#    best-supported one, GROUP_CONCAT lists the rivals, and the result is a
+#    single table a human could act on. It uses most of the course at once,
+#    which is the point.
+#
+#  DIAGRAM
+#        for every shop with more than one founding claim:
+#
+#          ┌ all claims ────────────────────────────┐
+#          │ ?shop bs:founded ?y {| claimedBy ?s ;  │
+#          │                        confidence ?c |}│
+#          └────────────┬───────────────────────────┘
+#                       │
+#          ┌ best per shop ─────────┐  ┌ list them all ──────────┐
+#          │ MAX(?c) -> ?best       │  │ GROUP_CONCAT(?y)        │
+#          └────────────┬───────────┘  └────────────┬────────────┘
+#                       └───────────┬───────────────┘
+#                                   ▼
+#        ┌──────────────┬──────────┬──────────┬───────────────────┐
+#        │ shop         │ claims   │ accepted │ on the word of    │
+#        ├──────────────┼──────────┼──────────┼───────────────────┤
+#        │ Ex Libris    │1919,1921 │   1919   │ national register │
+#        │ Endpapers    │1946,1949 │   1949   │ national register │
+#        │ Candlemas  │1928,1931 │   1931   │ national register │
+#        │ Castle Steps │1962,1965 │   1962   │ trail guide 2024  │
+#        └──────────────┴──────────┴──────────┴───────────────────┘
+#
+#        HAVING(COUNT(DISTINCT ?y) > 1) keeps only the genuine
+#        disagreements: shops whose sources agree are not news.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - RDF 1.2 annotations plus ordinary SPARQL aggregation produce real
+#      provenance reporting, with no special machinery.
+#    - HAVING on a count is how you keep only the interesting groups.
+#    - The dataset stores what was claimed; the query decides what to
+#      believe. Keeping those separate is the whole argument for
+#      statement-level annotation.
+#
+#  NOTE
+#    engines-differ: the years inside the GROUP_CONCAT come out in
+#    different orders on the three engines, and SAMPLE is explicitly
+#    allowed to pick any value from its group. The shops listed and the
+#    year accepted for each are identical everywhere.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName
+       (GROUP_CONCAT(DISTINCT STR(?year); SEPARATOR=", ") AS ?claimedYears)
+       (SAMPLE(?accepted) AS ?accept)
+       (SAMPLE(?acceptedSource) AS ?onTheWordOf)
+WHERE {
+  ?shop bs:founded ?year {| bs:confidence ?c |} .
+  ?shop rdfs:label ?shopName .
+  {
+    SELECT ?shop (MAX(?c2) AS ?bestConfidence)
+    WHERE { ?shop bs:founded ?y2 {| bs:confidence ?c2 |} }
+    GROUP BY ?shop
+  }
+  ?shop bs:founded ?accepted
+        {| bs:confidence ?bestConfidence ; bs:claimedBy ?src |} .
+  ?src rdfs:label ?acceptedSource .
+}
+GROUP BY ?shop ?shopName
+HAVING( COUNT(DISTINCT ?year) > 1 )
+ORDER BY ?shopName

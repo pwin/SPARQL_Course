@@ -1,0 +1,77 @@
+# ==========================================================================
+#  Q47  A summary graph worth keeping
+# ==========================================================================
+#
+#  ASKS
+#    Build a compact profile of every shop: name, town, country, specialism
+#    and event count.
+#
+#  HOW IT WORKS
+#    CONSTRUCT with aggregation. The sub-query counts events per shop; the
+#    template then assembles one tidy node per shop. The output is small
+#    enough to paste into the editor and see whole, which the source data
+#    isn't.
+#
+#  DIAGRAM
+#        5,000-triple dataset            ~165-triple summary
+#        ┌────────────────────┐          ┌────────────────────┐
+#        │ shops, towns,      │  ──▶     │ bt:shop-quire      │
+#        │ councils, regions, │          │   rdfs:label ...   │
+#        │ countries, events, │          │   bs:townName ...  │
+#        │ geometry, stock... │          │   bs:countryName ..│
+#        └────────────────────┘          │   bs:eventCount 2  │
+#                                        └────────────────────┘
+#
+#        This is the query to run before visualising.  The editor's graph
+#        view draws 10 subjects at a time; a summary makes those 10
+#        subjects worth looking at.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - CONSTRUCT and aggregation combine: compute in the WHERE, assemble
+#      in the template.
+#    - Producing a small summary graph is the practical answer to 'this
+#      dataset is too big to visualise'.
+#    - The output is valid Turtle. Save it, load it, query it again.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  165 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?shop rdfs:label     ?shopName ;
+        bs:townName    ?townName ;
+        bs:countryName ?countryName ;
+        bs:specialism  ?genreName ;
+        bs:eventCount  ?events .
+}
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?shopName ;
+        bs:locatedIn ?town ;
+        bs:specialises ?genre .
+  ?town  rdfs:label  ?townName .
+  ?genre skos:prefLabel ?genreName .
+  ?town  bs:within+  ?country .
+  ?country a bs:Country ; rdfs:label ?countryName .
+  FILTER( LANG(?townName) = "en" && LANG(?countryName) = "en"
+          && LANG(?genreName) = "en" )
+  {
+    SELECT ?shop (COUNT(?e) AS ?events)
+    WHERE { ?e bs:heldAt ?shop . }
+    GROUP BY ?shop
+  }
+}

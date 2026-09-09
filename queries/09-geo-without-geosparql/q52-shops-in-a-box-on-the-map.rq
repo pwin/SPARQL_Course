@@ -1,0 +1,71 @@
+# ==========================================================================
+#  Q52  Shops in a box on the map
+# ==========================================================================
+#
+#  ASKS
+#    Which shops lie in the south west, between 50 and 52 degrees north and
+#    west of 2 degrees?
+#
+#  HOW IT WORKS
+#    A bounding box is four comparisons on two numbers. The dataset
+#    publishes plain wgs84:lat and wgs84:long decimals next to the WKT
+#    geometry precisely so that this works in an engine with no geospatial
+#    support at all.
+#
+#  DIAGRAM
+#            long -6         -2
+#              │              │
+#         52 ──┼──────────────┼──  lat 52
+#              │  ●Aberystwyth│
+#              │      ●Bath   │        ● inside the box -> kept
+#              │ ●Exeter      │        ○ outside       -> dropped
+#              │●Penzance     │
+#         50 ──┼──────────────┼──  lat 50
+#              │              │
+#
+#        FILTER( ?lat > 50 && ?lat < 52 && ?long < -2 )
+#
+#        Four numeric comparisons.  No functions, no extensions, no
+#        GeoSPARQL.  This runs in the browser editor unchanged.
+#
+#        A box is also the right FIRST step for an expensive query: cheap
+#        to evaluate, and it throws away most of the candidates before
+#        anything costly runs.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A bounding box is the cheapest spatial filter there's, and needs
+#      nothing beyond numeric comparison.
+#    - Publishing coordinates as plain decimals alongside the WKT costs a
+#      few triples and makes the data usable in engines with no
+#      geospatial support.
+#    - Use a box to prefilter before an exact test. The box is wrong at
+#      the corners, but it's fast, and the exact test then fixes the
+#      corners.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?lat ?long
+WHERE {
+  ?shop a           bs:Bookshop ;
+        rdfs:label  ?name ;
+        wgs84:lat   ?lat ;
+        wgs84:long  ?long .
+  FILTER( ?lat > 50.0 && ?lat < 52.0 && ?long < -2.0 )
+}
+ORDER BY ?lat

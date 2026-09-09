@@ -1,0 +1,96 @@
+# ==========================================================================
+#  Q55  Where the flat-Earth shortcut breaks
+# ==========================================================================
+#
+#  ASKS
+#    Show a pair of places where degree arithmetic and grid arithmetic
+#    disagree.
+#
+#  HOW IT WORKS
+#    Both metrics are computed for every pair of settlements and their
+#    ratio taken. Near 53 degrees north the two agree closely; at the top
+#    of Scotland the fixed longitude scale is badly wrong, and the degree-
+#    based figure overstates the distance by more than a tenth.
+#
+#  DIAGRAM
+#        degree metric assumes:  1 deg longitude = 66.70 km   (true at 53 N)
+#
+#        but a degree of longitude shrinks towards the pole:
+#
+#            at 50 N  ->  71.7 km      degree metric UNDERSTATES
+#            at 53 N  ->  66.9 km      about right
+#            at 57 N  ->  60.5 km      degree metric OVERSTATES
+#
+#        Inverness (57.5 N) to Portree (57.4 N), almost due west:
+#
+#            true, on the grid   118 km
+#            degree metric       132 km        +11.4%
+#
+#        ┌──────────────┬───────────┬───────────┬───────┐
+#        │ pair         │ grid km   │ degree km │ ratio │
+#        ├──────────────┼───────────┼───────────┼───────┤
+#        │ Inverness -  │    118    │    132    │ 1.114 │
+#        │ Portree      │           │           │       │
+#        └──────────────┴───────────┴───────────┴───────┘
+#
+#        The lesson is not "never approximate".  It is "know where your
+#        approximation fails, and check whether your data lives there".
+#
+#
+#  WHAT TO TAKE AWAY
+#    - An approximation that's fine in the middle of your data can be
+#      badly wrong at its edges.
+#    - East-west distances at high latitude are where a fixed longitude
+#      scale fails first.
+#    - Comparing two methods on the same data is the cheapest way to find
+#      out whether the simpler one is good enough.
+#    - Keep intermediate values small and give them names. Dividing by a
+#      ten-digit expression inline left ?ratio unbound on one of the
+#      three engines; dividing the two rounded kilometre figures instead
+#      works everywhere and reads better.
+#    - An unbound ORDER BY key doesn't raise an error. It just stops
+#      sorting, and the top of your result is then whatever the engine
+#      happened to produce first.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?fromName ?toName ?gridKm2 ?degreeKm2 ?ratio
+WHERE {
+  ?a a bs:Settlement ; rdfs:label ?fromName ;
+     bs:easting ?ae ; bs:northing ?an ; wgs84:lat ?alat ; wgs84:long ?alon .
+  ?b a bs:Settlement ; rdfs:label ?toName ;
+     bs:easting ?be ; bs:northing ?bn ; wgs84:lat ?blat ; wgs84:long ?blon .
+  FILTER( STR(?fromName) < STR(?toName) )
+  FILTER( LANG(?fromName) = "en" && LANG(?toName) = "en" )
+
+  BIND( (?be - ?ae) * (?be - ?ae) + (?bn - ?an) * (?bn - ?an) AS ?gridM2 )
+  BIND( ((?blat - ?alat) * 111.19) AS ?dy )
+  BIND( ((?blon - ?alon) * 66.70)  AS ?dx )
+  BIND( ?dx * ?dx + ?dy * ?dy AS ?degKm2 )
+
+  FILTER( ?gridM2 > 100000000 )
+  BIND( ROUND(?gridM2 / 1000000.0) AS ?gridKm2 )
+  BIND( ROUND(?degKm2)             AS ?degreeKm2 )
+  # Divide the two small rounded values, not the raw squared metres. Dividing
+  # by a ten-digit decimal expression inline left ?ratio unbound on one of the
+  # three engines -- and an unbound sort key means ORDER BY has nothing to
+  # work with, so the "worst" rows were not the worst at all.
+  BIND( ROUND(?degreeKm2 * 1000.0 / ?gridKm2) / 1000.0 AS ?ratio )
+}
+ORDER BY DESC(?ratio)
+LIMIT 8

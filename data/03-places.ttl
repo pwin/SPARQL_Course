@@ -1,0 +1,866 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  03  PLACES
+############################################################################
+#  Real British places with real WGS84 coordinates, so distances and
+#  containment can be checked against a map. Settlements carry a point;
+#  council areas, regions and countries carry a simplified coverage
+#  polygon computed from the settlements inside them -- a stated
+#  envelope, not an official boundary.
+#
+bt:place-gb
+    a              bs:Place, geo:Feature ;
+    rdfs:label     "Great Britain"@en ;
+    skos:notation  "GB" .
+
+
+# ------------------------------------------------------------------------
+# Countries
+# ------------------------------------------------------------------------
+bt:place-scotland
+    a                       bs:Country, bs:Place, geo:Feature ;
+    rdfs:label              "Scotland"@en ;
+    rdfs:label              "Alba"@gd ;
+    bs:within               bt:place-gb ;
+    geo:hasGeometry         bt:geom-scotland ;
+    geo:hasDefaultGeometry  bt:geom-scotland .
+
+bt:geom-scotland
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-6.51134 57.55901, -4.47918 54.64555, -2.88730 55.80558, -2.39506 56.31430, -4.23957 57.70217, -6.51134 57.55901))"^^geo:wktLiteral .
+
+bt:place-england
+    a                       bs:Country, bs:Place, geo:Feature ;
+    rdfs:label              "England"@en ;
+    bs:within               bt:place-gb ;
+    geo:hasGeometry         bt:geom-england ;
+    geo:hasDefaultGeometry  bt:geom-england .
+
+bt:geom-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-5.74733 49.93940, 0.08635 51.32691, 1.65991 52.58915, -2.01255 55.99538, -3.29307 54.80638, -5.74733 49.93940))"^^geo:wktLiteral .
+
+bt:place-wales
+    a                       bs:Country, bs:Place, geo:Feature ;
+    rdfs:label              "Wales"@en ;
+    rdfs:label              "Cymru"@cy ;
+    bs:within               bt:place-gb ;
+    geo:hasGeometry         bt:geom-wales ;
+    geo:hasDefaultGeometry  bt:geom-wales .
+
+bt:geom-wales
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-4.32934 52.57987, -3.06374 51.26874, -2.79084 52.16103, -4.32934 52.57987))"^^geo:wktLiteral .
+
+
+# ------------------------------------------------------------------------
+# Regions (England only)
+# ------------------------------------------------------------------------
+bt:place-north-east-england
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "North East England"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-north-east-england ;
+    geo:hasDefaultGeometry  bt:geom-north-east-england .
+
+bt:geom-north-east-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.28386 54.61476, -1.29630 54.61305, -1.27262 55.93038, -2.29342 55.93218, -2.28386 54.61476))"^^geo:wktLiteral .
+
+bt:place-north-west-england
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "North West England"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-north-west-england ;
+    geo:hasDefaultGeometry  bt:geom-north-west-england .
+
+bt:geom-north-west-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.23297 54.75269, -3.06696 53.25303, -2.10379 53.34188, -2.44634 54.47441, -3.23297 54.75269))"^^geo:wktLiteral .
+
+bt:place-yorkshire
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "Yorkshire and the Humber"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-yorkshire ;
+    geo:hasDefaultGeometry  bt:geom-yorkshire .
+
+bt:geom-yorkshire
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-1.36407 53.80000, -0.36310 53.79052, -0.32897 54.64449, -1.35081 54.65427, -1.36407 53.80000))"^^geo:wktLiteral .
+
+bt:place-west-midlands
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "West Midlands"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-west-midlands ;
+    geo:hasDefaultGeometry  bt:geom-west-midlands .
+
+bt:geom-west-midlands
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.00757 52.20405, -2.45200 52.20749, -2.45886 52.87021, -3.02286 52.86669, -3.00757 52.20405))"^^geo:wktLiteral .
+
+bt:place-east-of-england
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "East of England"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-east-of-england ;
+    geo:hasDefaultGeometry  bt:geom-east-of-england .
+
+bt:geom-east-of-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-0.14817 52.04800, 1.51389 52.01013, 1.57604 52.78471, -0.11536 52.82364, -0.14817 52.04800))"^^geo:wktLiteral .
+
+bt:place-south-east-england
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "South East England"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-south-east-england ;
+    geo:hasDefaultGeometry  bt:geom-south-east-england .
+
+bt:geom-south-east-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-1.52258 51.35952, 0.12387 51.34124, 0.14996 51.89654, -1.51671 51.91519, -1.52258 51.35952))"^^geo:wktLiteral .
+
+bt:place-south-west-england
+    a                       bs:Region, bs:Place, geo:Feature ;
+    rdfs:label              "South West England"@en ;
+    bs:within               bt:place-england ;
+    geo:hasGeometry         bt:geom-south-west-england ;
+    geo:hasDefaultGeometry  bt:geom-south-west-england .
+
+bt:geom-south-west-england
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-5.75438 50.03739, -5.26423 50.17685, -3.28557 50.75528, -2.14236 51.46971, -5.75438 50.03739))"^^geo:wktLiteral .
+
+
+# ------------------------------------------------------------------------
+# Council areas
+# ------------------------------------------------------------------------
+bt:place-dumfries-galloway
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Dumfries and Galloway"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-dumfries-galloway ;
+    geo:hasDefaultGeometry  bt:geom-dumfries-galloway .
+
+bt:geom-dumfries-galloway
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-4.61980 54.75738, -4.24718 54.76486, -4.25920 54.98036, -4.63382 54.97282, -4.61980 54.75738))"^^geo:wktLiteral .
+
+bt:place-edinburgh-city
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "City of Edinburgh"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-edinburgh-city ;
+    geo:hasDefaultGeometry  bt:geom-edinburgh-city .
+
+bt:geom-edinburgh-city
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.37659 55.84351, -2.99340 55.84720, -2.99894 56.06280, -3.38427 56.05908, -3.37659 55.84351))"^^geo:wktLiteral .
+
+bt:place-glasgow-city
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Glasgow City"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-glasgow-city ;
+    geo:hasDefaultGeometry  bt:geom-glasgow-city .
+
+bt:geom-glasgow-city
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-4.43662 55.75282, -4.05451 55.75981, -4.06592 55.97531, -4.45015 55.96826, -4.43662 55.75282))"^^geo:wktLiteral .
+
+bt:place-fife
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Fife"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-fife ;
+    geo:hasDefaultGeometry  bt:geom-fife .
+
+bt:geom-fife
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.98800 56.23060, -2.60091 56.23309, -2.60431 56.44870, -2.99358 56.44619, -2.98800 56.23060))"^^geo:wktLiteral .
+
+bt:place-highland
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Highland"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-highland ;
+    geo:hasDefaultGeometry  bt:geom-highland .
+
+bt:geom-highland
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-6.38684 57.44383, -5.08750 56.71248, -4.04243 57.52236, -6.38684 57.44383))"^^geo:wktLiteral .
+
+bt:place-northumberland
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Northumberland"@en ;
+    bs:within               bt:place-north-east-england ;
+    geo:hasGeometry         bt:geom-northumberland ;
+    geo:hasDefaultGeometry  bt:geom-northumberland .
+
+bt:geom-northumberland
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.19603 55.66282, -1.81454 55.66284, -1.81352 55.87848, -2.19712 55.87846, -2.19603 55.66282))"^^geo:wktLiteral .
+
+bt:place-cumbria
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Cumbria"@en ;
+    bs:within               bt:place-north-west-england ;
+    geo:hasGeometry         bt:geom-cumbria ;
+    geo:hasDefaultGeometry  bt:geom-cumbria .
+
+bt:geom-cumbria
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.26958 54.67551, -2.68193 54.22688, -2.37160 54.26386, -3.26958 54.67551))"^^geo:wktLiteral .
+
+bt:place-greater-manchester
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Greater Manchester"@en ;
+    bs:within               bt:place-north-west-england ;
+    geo:hasGeometry         bt:geom-greater-manchester ;
+    geo:hasDefaultGeometry  bt:geom-greater-manchester .
+
+bt:geom-greater-manchester
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.42234 53.37244, -2.06162 53.37317, -2.06194 53.58889, -2.42449 53.58815, -2.42234 53.37244))"^^geo:wktLiteral .
+
+bt:place-merseyside
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Merseyside"@en ;
+    bs:within               bt:place-north-west-england ;
+    geo:hasGeometry         bt:geom-merseyside ;
+    geo:hasDefaultGeometry  bt:geom-merseyside .
+
+bt:geom-merseyside
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.16912 53.29892, -2.80906 53.30191, -2.81317 53.51761, -3.17505 53.51460, -3.16912 53.29892))"^^geo:wktLiteral .
+
+bt:place-north-yorkshire
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "North Yorkshire"@en ;
+    bs:within               bt:place-yorkshire ;
+    geo:hasGeometry         bt:geom-north-yorkshire ;
+    geo:hasDefaultGeometry  bt:geom-north-yorkshire .
+
+bt:geom-north-yorkshire
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-1.27205 53.85340, -0.45215 53.84563, -0.42399 54.59184, -1.25880 54.59982, -1.27205 53.85340))"^^geo:wktLiteral .
+
+bt:place-shropshire
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Shropshire"@en ;
+    bs:within               bt:place-west-midlands ;
+    geo:hasGeometry         bt:geom-shropshire ;
+    geo:hasDefaultGeometry  bt:geom-shropshire .
+
+bt:geom-shropshire
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.92090 52.25871, -2.54045 52.26106, -2.54731 52.81590, -2.93258 52.81350, -2.92090 52.25871))"^^geo:wktLiteral .
+
+bt:place-oxfordshire
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Oxfordshire"@en ;
+    bs:within               bt:place-south-east-england ;
+    geo:hasGeometry         bt:geom-oxfordshire ;
+    geo:hasDefaultGeometry  bt:geom-oxfordshire .
+
+bt:geom-oxfordshire
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-1.43287 51.64508, -1.08606 51.64289, -1.08170 51.85865, -1.43017 51.86086, -1.43287 51.64508))"^^geo:wktLiteral .
+
+bt:place-greater-london
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Greater London"@en ;
+    bs:within               bt:place-south-east-england ;
+    geo:hasGeometry         bt:geom-greater-london ;
+    geo:hasDefaultGeometry  bt:geom-greater-london .
+
+bt:geom-greater-london
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-0.30462 51.40218, 0.04018 51.39668, 0.04984 51.61234, -0.29660 51.61788, -0.30462 51.40218))"^^geo:wktLiteral .
+
+bt:place-cambridgeshire
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Cambridgeshire"@en ;
+    bs:within               bt:place-east-of-england ;
+    geo:hasGeometry         bt:geom-cambridgeshire ;
+    geo:hasDefaultGeometry  bt:geom-cambridgeshire .
+
+bt:geom-cambridgeshire
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-0.05839 52.10050, 0.29172 52.09421, 0.30284 52.30981, -0.04897 52.31615, -0.05839 52.10050))"^^geo:wktLiteral .
+
+bt:place-norfolk
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Norfolk"@en ;
+    bs:within               bt:place-east-of-england ;
+    geo:hasGeometry         bt:geom-norfolk ;
+    geo:hasDefaultGeometry  bt:geom-norfolk .
+
+bt:geom-norfolk
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((1.11273 52.52798, 1.46587 52.51816, 1.48294 52.73351, 1.12807 52.74341, 1.11273 52.52798))"^^geo:wktLiteral .
+
+bt:place-somerset
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Somerset"@en ;
+    bs:within               bt:place-south-west-england ;
+    geo:hasGeometry         bt:geom-somerset ;
+    geo:hasDefaultGeometry  bt:geom-somerset .
+
+bt:geom-somerset
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-2.53017 51.27255, -2.18614 51.27360, -2.18702 51.48940, -2.53267 51.48834, -2.53017 51.27255))"^^geo:wktLiteral .
+
+bt:place-devon
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Devon"@en ;
+    bs:within               bt:place-south-west-england ;
+    geo:hasGeometry         bt:geom-devon ;
+    geo:hasDefaultGeometry  bt:geom-devon .
+
+bt:geom-devon
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.69991 50.60817, -3.36085 50.61263, -3.36711 50.82839, -3.70773 50.82390, -3.69991 50.60817))"^^geo:wktLiteral .
+
+bt:place-cornwall
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Cornwall"@en ;
+    bs:within               bt:place-south-west-england ;
+    geo:hasGeometry         bt:geom-cornwall ;
+    geo:hasDefaultGeometry  bt:geom-cornwall .
+
+bt:geom-cornwall
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-5.69621 50.00567, -4.86855 50.02911, -4.88939 50.37528, -5.72303 50.35155, -5.69621 50.00567))"^^geo:wktLiteral .
+
+bt:place-powys
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Powys"@en ;
+    bs:within               bt:place-wales ;
+    geo:hasGeometry         bt:geom-powys ;
+    geo:hasDefaultGeometry  bt:geom-powys .
+
+bt:geom-powys
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.30071 51.96633, -2.95144 51.96967, -2.95604 52.18542, -3.30700 52.18205, -3.30071 51.96633))"^^geo:wktLiteral .
+
+bt:place-ceredigion
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Ceredigion"@en ;
+    bs:within               bt:place-wales ;
+    geo:hasGeometry         bt:geom-ceredigion ;
+    geo:hasDefaultGeometry  bt:geom-ceredigion .
+
+bt:geom-ceredigion
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-4.25180 52.30297, -3.90004 52.30915, -3.90934 52.52479, -4.26282 52.51856, -4.25180 52.30297))"^^geo:wktLiteral .
+
+bt:place-city-of-cardiff
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "City of Cardiff"@en ;
+    bs:within               bt:place-wales ;
+    geo:hasGeometry         bt:geom-city-of-cardiff ;
+    geo:hasDefaultGeometry  bt:geom-city-of-cardiff .
+
+bt:geom-city-of-cardiff
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.34868 51.37187, -3.00396 51.37533, -3.00871 51.59109, -3.35506 51.58760, -3.34868 51.37187))"^^geo:wktLiteral .
+
+bt:place-county-durham
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "County Durham"@en ;
+    bs:within               bt:place-north-east-england ;
+    geo:hasGeometry         bt:geom-county-durham ;
+    geo:hasDefaultGeometry  bt:geom-county-durham .
+
+bt:geom-county-durham
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-1.76048 54.66877, -1.38839 54.66747, -1.38512 54.88313, -1.75921 54.88445, -1.76048 54.66877))"^^geo:wktLiteral .
+
+bt:place-perth-kinross
+    a                       bs:CouncilArea, bs:Place, geo:Feature ;
+    rdfs:label              "Perth and Kinross"@en ;
+    bs:within               bt:place-scotland ;
+    geo:hasGeometry         bt:geom-perth-kinross ;
+    geo:hasDefaultGeometry  bt:geom-perth-kinross .
+
+bt:geom-perth-kinross
+    a          sf:Polygon, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POLYGON((-3.62054 56.28484, -3.23298 56.28931, -3.23997 56.50487, -3.62972 56.50037, -3.62054 56.28484))"^^geo:wktLiteral .
+
+
+# ------------------------------------------------------------------------
+# Settlements
+# ------------------------------------------------------------------------
+bt:place-wigtown
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Wigtown"@en ;
+    rdfs:label              "Baile na h-Uige"@gd ;
+    bs:within               bt:place-dumfries-galloway ;
+    bs:population           "1000"^^xsd:integer ;
+    bs:isBookTown           true ;
+    wgs84:lat               "54.869"^^xsd:decimal ;
+    wgs84:long              "-4.44"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-wigtown ;
+    geo:hasDefaultGeometry  bt:geom-wigtown .
+
+bt:geom-wigtown
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.44000 54.86900)"^^geo:wktLiteral .
+
+bt:place-edinburgh
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Edinburgh"@en ;
+    rdfs:label              "Dun Eideann"@gd ;
+    bs:within               bt:place-edinburgh-city ;
+    bs:population           "506520"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "55.9533"^^xsd:decimal ;
+    wgs84:long              "-3.1883"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-edinburgh ;
+    geo:hasDefaultGeometry  bt:geom-edinburgh .
+
+bt:geom-edinburgh
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.18830 55.95330)"^^geo:wktLiteral .
+
+bt:place-glasgow
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Glasgow"@en ;
+    rdfs:label              "Glaschu"@gd ;
+    bs:within               bt:place-glasgow-city ;
+    bs:population           "635640"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "55.8642"^^xsd:decimal ;
+    wgs84:long              "-4.2518"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-glasgow ;
+    geo:hasDefaultGeometry  bt:geom-glasgow .
+
+bt:geom-glasgow
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.25180 55.86420)"^^geo:wktLiteral .
+
+bt:place-st-andrews
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "St Andrews"@en ;
+    bs:within               bt:place-fife ;
+    bs:population           "16800"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "56.3398"^^xsd:decimal ;
+    wgs84:long              "-2.7967"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-st-andrews ;
+    geo:hasDefaultGeometry  bt:geom-st-andrews .
+
+bt:geom-st-andrews
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.79670 56.33980)"^^geo:wktLiteral .
+
+bt:place-inverness
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Inverness"@en ;
+    rdfs:label              "Inbhir Nis"@gd ;
+    bs:within               bt:place-highland ;
+    bs:population           "47790"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "57.4778"^^xsd:decimal ;
+    wgs84:long              "-4.2247"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-inverness ;
+    geo:hasDefaultGeometry  bt:geom-inverness .
+
+bt:geom-inverness
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.22470 57.47780)"^^geo:wktLiteral .
+
+bt:place-portree
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Portree"@en ;
+    rdfs:label              "Port Righ"@gd ;
+    bs:within               bt:place-highland ;
+    bs:population           "2500"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "57.4125"^^xsd:decimal ;
+    wgs84:long              "-6.1958"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-portree ;
+    geo:hasDefaultGeometry  bt:geom-portree .
+
+bt:geom-portree
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-6.19580 57.41250)"^^geo:wktLiteral .
+
+bt:place-berwick
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Berwick-upon-Tweed"@en ;
+    bs:within               bt:place-northumberland ;
+    bs:population           "12040"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "55.7708"^^xsd:decimal ;
+    wgs84:long              "-2.0053"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-berwick ;
+    geo:hasDefaultGeometry  bt:geom-berwick .
+
+bt:geom-berwick
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.00530 55.77080)"^^geo:wktLiteral .
+
+bt:place-sedbergh
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Sedbergh"@en ;
+    bs:within               bt:place-cumbria ;
+    bs:population           "2800"^^xsd:integer ;
+    bs:isBookTown           true ;
+    wgs84:lat               "54.32"^^xsd:decimal ;
+    wgs84:long              "-2.529"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-sedbergh ;
+    geo:hasDefaultGeometry  bt:geom-sedbergh .
+
+bt:geom-sedbergh
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.52900 54.32000)"^^geo:wktLiteral .
+
+bt:place-kendal
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Kendal"@en ;
+    bs:within               bt:place-cumbria ;
+    bs:population           "28590"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "54.328"^^xsd:decimal ;
+    wgs84:long              "-2.746"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-kendal ;
+    geo:hasDefaultGeometry  bt:geom-kendal .
+
+bt:geom-kendal
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.74600 54.32800)"^^geo:wktLiteral .
+
+bt:place-keswick
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Keswick"@en ;
+    bs:within               bt:place-cumbria ;
+    bs:population           "5240"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "54.6013"^^xsd:decimal ;
+    wgs84:long              "-3.1347"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-keswick ;
+    geo:hasDefaultGeometry  bt:geom-keswick .
+
+bt:geom-keswick
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.13470 54.60130)"^^geo:wktLiteral .
+
+bt:place-york
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "York"@en ;
+    bs:within               bt:place-north-yorkshire ;
+    bs:population           "153720"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "53.96"^^xsd:decimal ;
+    wgs84:long              "-1.0873"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-york ;
+    geo:hasDefaultGeometry  bt:geom-york .
+
+bt:geom-york
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.08730 53.96000)"^^geo:wktLiteral .
+
+bt:place-whitby
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Whitby"@en ;
+    bs:within               bt:place-north-yorkshire ;
+    bs:population           "13210"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "54.4863"^^xsd:decimal ;
+    wgs84:long              "-0.6133"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-whitby ;
+    geo:hasDefaultGeometry  bt:geom-whitby .
+
+bt:geom-whitby
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-0.61330 54.48630)"^^geo:wktLiteral .
+
+bt:place-manchester
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Manchester"@en ;
+    bs:within               bt:place-greater-manchester ;
+    bs:population           "553230"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "53.4808"^^xsd:decimal ;
+    wgs84:long              "-2.2426"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-manchester ;
+    geo:hasDefaultGeometry  bt:geom-manchester .
+
+bt:geom-manchester
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.24260 53.48080)"^^geo:wktLiteral .
+
+bt:place-liverpool
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Liverpool"@en ;
+    bs:within               bt:place-merseyside ;
+    bs:population           "496770"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "53.4084"^^xsd:decimal ;
+    wgs84:long              "-2.9916"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-liverpool ;
+    geo:hasDefaultGeometry  bt:geom-liverpool .
+
+bt:geom-liverpool
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.99160 53.40840)"^^geo:wktLiteral .
+
+bt:place-shrewsbury
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Shrewsbury"@en ;
+    bs:within               bt:place-shropshire ;
+    bs:population           "76780"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "52.7069"^^xsd:decimal ;
+    wgs84:long              "-2.7527"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-shrewsbury ;
+    geo:hasDefaultGeometry  bt:geom-shrewsbury .
+
+bt:geom-shrewsbury
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.75270 52.70690)"^^geo:wktLiteral .
+
+bt:place-ludlow
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Ludlow"@en ;
+    bs:within               bt:place-shropshire ;
+    bs:population           "10940"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "52.368"^^xsd:decimal ;
+    wgs84:long              "-2.718"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-ludlow ;
+    geo:hasDefaultGeometry  bt:geom-ludlow .
+
+bt:geom-ludlow
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.71800 52.36800)"^^geo:wktLiteral .
+
+bt:place-oxford
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Oxford"@en ;
+    bs:within               bt:place-oxfordshire ;
+    bs:population           "162100"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "51.752"^^xsd:decimal ;
+    wgs84:long              "-1.2577"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-oxford ;
+    geo:hasDefaultGeometry  bt:geom-oxford .
+
+bt:geom-oxford
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.25770 51.75200)"^^geo:wktLiteral .
+
+bt:place-cambridge
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Cambridge"@en ;
+    bs:within               bt:place-cambridgeshire ;
+    bs:population           "145670"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "52.2053"^^xsd:decimal ;
+    wgs84:long              "0.1218"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-cambridge ;
+    geo:hasDefaultGeometry  bt:geom-cambridge .
+
+bt:geom-cambridge
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(0.12180 52.20530)"^^geo:wktLiteral .
+
+bt:place-norwich
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Norwich"@en ;
+    bs:within               bt:place-norfolk ;
+    bs:population           "144000"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "52.6309"^^xsd:decimal ;
+    wgs84:long              "1.2974"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-norwich ;
+    geo:hasDefaultGeometry  bt:geom-norwich .
+
+bt:geom-norwich
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(1.29740 52.63090)"^^geo:wktLiteral .
+
+bt:place-london
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "London"@en ;
+    bs:within               bt:place-greater-london ;
+    bs:population           "8982000"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "51.5074"^^xsd:decimal ;
+    wgs84:long              "-0.1278"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-london ;
+    geo:hasDefaultGeometry  bt:geom-london .
+
+bt:geom-london
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-0.12780 51.50740)"^^geo:wktLiteral .
+
+bt:place-bath
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Bath"@en ;
+    bs:within               bt:place-somerset ;
+    bs:population           "94090"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "51.3811"^^xsd:decimal ;
+    wgs84:long              "-2.359"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-bath ;
+    geo:hasDefaultGeometry  bt:geom-bath .
+
+bt:geom-bath
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-2.35900 51.38110)"^^geo:wktLiteral .
+
+bt:place-exeter
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Exeter"@en ;
+    bs:within               bt:place-devon ;
+    bs:population           "130800"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "50.7184"^^xsd:decimal ;
+    wgs84:long              "-3.5339"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-exeter ;
+    geo:hasDefaultGeometry  bt:geom-exeter .
+
+bt:geom-exeter
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.53390 50.71840)"^^geo:wktLiteral .
+
+bt:place-penzance
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Penzance"@en ;
+    bs:within               bt:place-cornwall ;
+    bs:population           "21200"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "50.1186"^^xsd:decimal ;
+    wgs84:long              "-5.537"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-penzance ;
+    geo:hasDefaultGeometry  bt:geom-penzance .
+
+bt:geom-penzance
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-5.53700 50.11860)"^^geo:wktLiteral .
+
+bt:place-hay-on-wye
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Hay-on-Wye"@en ;
+    rdfs:label              "Y Gelli Gandryll"@cy ;
+    bs:within               bt:place-powys ;
+    bs:population           "1500"^^xsd:integer ;
+    bs:isBookTown           true ;
+    wgs84:lat               "52.076"^^xsd:decimal ;
+    wgs84:long              "-3.1288"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-hay-on-wye ;
+    geo:hasDefaultGeometry  bt:geom-hay-on-wye .
+
+bt:geom-hay-on-wye
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.12880 52.07600)"^^geo:wktLiteral .
+
+bt:place-aberystwyth
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Aberystwyth"@en ;
+    rdfs:label              "Aberystwyth"@cy ;
+    bs:within               bt:place-ceredigion ;
+    bs:population           "15940"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "52.414"^^xsd:decimal ;
+    wgs84:long              "-4.081"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-aberystwyth ;
+    geo:hasDefaultGeometry  bt:geom-aberystwyth .
+
+bt:geom-aberystwyth
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-4.08100 52.41400)"^^geo:wktLiteral .
+
+bt:place-cardiff
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Cardiff"@en ;
+    rdfs:label              "Caerdydd"@cy ;
+    bs:within               bt:place-city-of-cardiff ;
+    bs:population           "362310"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "51.4816"^^xsd:decimal ;
+    wgs84:long              "-3.1791"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-cardiff ;
+    geo:hasDefaultGeometry  bt:geom-cardiff .
+
+bt:geom-cardiff
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.17910 51.48160)"^^geo:wktLiteral .
+
+bt:place-durham
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Durham"@en ;
+    bs:within               bt:place-county-durham ;
+    bs:population           "48070"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "54.7761"^^xsd:decimal ;
+    wgs84:long              "-1.5733"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-durham ;
+    geo:hasDefaultGeometry  bt:geom-durham .
+
+bt:geom-durham
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-1.57330 54.77610)"^^geo:wktLiteral .
+
+bt:place-perth
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Perth"@en ;
+    bs:within               bt:place-perth-kinross ;
+    bs:population           "47430"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "56.395"^^xsd:decimal ;
+    wgs84:long              "-3.4308"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-perth ;
+    geo:hasDefaultGeometry  bt:geom-perth .
+
+bt:geom-perth
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-3.43080 56.39500)"^^geo:wktLiteral .
+
+bt:place-fort-william
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Fort William"@en ;
+    bs:within               bt:place-highland ;
+    bs:population           "10460"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "56.8198"^^xsd:decimal ;
+    wgs84:long              "-5.1052"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-fort-william ;
+    geo:hasDefaultGeometry  bt:geom-fort-william .
+
+bt:geom-fort-william
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-5.10520 56.81980)"^^geo:wktLiteral .
+
+bt:place-truro
+    a                       bs:Settlement, bs:Place, geo:Feature ;
+    rdfs:label              "Truro"@en ;
+    bs:within               bt:place-cornwall ;
+    bs:population           "18770"^^xsd:integer ;
+    bs:isBookTown           false ;
+    wgs84:lat               "50.2632"^^xsd:decimal ;
+    wgs84:long              "-5.051"^^xsd:decimal ;
+    geo:hasGeometry         bt:geom-truro ;
+    geo:hasDefaultGeometry  bt:geom-truro .
+
+bt:geom-truro
+    a          sf:Point, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> POINT(-5.05100 50.26320)"^^geo:wktLiteral .
+

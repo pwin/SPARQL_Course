@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q94  Pin one case while you work on it
+# ==========================================================================
+#
+#  ASKS
+#    How do I run a complicated query against a single known resource?
+#
+#  HOW IT WORKS
+#    VALUES binds a variable to a fixed list before anything else runs,
+#    which turns a query over the whole dataset into a query over one row
+#    of it. Delete the line and the query is the real one again -- no other
+#    edits, so there's nothing to forget to undo.
+#
+#  DIAGRAM
+#        VALUES ?shop { bt:shop-cliff-road }
+#        ?shop a bs:Bookshop ; rdfs:label ?shopName ; bs:locatedIn ?town .
+#        ?town  rdfs:label ?townName .
+#        ?town  bs:within+ ?country .
+#        ?country a bs:Country ; rdfs:label ?countryName .
+#
+#        with the VALUES line     1 shop,  easy to read
+#        without it              33 shops, the real query
+#
+#        Add rows to widen the net without losing the focus:
+#
+#          VALUES ?shop { bt:shop-cliff-road
+#                         bt:shop-sea-margin
+#                         bt:shop-west-quay }
+#
+#        and several variables at once, when the interesting case is a
+#        combination:
+#
+#          VALUES (?shop ?genre) {
+#            (bt:shop-verso bt:genre-translated-fiction)
+#            (bt:shop-quire bt:genre-graphic-novels)
+#          }
+#
+#        Better than a FILTER for this: VALUES restricts before the join
+#        rather than after it, so the debugging run is fast even when
+#        the real query is not.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - VALUES injects a fixed table of bindings, and is the cleanest way
+#      to pin a query to one case while you work on it.
+#    - It restricts before the join, so a clamped query stays fast
+#      however slow the unclamped one is.
+#    - One line in, one line out. Nothing else about the query changes,
+#      which is what makes it safe.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?townName ?countryName
+WHERE {
+  # Delete this one line to run the query for real.
+  VALUES ?shop { bt:shop-cliff-road bt:shop-sea-margin }
+
+  ?shop    a          bs:Bookshop ;
+           rdfs:label ?shopName ;
+           bs:locatedIn ?town .
+  ?town    rdfs:label ?townName .
+  ?town    bs:within+ ?country .
+  ?country a          bs:Country ;
+           rdfs:label ?countryName .
+  FILTER( LANG(?townName) = "en" && LANG(?countryName) = "en" )
+}
+ORDER BY ?shopName

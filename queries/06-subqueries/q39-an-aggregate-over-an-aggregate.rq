@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q39  An aggregate over an aggregate
+# ==========================================================================
+#
+#  ASKS
+#    On average, how many books does each of a publisher's authors write?
+#
+#  HOW IT WORKS
+#    Counting books per author is one aggregation; averaging those counts
+#    per publisher is a second, over the results of the first. SPARQL can't
+#    nest aggregates in one expression, so the inner grouping has to happen
+#    in a sub-query and the outer one over its output.
+#
+#  DIAGRAM
+#        level 1 -- count books per author per publisher
+#          GROUP BY ?publisher ?author
+#            ┌───────────┬────────────────┬───┐
+#            │ northwind │ rhona-blackwood│ 2 │
+#            │ northwind │ fenella-drew   │ 2 │
+#            │ northwind │ kirsty-lammond │ 2 │
+#            └───────────┴────────────────┴───┘
+#                              │
+#        level 2 -- average those counts per publisher
+#          GROUP BY ?publisher
+#            ┌───────────┬──────┬─────────┐
+#            │ northwind │  4   │  2.0    │
+#            │           │auth. │ mean    │
+#            └───────────┴──────┴─────────┘
+#
+#        AVG(COUNT(?x)) is not legal SPARQL.  The nesting has to be
+#        expressed as a sub-query, which is the whole reason they exist.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Aggregates don't nest inside one expression; nest the queries
+#      instead.
+#    - The inner query's grouping keys become ordinary columns to the
+#      outer query.
+#    - Reading these from the inside out is the only way they make sense.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  13 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?publisherName (COUNT(?author) AS ?authors)
+       (ROUND(AVG(?bookCount) * 10) / 10 AS ?meanBooksPerAuthor)
+WHERE {
+  {
+    SELECT ?publisher ?author (COUNT(?book) AS ?bookCount)
+    WHERE {
+      ?book bs:publishedBy ?publisher ;
+            bs:author      ?author .
+    }
+    GROUP BY ?publisher ?author
+  }
+  ?publisher rdfs:label ?publisherName .
+}
+GROUP BY ?publisher ?publisherName
+ORDER BY DESC(?meanBooksPerAuthor) ?publisherName

@@ -1,0 +1,75 @@
+# ==========================================================================
+#  Q07  Shops founded before 1970
+# ==========================================================================
+#
+#  ASKS
+#    Which shops predate 1970, and why is the obvious way to ask wrong?
+#
+#  HOW IT WORKS
+#    FILTER drops every solution its expression doesn't judge true. The
+#    interesting part is the cast. bs:founded is an xsd:gYear, which is not
+#    a number, so it has to be converted before it can be compared with
+#    1970 -- and the obvious conversion isn't portable. Going via STR()
+#    first works on all three engines; casting the gYear directly works on
+#    only one.
+#
+#  DIAGRAM
+#        pattern matches 33 rows
+#                  │
+#                  ▼
+#        FILTER( xsd:integer(STR(?founded)) < 1970 )
+#                  │        ─────┬─────
+#                  │             └── "1979"  a plain string
+#                  │
+#                  ├── true  ──▶ row kept
+#                  └── false ──▶ row dropped
+#                                  │
+#                                  ▼
+#                              10 rows out
+#
+#        Measured on this dataset, all three engines, same query:
+#
+#          xsd:integer(?founded)            editor  0   holos  0   fuseki 10
+#          ?founded < "1970"^^xsd:gYear     editor  0   holos  0   fuseki 10
+#          xsd:integer(STR(?founded))       editor 10   holos 10   fuseki 10  ✓
+#          STR(?founded) < "1970"           editor 10   holos 10   fuseki 10  ✓
+#
+#        The unportable versions do not error.  They return zero rows and
+#        look like a fact about the data.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - FILTER constrains; it can't create bindings.
+#    - Datatypes are real. xsd:gYear isn't a number, and engines disagree
+#      about whether they will convert one for you.
+#    - STR() first, then cast. It's the portable idiom, and it's explicit
+#      about what's happening.
+#    - An expression that fails inside a FILTER removes the row silently.
+#      Zero rows is the classic symptom of a datatype mistake, not
+#      evidence of an empty dataset.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?founded
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name ;
+        bs:founded ?founded .
+  FILTER( xsd:integer(STR(?founded)) < 1970 )
+}
+ORDER BY ?founded

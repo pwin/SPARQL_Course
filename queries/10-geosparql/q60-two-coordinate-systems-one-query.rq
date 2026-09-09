@@ -1,0 +1,90 @@
+# ==========================================================================
+#  Q60  Two coordinate systems, one query
+# ==========================================================================
+#
+#  ASKS
+#    Confirm that the National Grid geometry and the WGS84 geometry
+#    describe the same place.
+#
+#  HOW IT WORKS
+#    Each settlement carries two geometries: a CRS84 point in degrees and
+#    an EPSG:27700 point in metres. An engine that reads the CRS URI at the
+#    front of a WKT literal will convert before comparing, and find the
+#    distance between them is essentially zero. An engine that assumes
+#    everything is CRS84 will compute a nonsensical answer, because it will
+#    read 425000 as a longitude.
+#
+#  DIAGRAM
+#        the CRS is part of the literal, not metadata about it:
+#
+#        "<...CRS84> POINT(-1.0873 53.96)"^^geo:wktLiteral
+#         ─────┬────       ──┬───  ──┬──
+#              │             │       └── latitude, degrees
+#              │             └────────── longitude, degrees
+#              └── the reference system
+#
+#        "<...EPSG/0/27700> POINT(460000.0 452000.0)"^^geo:wktLiteral
+#         ────────┬───────         ───┬───  ───┬───
+#                 │                   │        └── northing, metres
+#                 │                   └─────────── easting, metres
+#                 └── a different system entirely
+#
+#        geof:distance between them, correctly handled:  ~0 metres
+#        the same, if 460000 is read as a longitude:     nonsense
+#
+#        HOLOS reads CRS84, EPSG:4326, EPSG:27700 and EPSG:3857, and
+#        refuses a system it does not know rather than guessing.  Check
+#        what your own engine does before you trust a mixed dataset.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - The coordinate reference system is part of the WKT literal's
+#      value.
+#    - Mixing systems in one dataset is normal; whether your engine copes
+#      is the question to ask before you rely on it.
+#    - An engine that silently assumes CRS84 won't error. It will give
+#      you a wrong number, which is worse.
+#    - Use !sameTerm to say 'a different term'. Inequality on two
+#      literals of a datatype the engine can't order is an error, and an
+#      error in a FILTER removes the row -- so the obvious spelling of
+#      this query returns nothing at all.
+#
+#  NOTE
+#    HOLOS-specific in practice: it's the engine among the three that reads
+#    EPSG:27700. The lesson -- that a CRS URI is part of the value and must
+#    be honoured -- is general.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  holos
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name (ROUND(?separation) AS ?metresApart)
+WHERE {
+  ?place a bs:Settlement ;
+         rdfs:label ?name ;
+         geo:hasDefaultGeometry/geo:asWKT ?wgs84 .
+  ?place geo:hasGeometry ?bngGeom .
+  ?bngGeom geo:asWKT ?bng .
+  # !sameTerm, not !=. Two geo:wktLiteral values are not a datatype SPARQL
+  # knows how to compare, so `?wgs84 != ?bng` errors and the FILTER drops
+  # every row -- the q07 trap once more, this time on a geometry.
+  FILTER( !sameTerm(?wgs84, ?bng) )
+  FILTER( LANG(?name) = "en" )
+  BIND( geof:distance(?wgs84, ?bng,
+        <http://www.opengis.net/def/uom/OGC/1.0/metre>) AS ?separation )
+}
+ORDER BY DESC(?separation)
+LIMIT 10

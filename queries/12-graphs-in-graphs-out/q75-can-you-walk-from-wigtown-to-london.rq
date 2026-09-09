@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q75  Can you walk from Wigtown to London
+# ==========================================================================
+#
+#  ASKS
+#    Is there any route along the trail from The Inkwell to Ex Libris?
+#
+#  HOW IT WORKS
+#    A property path inside an ASK. The engine needs to find one route, not
+#    all of them, and may stop the moment it does. That makes ASK the right
+#    form for a reachability question whose answer you're going to act on
+#    rather than read.
+#
+#  DIAGRAM
+#        ASK {
+#          bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ bt:shop-ex-libris .
+#        }
+#                              │
+#                      ┌───────┴────────┐
+#                      ▼                ▼
+#                    true             false
+#                 a route exists    no route
+#
+#        ──▶ true
+#
+#        The same path in a SELECT returns 31 shops and has to find them
+#        all.  Here the engine may stop at the first success, because one
+#        is all the question needs.
+#
+#        Compare with the negative form, which cannot stop early:
+#
+#          ASK { FILTER NOT EXISTS { ...path... } }
+#
+#        To prove a route does NOT exist, every possibility must be
+#        eliminated.  "Is there one?" is cheap; "is there none?" is not.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - ASK returns one boolean and permits the engine to stop at the
+#      first solution.
+#    - A positive existence question is cheap. Its negation isn't,
+#      because nothing can be concluded until the search is exhausted.
+#    - Reach for ASK when a program will branch on the answer; reach for
+#      SELECT when a person will read it.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+ASK {
+  bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ bt:shop-ex-libris .
+}

@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q61  Who says the shop opened when
+# ==========================================================================
+#
+#  ASKS
+#    The founding dates are disputed. Who claims what, and how much do we
+#    trust them?
+#
+#  HOW IT WORKS
+#    RDF 1.2 lets a statement be annotated with further statements about
+#    it. In the query, {| ... |} after a triple pattern matches those
+#    annotations, binding the variables inside. The base triple and its
+#    annotation come back in one row, with no intermediate node to invent
+#    or to remember.
+#
+#  DIAGRAM
+#        in the data:
+#
+#          bt:shop-ex-libris bs:founded 1919
+#              {| bs:claimedBy bt:source-national-register ;
+#                 bs:confidence 0.99 |} .
+#          bt:shop-ex-libris bs:founded 1921
+#              {| bs:claimedBy bt:source-local-paper ;
+#                 bs:confidence 0.40 |} .
+#
+#        in the query, the same shape:
+#
+#          ?shop bs:founded ?year {| bs:claimedBy ?src ; bs:confidence ?c |} .
+#                ────────┬───────  ─────────────────┬───────────────────
+#                 the statement        what is said ABOUT the statement
+#
+#        ┌─────────────┬──────┬───────────────────┬──────┐
+#        │ Ex Libris   │ 1919 │ national-register │ 0.99 │
+#        │ Ex Libris   │ 1921 │ local paper       │ 0.40 │
+#        └─────────────┴──────┴───────────────────┴──────┘
+#
+#        Both claims are in the graph.  Neither is privileged.  Deciding
+#        between them is the query's job, not the data's -- see q63.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - {| ... |} in a query matches annotations on the triple pattern it
+#      follows.
+#    - A dataset can hold two contradictory claims without being broken,
+#      as long as each is attributed.
+#    - The syntax is symmetrical: the same {| |} that writes an
+#      annotation in Turtle reads it in SPARQL.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?year ?sourceName ?confidence
+WHERE {
+  ?shop bs:founded ?year {| bs:claimedBy ?source ; bs:confidence ?confidence |} .
+  ?shop   rdfs:label ?shopName .
+  ?source rdfs:label ?sourceName .
+}
+ORDER BY ?shopName DESC(?confidence)

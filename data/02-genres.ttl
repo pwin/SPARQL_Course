@@ -1,0 +1,279 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  02  GENRE SCHEME
+############################################################################
+#  A SKOS taxonomy. Depth varies from two to four levels, on purpose: a
+#  fixed-length pattern such as ?g skos:broader/skos:broader bs:Fiction
+#  will silently miss whole branches, which is the lesson that makes
+#  property paths click.
+#
+bt:genre-scheme
+    a                   skos:ConceptScheme ;
+    rdfs:label          "Bookshop Trail genre scheme"@en ;
+    skos:prefLabel      "Bookshop Trail genre scheme"@en ;
+    skos:hasTopConcept  bt:genre-literature .
+
+bt:genre-literature
+    a                  skos:Concept ;
+    skos:inScheme      bt:genre-scheme ;
+    skos:prefLabel     "Literature"@en ;
+    rdfs:label         "Literature"@en ;
+    skos:topConceptOf  bt:genre-scheme ;
+    skos:narrower      bt:genre-fiction, bt:genre-non-fiction, bt:genre-poetry ;
+    skos:scopeNote     "The top concept: everything in the scheme is narrower than this."@en .
+
+bt:genre-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Fiction"@en ;
+    rdfs:label      "Fiction"@en ;
+    skos:prefLabel  "Ffuglen"@cy ;
+    skos:broader    bt:genre-literature ;
+    skos:narrower   bt:genre-crime-fiction, bt:genre-speculative-fiction, bt:genre-historical-fiction, bt:genre-literary-fiction, bt:genre-translated-fiction, bt:genre-graphic-novels, bt:genre-classics .
+
+bt:genre-non-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Non-fiction"@en ;
+    rdfs:label      "Non-fiction"@en ;
+    skos:altLabel   "Nonfiction"@en ;
+    skos:broader    bt:genre-literature ;
+    skos:narrower   bt:genre-nature-writing, bt:genre-history, bt:genre-travel-writing, bt:genre-biography .
+
+bt:genre-poetry
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Poetry"@en ;
+    rdfs:label      "Poetry"@en ;
+    skos:altLabel   "Verse"@en ;
+    skos:prefLabel  "Barddoniaeth"@cy ;
+    skos:prefLabel  "Bardachd"@gd ;
+    skos:broader    bt:genre-literature .
+
+bt:genre-crime-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Crime Fiction"@en ;
+    rdfs:label      "Crime Fiction"@en ;
+    skos:altLabel   "Mystery"@en ;
+    skos:broader    bt:genre-fiction ;
+    skos:narrower   bt:genre-cosy-crime, bt:genre-tartan-noir, bt:genre-police-procedural .
+
+bt:genre-cosy-crime
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Cosy Crime"@en ;
+    rdfs:label      "Cosy Crime"@en ;
+    skos:altLabel   "Cozy Mystery"@en ;
+    skos:broader    bt:genre-crime-fiction ;
+    skos:scopeNote  "Low-jeopardy crime, usually with an amateur detective."@en .
+
+bt:genre-tartan-noir
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Tartan Noir"@en ;
+    rdfs:label      "Tartan Noir"@en ;
+    skos:broader    bt:genre-crime-fiction ;
+    skos:scopeNote  "Scottish hard-boiled crime writing."@en .
+
+bt:genre-police-procedural
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Police Procedural"@en ;
+    rdfs:label      "Police Procedural"@en ;
+    skos:broader    bt:genre-crime-fiction .
+
+bt:genre-speculative-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Speculative Fiction"@en ;
+    rdfs:label      "Speculative Fiction"@en ;
+    skos:altLabel   "SF and Fantasy"@en ;
+    skos:broader    bt:genre-fiction ;
+    skos:narrower   bt:genre-science-fiction, bt:genre-fantasy .
+
+bt:genre-science-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Science Fiction"@en ;
+    rdfs:label      "Science Fiction"@en ;
+    skos:altLabel   "SF"@en ;
+    skos:altLabel   "Sci-Fi"@en ;
+    skos:broader    bt:genre-speculative-fiction ;
+    skos:narrower   bt:genre-hard-sf, bt:genre-space-opera, bt:genre-climate-fiction .
+
+bt:genre-hard-sf
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Hard Science Fiction"@en ;
+    rdfs:label      "Hard Science Fiction"@en ;
+    skos:altLabel   "Hard SF"@en ;
+    skos:broader    bt:genre-science-fiction .
+
+bt:genre-space-opera
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Space Opera"@en ;
+    rdfs:label      "Space Opera"@en ;
+    skos:broader    bt:genre-science-fiction .
+
+bt:genre-climate-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Climate Fiction"@en ;
+    rdfs:label      "Climate Fiction"@en ;
+    skos:altLabel   "Cli-Fi"@en ;
+    skos:broader    bt:genre-science-fiction .
+
+bt:genre-fantasy
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Fantasy"@en ;
+    rdfs:label      "Fantasy"@en ;
+    skos:broader    bt:genre-speculative-fiction ;
+    skos:narrower   bt:genre-folk-fantasy, bt:genre-portal-fantasy .
+
+bt:genre-folk-fantasy
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Folk Fantasy"@en ;
+    rdfs:label      "Folk Fantasy"@en ;
+    skos:altLabel   "Folkloric Fantasy"@en ;
+    skos:broader    bt:genre-fantasy ;
+    skos:scopeNote  "Fantasy drawing on local folklore and landscape."@en .
+
+bt:genre-portal-fantasy
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Portal Fantasy"@en ;
+    rdfs:label      "Portal Fantasy"@en ;
+    skos:broader    bt:genre-fantasy .
+
+bt:genre-historical-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Historical Fiction"@en ;
+    rdfs:label      "Historical Fiction"@en ;
+    skos:broader    bt:genre-fiction .
+
+bt:genre-literary-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Literary Fiction"@en ;
+    rdfs:label      "Literary Fiction"@en ;
+    skos:broader    bt:genre-fiction .
+
+bt:genre-translated-fiction
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Translated Fiction"@en ;
+    rdfs:label      "Translated Fiction"@en ;
+    skos:broader    bt:genre-fiction ;
+    skos:scopeNote  "Fiction read in translation; the original language is recorded on the work."@en .
+
+bt:genre-graphic-novels
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Graphic Novels"@en ;
+    rdfs:label      "Graphic Novels"@en ;
+    skos:altLabel   "Comics"@en ;
+    skos:broader    bt:genre-fiction .
+
+bt:genre-classics
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Classics"@en ;
+    rdfs:label      "Classics"@en ;
+    skos:broader    bt:genre-fiction .
+
+bt:genre-nature-writing
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Nature Writing"@en ;
+    rdfs:label      "Nature Writing"@en ;
+    skos:prefLabel  "Ysgrifennu Natur"@cy ;
+    skos:broader    bt:genre-non-fiction ;
+    skos:narrower   bt:genre-ornithology, bt:genre-geology, bt:genre-mountaineering .
+
+bt:genre-ornithology
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Ornithology"@en ;
+    rdfs:label      "Ornithology"@en ;
+    skos:altLabel   "Birdwatching"@en ;
+    skos:broader    bt:genre-nature-writing .
+
+bt:genre-geology
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Geology"@en ;
+    rdfs:label      "Geology"@en ;
+    skos:altLabel   "Earth Science"@en ;
+    skos:broader    bt:genre-nature-writing .
+
+bt:genre-mountaineering
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Mountaineering"@en ;
+    rdfs:label      "Mountaineering"@en ;
+    skos:altLabel   "Hillwalking"@en ;
+    skos:broader    bt:genre-nature-writing .
+
+bt:genre-history
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "History"@en ;
+    rdfs:label      "History"@en ;
+    skos:prefLabel  "Hanes"@cy ;
+    skos:broader    bt:genre-non-fiction ;
+    skos:narrower   bt:genre-maritime-history, bt:genre-industrial-history, bt:genre-local-history .
+
+bt:genre-maritime-history
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Maritime History"@en ;
+    rdfs:label      "Maritime History"@en ;
+    skos:altLabel   "Naval History"@en ;
+    skos:broader    bt:genre-history .
+
+bt:genre-industrial-history
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Industrial History"@en ;
+    rdfs:label      "Industrial History"@en ;
+    skos:broader    bt:genre-history .
+
+bt:genre-local-history
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Local History"@en ;
+    rdfs:label      "Local History"@en ;
+    skos:broader    bt:genre-history .
+
+bt:genre-travel-writing
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Travel Writing"@en ;
+    rdfs:label      "Travel Writing"@en ;
+    skos:broader    bt:genre-non-fiction .
+
+bt:genre-biography
+    a               skos:Concept ;
+    skos:inScheme   bt:genre-scheme ;
+    skos:prefLabel  "Biography"@en ;
+    rdfs:label      "Biography"@en ;
+    skos:altLabel   "Life Writing"@en ;
+    skos:broader    bt:genre-non-fiction .
+

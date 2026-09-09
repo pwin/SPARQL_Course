@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q31  Walking the trail in either direction
+# ==========================================================================
+#
+#  ASKS
+#    Which shops can be reached on foot from The Inkwell?
+#
+#  HOW IT WORKS
+#    Trail segments are asserted once, from one shop to another, but a
+#    footpath is walkable both ways. The alternation
+#    (bs:connectsTo|^bs:connectsTo) accepts a step in either direction, and
+#    the + around it repeats that step as often as needed.
+#
+#  DIAGRAM
+#        asserted:   inkwell ──connectsTo──▶ marginalia ──▶ broken-spine
+#
+#        but you can walk it backwards, so the step you want is:
+#
+#            ( bs:connectsTo | ^bs:connectsTo )
+#              ────┬───────    ─────┬────────
+#              forwards          backwards
+#                      either will do
+#
+#        wrapped in + to repeat:
+#
+#            ( bs:connectsTo | ^bs:connectsTo )+
+#
+#        inkwell ──▶ 31 of the 33 shops
+#                    (the two south-western shops are on their own; q32)
+#
+#        Note that inkwell reaches ITSELF: go one hop out and one back,
+#        and a + path has found a route home.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - | is alternation: try either path expression at this step.
+#    - Combining | with ^ is the standard way to treat a one-way link as
+#      two-way, without changing the data.
+#    - A + path over an undirected graph makes every connected node
+#      reachable from itself. That's correct, and surprising the first
+#      time.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  31 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName
+WHERE {
+  bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ ?shop .
+  ?shop rdfs:label ?shopName .
+}
+ORDER BY ?shopName

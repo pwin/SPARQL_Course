@@ -1,0 +1,64 @@
+# ==========================================================================
+#  Q76  The assertion that must come back false
+# ==========================================================================
+#
+#  ASKS
+#    Is any bookshop missing a label?
+#
+#  HOW IT WORKS
+#    An ASK written so that `false` is the healthy answer. Phrased this way
+#    it's a test rather than a question, and it can be run automatically:
+#    load the data, ask, and fail the build if the answer is true.
+#
+#  DIAGRAM
+#        ASK {
+#          ?shop a bs:Bookshop .
+#          FILTER NOT EXISTS { ?shop rdfs:label ?label }
+#        }
+#
+#        ──▶ false          the data is sound
+#
+#        A suite of these is a cheap integrity check, and it needs no
+#        SHACL processor:
+#
+#          any shop with no town?           false  ✓
+#          any work with no author?         false  ✓
+#          any segment joining a shop       false  ✓
+#            to itself?
+#          any place inside itself?         false  ✓
+#
+#        Turn one true and you have found a bug.  data/shapes.ttl says
+#        the same things in SHACL, which reports WHICH node failed;
+#        an ASK only reports THAT one did.  Use ASK in a script, SHACL
+#        when you need to fix what it finds.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - An ASK whose expected answer is false is a test, and belongs in
+#      whatever runs your builds.
+#    - ASK tells you that something is wrong; SHACL tells you what and
+#      where. They answer different questions and both are cheap.
+#    - Writing the assertion negatively -- 'is anything broken?' -- keeps
+#      the healthy answer constant as the dataset grows.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+ASK {
+  ?shop a bs:Bookshop .
+  FILTER NOT EXISTS { ?shop rdfs:label ?label }
+}

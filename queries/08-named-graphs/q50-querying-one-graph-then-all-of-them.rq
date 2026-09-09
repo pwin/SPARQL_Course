@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q50  Querying one graph, then all of them
+# ==========================================================================
+#
+#  ASKS
+#    Count the shops using only the shops graph, and then across the whole
+#    dataset.
+#
+#  HOW IT WORKS
+#    A pattern inside GRAPH sees only that graph. The same pattern outside
+#    GRAPH sees the default graph, which in this TriG file holds nothing
+#    but the dataset description -- so it finds nothing at all. That
+#    surprise is the lesson.
+#
+#  DIAGRAM
+#        GRAPH bt:graph-shops { ?s a bs:Bookshop }     ──▶  33
+#
+#        { ?s a bs:Bookshop }        (no GRAPH)        ──▶   0
+#                                                           ▲
+#            because the default graph of this TriG file    │
+#            contains only the dataset description ─────────┘
+#
+#        Compare with the Turtle files, where everything IS the default
+#        graph and the second pattern finds all 33.
+#
+#        Same triples, different filing, different answers.  Know which
+#        kind of file you loaded.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A pattern not inside GRAPH matches the default graph only.
+#    - Loading TriG instead of Turtle can silently change what your query
+#      returns.
+#    - Many endpoints put everything in the default graph as well. Never
+#      assume; run this query and find out.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?scope (COUNT(?s) AS ?shops)
+WHERE {
+  {
+    GRAPH bt:graph-shops { ?s a bs:Bookshop }
+    BIND( "inside GRAPH bt:graph-shops" AS ?scope )
+  }
+  UNION
+  {
+    ?s a bs:Bookshop .
+    BIND( "default graph, no GRAPH keyword" AS ?scope )
+  }
+  UNION
+  {
+    GRAPH ?any { ?s a bs:Bookshop }
+    BIND( "any named graph" AS ?scope )
+  }
+}
+GROUP BY ?scope
+ORDER BY ?scope

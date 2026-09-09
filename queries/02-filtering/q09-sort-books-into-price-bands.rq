@@ -1,0 +1,64 @@
+# ==========================================================================
+#  Q09  Sort books into price bands
+# ==========================================================================
+#
+#  ASKS
+#    Group the books into cheap, mid and dear without changing the data.
+#
+#  HOW IT WORKS
+#    BIND computes a value and binds it to a new variable, which can then
+#    be selected, sorted or grouped like any other. Nested IF builds the
+#    band. Unlike FILTER, BIND adds a column rather than removing rows.
+#
+#  DIAGRAM
+#        ?book ──bs:rrp──▶ ?price
+#
+#                  BIND( IF(?price < 12, "cheap",
+#                        IF(?price < 18, "mid", "dear")) AS ?band )
+#                                        │
+#                                        ▼
+#        ┌────────┬───────┬────────┐
+#        │ ?book  │ ?price│ ?band  │   <- a new column, computed
+#        ├────────┼───────┼────────┤
+#        │ ...    │  9.99 │ cheap  │
+#        │ ...    │ 15.50 │ mid    │
+#        │ ...    │ 21.00 │ dear   │
+#        └────────┴───────┴────────┘
+#
+#        BIND sees only variables bound EARLIER in the group.  Move it to
+#        the top and ?price is unbound, so ?band comes out unbound too.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - BIND adds a computed column; FILTER removes rows. They are the two
+#      halves of expression handling.
+#    - IF(condition, then, else) nests, and is the closest SPARQL gets to
+#      a CASE statement.
+#    - Position matters: BIND can only use what's already bound above it.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  74 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?title ?price ?band
+WHERE {
+  ?book a          bs:Work ;
+        rdfs:label ?title ;
+        bs:rrp     ?price .
+  BIND( IF(?price < 12.00, "cheap",
+        IF(?price < 18.00, "mid", "dear")) AS ?band )
+}
+ORDER BY ?price

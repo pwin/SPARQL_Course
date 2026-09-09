@@ -1,0 +1,80 @@
+# ==========================================================================
+#  Q44  Materialise the links that aren't there
+# ==========================================================================
+#
+#  ASKS
+#    The data records bs:imprintOf but never bs:hasImprint. Create it.
+#
+#  HOW IT WORKS
+#    CONSTRUCT can assert the inverse of an existing link, turning a query
+#    into a small inference step. The result is a graph you can load
+#    alongside the original -- which is what an OWL reasoner would do for
+#    you, more slowly and with more ceremony.
+#
+#  DIAGRAM
+#        in the data:
+#
+#            pub-saltmarsh ──bs:imprintOf──▶ pub-northwind
+#
+#        CONSTRUCT { ?parent bs:hasImprint ?child }
+#        WHERE     { ?child bs:imprintOf ?parent }
+#
+#        produces:
+#
+#            pub-northwind ──bs:hasImprint──▶ pub-saltmarsh
+#
+#        The vocabulary already declares
+#            bs:hasImprint owl:inverseOf bs:imprintOf
+#        so a reasoner would infer this.  CONSTRUCT does the same job in
+#        one query, with no reasoner and no surprises.
+#
+#        In the editor, 'Show Facts' runs the HyLAR reasoner and infers
+#        it from the OWL declaration instead.  Compare the two.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - CONSTRUCT is the cheapest form of inference: you state the rule as
+#      a query.
+#    - The output is a graph, so it can be loaded back and queried
+#      alongside the source.
+#    - ^bs:imprintOf answers the same question without materialising
+#      anything. Materialise only when many queries will need it.
+#    - Count what comes back before you trust it. This template emits
+#      three triples per solution, and several solutions share a parent,
+#      so the same label triple is built more than once.
+#
+#  NOTE
+#    engines-differ: 27 triples from the browser editor, 22 from HOLOS and
+#    Fuseki. The template is instantiated nine times, giving 27 triples of
+#    which 22 are distinct. HOLOS and Fuseki return the set; Comunica
+#    returns the stream, duplicates and all. Both are defensible -- a graph
+#    is a set, but a result stream need not be -- and it matters the moment
+#    you count rows instead of loading them.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  editor 27, fuseki 22, holos 22  (see the note above)
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?parent bs:hasImprint ?child .
+  ?parent rdfs:label    ?parentName .
+  ?child  rdfs:label    ?childName .
+}
+WHERE {
+  ?child  bs:imprintOf ?parent ;
+          rdfs:label   ?childName .
+  ?parent rdfs:label   ?parentName .
+}

@@ -1,0 +1,59 @@
+# ==========================================================================
+#  Q79  Asking inside one named graph
+# ==========================================================================
+#
+#  ASKS
+#    Does the stock graph say anything at all about The Sea Margin?
+#
+#  HOW IT WORKS
+#    An ASK wrapped in GRAPH asks about one part of the dataset rather than
+#    the whole of it. That turns it into a question about where a fact is
+#    filed, which is exactly what you want before joining across graphs
+#    that may not both be loaded.
+#
+#  DIAGRAM
+#        ASK { GRAPH bt:graph-stock { bt:shop-sea-margin bs:stocks ?anything } }
+#                    └──────┬──────┘
+#                      only this graph
+#
+#        ──▶ true
+#
+#        Useful before a bigger query:
+#
+#          ASK { GRAPH bt:graph-stock  { ?s ?p ?o } }   is it loaded?
+#          ASK { GRAPH bt:graph-claims { ?s ?p ?o } }   is the 1.2 layer here?
+#
+#        An endpoint you did not load yourself may hold any subset of
+#        what you expect.  Two ASKs tell you which, in less time than
+#        reading the documentation.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - GRAPH inside ASK scopes the question to one named graph.
+#    - A pair of ASKs is the quickest way to find out what an unfamiliar
+#      endpoint actually has loaded.
+#    - Remember module 08: a pattern outside GRAPH sees only the default
+#      graph, which in this TriG file is nearly empty.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+ASK {
+  GRAPH bt:graph-stock {
+    bt:shop-sea-margin bs:stocks ?anything .
+  }
+}

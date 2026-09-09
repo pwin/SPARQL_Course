@@ -1,0 +1,70 @@
+# ==========================================================================
+#  Q78  Asking a question about a total
+# ==========================================================================
+#
+#  ASKS
+#    Does any single town have three or more bookshops?
+#
+#  HOW IT WORKS
+#    ASK takes a whole group pattern, so it can contain a sub-query with
+#    grouping and HAVING. The sub-query produces a row only for towns that
+#    pass, and ASK then reports whether any row survived.
+#
+#  DIAGRAM
+#        ASK {
+#          { SELECT ?town (COUNT(?shop) AS ?n)
+#            WHERE  { ?shop a bs:Bookshop ; bs:locatedIn ?town }
+#            GROUP BY ?town
+#            HAVING ( COUNT(?shop) >= 3 ) }
+#        }
+#                        │
+#          the sub-query yields zero rows
+#                        │
+#                        ▼
+#                      false
+#
+#        Seven towns have two shops -- Wigtown, Edinburgh, Glasgow,
+#        Sedbergh, York, London and Hay-on-Wye.  None has three.  Change
+#        the 3 to a 2 and the answer becomes true.
+#
+#        An aggregate cannot appear at the top level of an ASK, because
+#        there is nothing to group.  Put it in a sub-query and the
+#        question becomes "did that produce anything?"
+#
+#
+#  WHAT TO TAKE AWAY
+#    - ASK accepts any group pattern, sub-queries included, so any
+#      question you can express as 'are there any rows?' can be asked.
+#    - The sub-query does the counting; ASK only reports whether anything
+#      survived HAVING.
+#    - This is the cheap way to check a threshold without reading a table
+#      to find out.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+ASK {
+  {
+    SELECT ?town (COUNT(?shop) AS ?shops)
+    WHERE {
+      ?shop a            bs:Bookshop ;
+            bs:locatedIn ?town .
+    }
+    GROUP BY ?town
+    HAVING ( COUNT(?shop) >= 3 )
+  }
+}

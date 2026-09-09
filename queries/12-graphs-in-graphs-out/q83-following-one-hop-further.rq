@@ -1,0 +1,88 @@
+# ==========================================================================
+#  Q83  Following one hop further
+# ==========================================================================
+#
+#  ASKS
+#    Describe The Sea Margin including its geometry, which lives on a
+#    separate node.
+#
+#  HOW IT WORKS
+#    GeoSPARQL puts the coordinates on a geometry node, so a one-hop
+#    description of a shop contains a pointer and no numbers. The two
+#    halves are gathered with UNION rather than by nesting one inside the
+#    other -- and the reason why is worth more than the query.
+#
+#  DIAGRAM
+#        a one-hop description stops at a pointer:
+#
+#          bt:shop-sea-margin
+#              geo:hasDefaultGeometry  bt:geom-shop-sea-margin   <- a pointer
+#              wgs84:lat               57.41...
+#
+#        the coordinates are on the node it points to:
+#
+#          bt:geom-shop-sea-margin
+#              geo:asWKT  "<...CRS84> POINT(-6.19 57.41)"
+#
+#        THE WRONG WAY -- nest them in one solution:
+#
+#          ?shop ?p ?o .
+#          OPTIONAL { ?shop geo:hasDefaultGeometry ?geom . ?geom ?gp ?go }
+#
+#          17 shop statements x 2 geometry statements = 34 solutions,
+#          each firing a two-triple template.  The distinct triples are
+#          still only 20, but the engine built 68 of them to get there --
+#          and on an engine that does not deduplicate its CONSTRUCT
+#          stream, all 68 come back.
+#
+#        THE RIGHT WAY -- keep the halves independent:
+#
+#          { VALUES ?s { bt:shop-sea-margin }  ?s ?p ?o }
+#          UNION
+#          { bt:shop-sea-margin geo:hasDefaultGeometry ?s . ?s ?p ?o }
+#
+#          17 + 3 solutions.  20 triples.  No multiplication anywhere.
+#
+#        Two patterns that share no variable but sit in the same group
+#        multiply.  UNION concatenates instead.  When you are gathering
+#        unrelated facts about different subjects, that is the one you
+#        want.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A resource's useful description rarely stops at one hop: geometry,
+#      addresses and n-ary nodes all sit one further out.
+#    - Nesting two independent patterns in one group multiplies the
+#      solutions. UNION gathers them without a cross product.
+#    - Decide the depth deliberately. Unbounded following turns a
+#      description into a copy of the dataset.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  20 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?s ?p ?o .
+}
+WHERE {
+  # The shop's own statements...
+  { VALUES ?s { bt:shop-sea-margin }
+    ?s ?p ?o . }
+  UNION
+  # ...and, separately, the statements of the node its geometry points to.
+  { bt:shop-sea-margin geo:hasDefaultGeometry ?s .
+    ?s ?p ?o . }
+}

@@ -1,0 +1,897 @@
+<title>Bookshop Trail Slides</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap">
+<style>
+:root {
+  --paper:#fbfaf7; --paper-2:#f2f1ec; --paper-3:#e7e6df;
+  --ink:#191d24; --ink-2:#454c58; --ink-3:#6f7784; --rule:#d8d7cf;
+  --route:#c8006e; --route-soft:#fbe9f2; --bracken:#4a6b3d; --amber:#9a6b00;
+  --code-bg:#f4f3ee; --code-edge:#e2e1d8;
+  --t-kw:#8a2f6b; --t-fn:#1d5c73; --t-var:#245a2a; --t-str:#8a4b1a;
+  --t-iri:#4a5160; --t-pname:#2f4858; --t-com:#8b8f86; --t-num:#8a4b1a;
+  --t-annot:#c8006e;
+  --sans:"Atkinson Hyperlegible",ui-sans-serif,system-ui,sans-serif;
+  --serif:"Newsreader",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper:#14161a; --paper-2:#1b1e23; --paper-3:#24282e;
+    --ink:#e8e6e0; --ink-2:#b9bcc2; --ink-3:#8b9099; --rule:#2f343b;
+    --route:#ff5fa8; --route-soft:#33101f; --bracken:#8fbe79; --amber:#d9a441;
+    --code-bg:#191c21; --code-edge:#2b3037;
+    --t-kw:#e59ad0; --t-fn:#7fc8e0; --t-var:#9ed5a3; --t-str:#e0b083;
+    --t-iri:#9aa3b0; --t-pname:#a8c4d4; --t-com:#71776f; --t-num:#e0b083;
+    --t-annot:#ff5fa8; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper:#14161a; --paper-2:#1b1e23; --paper-3:#24282e;
+  --ink:#e8e6e0; --ink-2:#b9bcc2; --ink-3:#8b9099; --rule:#2f343b;
+  --route:#ff5fa8; --route-soft:#33101f; --bracken:#8fbe79; --amber:#d9a441;
+  --code-bg:#191c21; --code-edge:#2b3037;
+  --t-kw:#e59ad0; --t-fn:#7fc8e0; --t-var:#9ed5a3; --t-str:#e0b083;
+  --t-iri:#9aa3b0; --t-pname:#a8c4d4; --t-com:#71776f; --t-num:#e0b083;
+  --t-annot:#ff5fa8; color-scheme: dark;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+  font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.deck{scroll-snap-type:y mandatory;overflow-y:auto;height:100vh}
+.slide{scroll-snap-align:start;min-height:100vh;display:flex;flex-direction:column;
+  justify-content:center;padding:44px 60px 68px;position:relative;
+  border-bottom:1px solid var(--rule)}
+.slide > * {max-width:1180px;width:100%;margin-inline:auto}
+h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,5.4vw,4rem);
+  line-height:1.02;letter-spacing:-.02em;margin:.1em 0 .28em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--route)}
+h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.5rem,2.9vw,2.25rem);
+  line-height:1.1;letter-spacing:-.015em;margin:0 0 .7em;text-wrap:balance}
+h3{font-family:var(--sans);font-size:.76rem;letter-spacing:.1em;
+  text-transform:uppercase;color:var(--ink-3);margin:0 0 .5em}
+p{margin:0 0 .8em;max-width:66ch}
+.eyebrow{font-family:var(--mono);font-size:.72rem;letter-spacing:.15em;
+  text-transform:uppercase;color:var(--route);margin:0 0 .2em}
+.lede{font-size:1.16rem;color:var(--ink-2);max-width:56ch}
+.foot{font-family:var(--mono);font-size:.76rem;color:var(--ink-3);margin-top:2.4em}
+.note{font-size:.92rem;color:var(--ink-3)}
+.take{margin-top:1.1em;padding:.7em .95em;background:var(--route-soft);
+  border-left:3px solid var(--route);border-radius:2px;font-size:.97rem;
+  color:var(--ink-2);max-width:88ch}
+code{font-family:var(--mono);font-size:.88em}
+pre.code{font-family:var(--mono);font-size:.85rem;line-height:1.55;margin:0 0 1em;
+  padding:14px 16px;background:var(--code-bg);border:1px solid var(--code-edge);
+  border-radius:3px;overflow-x:auto}
+pre.ascii{font-family:var(--mono);font-size:.78rem;line-height:1.45;margin:0 0 1em;
+  padding:14px 16px;background:var(--paper-2);border:1px solid var(--rule);
+  border-left:3px solid var(--route);border-radius:3px;color:var(--ink-2);
+  overflow-x:auto;white-space:pre}
+.t-kw{color:var(--t-kw);font-weight:700} .t-fn{color:var(--t-fn)}
+.t-var{color:var(--t-var)} .t-string{color:var(--t-str)}
+.t-iri{color:var(--t-iri)} .t-pname{color:var(--t-pname)}
+.t-comment{color:var(--t-com);font-style:italic} .t-num{color:var(--t-num)}
+.t-annot{color:var(--t-annot);font-weight:700}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:34px;
+  align-items:start}
+.three{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:30px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:2px;
+  background:var(--rule);border:1px solid var(--rule);border-radius:3px;overflow:hidden}
+.stat{background:var(--paper);padding:16px 18px}
+.stat b{display:block;font-family:var(--mono);font-size:1.6rem;font-weight:700;
+  line-height:1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.78rem;color:var(--ink-3)}
+ul.ticks{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:.5em}
+ul.ticks li{color:var(--ink-2)} ul.ticks li::marker{color:var(--route)}
+ol.play{margin:0 0 1em;padding-left:1.3em;display:flex;flex-direction:column;gap:.4em}
+ol.play li{color:var(--ink-2);font-size:.95rem}
+ol.play li::marker{color:var(--route);font-family:var(--mono);font-size:.85em}
+.modules{display:grid;grid-template-columns:repeat(auto-fit,minmax(330px,1fr));
+  gap:1px;background:var(--rule);border:1px solid var(--rule);border-radius:3px;
+  overflow:hidden}
+.modules div{background:var(--paper);padding:9px 14px;font-size:.92rem;
+  color:var(--ink-2)}
+.modules div.hi{background:var(--route-soft);color:var(--ink)}
+.modules b{font-family:var(--mono);color:var(--route);margin-right:.7em;
+  font-size:.85em}
+table.matrix{border-collapse:collapse;width:100%;font-size:.95rem}
+table.matrix th,table.matrix td{text-align:left;padding:9px 14px;
+  border-bottom:1px solid var(--rule)}
+table.matrix th{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--ink-3);background:var(--paper-2)}
+.yes{color:var(--bracken);font-weight:700} .no{color:var(--route);font-weight:700}
+.meh{color:var(--ink-3)}
+.figure-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(260px,.75fr);
+  gap:36px;align-items:center}
+.map,.schema{width:100%;height:auto;max-height:74vh;background:var(--paper-2);
+  border:1px solid var(--rule);border-radius:3px;padding:8px}
+.map .seg{stroke:var(--ink-3);stroke-width:1.3;opacity:.75}
+.map .seg.unmarked{stroke-dasharray:4 3}
+.map .seg.orphan{stroke:var(--route);opacity:.5}
+.map .shop{fill:var(--route);stroke:var(--paper);stroke-width:1.2}
+.map .shop.booktown{fill:var(--ink)}
+.map .shop.orphan{fill:var(--route);opacity:.45}
+.map .pin{fill:var(--ink-3);font-family:var(--mono);font-size:10.5px}
+.map .mapnote{fill:var(--ink-3);font-family:var(--sans);font-size:11px}
+.schema .node rect{fill:var(--paper);stroke:var(--rule);stroke-width:1.5}
+.schema .node.place rect{fill:var(--paper-3)}
+.schema .node.accent rect{stroke:var(--route);stroke-width:2}
+.schema .node text{fill:var(--ink);font-family:var(--mono);font-size:13px;
+  text-anchor:middle}
+.schema .node text.sub{fill:var(--ink-3);font-size:10.5px;font-family:var(--sans)}
+.schema .edge{fill:none;stroke:var(--ink-3);stroke-width:1.4}
+.schema .edge.dashed{stroke-dasharray:4 3}
+.schema .accent-edge{stroke:var(--route);stroke-width:1.8}
+.schema .arrowhead{fill:var(--ink-3)}
+.schema .elabel{fill:var(--ink-3);font-family:var(--mono);font-size:10.5px}
+.schema .elabel.mid,.schema .elabel.vert{text-anchor:middle}
+.schema .accent-text{fill:var(--route)}
+.schema .caption{fill:var(--ink-3);font-family:var(--sans);font-size:12px;
+  text-anchor:middle}
+.aside p{font-size:.95rem;color:var(--ink-2)}
+.slide.title,.slide.divider{background:var(--paper-2)}
+.slide.divider h1{font-size:clamp(2rem,4.4vw,3.2rem)}
+.num{position:absolute;right:22px;bottom:16px;font-family:var(--mono);
+  font-size:.72rem;color:var(--ink-3);font-variant-numeric:tabular-nums}
+.bar{position:fixed;left:0;top:0;height:3px;background:var(--route);width:0;
+  z-index:9;transition:width .12s linear}
+@media (max-width:820px){
+  .slide{padding:30px 22px 56px;min-height:auto}
+  .deck{scroll-snap-type:none}
+  .figure-wrap{grid-template-columns:1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media print{
+  .deck{height:auto;overflow:visible}
+  .slide{page-break-after:always;min-height:auto;border:none}
+  .bar{display:none}
+}
+</style>
+
+<div class="bar" id="bar"></div>
+<div class="deck" id="deck">
+<section class="slide title">
+<p class="eyebrow">SPARQL 1.1 and 1.2 &middot; a course in 97 queries</p>
+<h1>The <em>Bookshop</em> Trail</h1>
+<p class="lede">Thirty-three invented bookshops in real British towns, and
+  everything you can ask about them.</p>
+<p class="foot">Use the arrow keys, or just scroll.</p>
+<span class="num">1 / 24</span></section>
+<section class="slide plain">
+<h2>What this is</h2>
+<div class="cols">
+  <div>
+    <p>A teaching dataset in RDF, and 97 worked queries that take a
+      beginner from <code>SELECT ?s ?p ?o</code> to property paths, nested
+      aggregation, geospatial work and RDF&nbsp;1.2 statement annotation.</p>
+    <p>It's built to reach the hard parts quickly, and it's deliberately
+      awkward in the places where SPARQL genuinely is.</p>
+  </div>
+  <div>
+    <ul class="ticks">
+      <li>Runs in a <b>browser editor</b>, in <b>HOLOS</b>, and in
+        <b>Fuseki</b></li>
+      <li>Every query verified on all three, value by value</li>
+      <li>Every figure on these slides was measured, not estimated</li>
+    </ul>
+  </div>
+</div>
+<span class="num">2 / 24</span></section>
+<section class="slide plain">
+<h2>The places are real. Everything else is invented.</h2>
+<div class="cols">
+  <div>
+    <h3>Real</h3>
+    <p>Town names, WGS84 coordinates, British National Grid eastings and
+      northings. Distances check against a map, and the geography module is
+      about actual geography.</p>
+    <p>Including the three genuine book towns: <b>Hay-on-Wye</b>,
+      <b>Wigtown</b> and <b>Sedbergh</b>.</p>
+  </div>
+  <div>
+    <h3>Invented</h3>
+    <p>Shops, people, publishers, books, events, prices, disputed claims.</p>
+    <p class="note">No query in this course can teach you a false fact about a
+      real person or business. That was the reason for the split, and it's
+      worth copying whenever you build teaching data.</p>
+  </div>
+</div>
+<span class="num">3 / 24</span></section>
+<section class="slide figure">
+<h2>The trail</h2>
+<div class="figure-wrap">
+<svg viewBox="0 0 620 720" class="map" role="img" aria-labelledby="map-t map-d">
+<title id="map-t">The Bookshop Trail</title>
+<desc id="map-d">Thirty-three bookshops plotted at their real coordinates, joined by the walking trail. Two shops in the south west form a second, unconnected component.</desc>
+<line class="seg" x1="205.5" y1="265.0" x2="205.4" y2="264.8"/>
+<line class="seg" x1="205.4" y1="264.8" x2="270.9" y2="169.1"/>
+<line class="seg" x1="205.5" y1="265.0" x2="271.1" y2="169.3"/>
+<line class="seg" x1="270.9" y1="169.1" x2="271.1" y2="169.3"/>
+<line class="seg" x1="271.1" y1="169.3" x2="215.0" y2="176.7"/>
+<line class="seg" x1="215.0" y1="176.7" x2="215.0" y2="176.9"/>
+<line class="seg" x1="215.0" y1="176.9" x2="216.4" y2="34.0"/>
+<line class="seg unmarked" x1="216.4" y1="34.0" x2="113.4" y2="39.2"/>
+<line class="seg" x1="271.1" y1="169.3" x2="291.9" y2="134.7"/>
+<line class="seg" x1="291.9" y1="134.7" x2="333.2" y2="185.4"/>
+<line class="seg" x1="333.2" y1="185.4" x2="381.4" y2="346.0"/>
+<line class="seg" x1="381.4" y1="346.0" x2="381.1" y2="346.1"/>
+<line class="seg" x1="381.1" y1="346.1" x2="406.0" y2="299.0"/>
+<line class="seg" x1="381.4" y1="346.0" x2="305.7" y2="314.1"/>
+<line class="seg" x1="305.7" y1="314.1" x2="305.5" y2="313.5"/>
+<line class="seg" x1="305.5" y1="313.5" x2="294.7" y2="312.9"/>
+<line class="seg" x1="294.7" y1="312.9" x2="274.1" y2="288.4"/>
+<line class="seg unmarked" x1="274.1" y1="288.4" x2="320.2" y2="388.3"/>
+<line class="seg" x1="320.2" y1="388.3" x2="281.0" y2="394.3"/>
+<line class="seg" x1="281.0" y1="394.3" x2="294.4" y2="456.5"/>
+<line class="seg" x1="294.4" y1="456.5" x2="295.8" y2="487.0"/>
+<line class="seg" x1="295.8" y1="487.0" x2="274.7" y2="512.6"/>
+<line class="seg" x1="274.7" y1="512.6" x2="274.0" y2="512.9"/>
+<line class="seg" x1="274.0" y1="512.9" x2="224.5" y2="482.6"/>
+<line class="seg" x1="224.5" y1="482.6" x2="271.6" y2="565.2"/>
+<line class="seg" x1="271.6" y1="565.2" x2="314.4" y2="573.9"/>
+<line class="seg" x1="314.4" y1="573.9" x2="372.3" y2="541.7"/>
+<line class="seg" x1="372.3" y1="541.7" x2="444.8" y2="501.2"/>
+<line class="seg" x1="444.8" y1="501.2" x2="506.6" y2="463.4"/>
+<line class="seg" x1="506.6" y1="463.4" x2="431.2" y2="563.3"/>
+<line class="seg" x1="431.2" y1="563.3" x2="431.8" y2="562.9"/>
+<line class="seg unmarked" x1="431.8" y1="562.9" x2="314.4" y2="573.9"/>
+<line class="seg orphan" x1="252.7" y1="632.6" x2="148.2" y2="686.0"/>
+<circle class="shop booktown" cx="205.5" cy="265.0" r="5.0"><title>The Inkwell, Wigtown</title></circle>
+<text class="pin" x="214.5" y="268.6" text-anchor="start">Wigtown</text>
+<circle class="shop booktown" cx="205.4" cy="264.8" r="5.0"><title>Marginalia, Wigtown</title></circle>
+<circle class="shop" cx="271.1" cy="169.3" r="3.4"><title>Colophon Books, Edinburgh</title></circle>
+<text class="pin" x="280.1" y="172.9" text-anchor="start">Edinburgh</text>
+<circle class="shop" cx="270.9" cy="169.1" r="3.4"><title>The Broken Spine, Edinburgh</title></circle>
+<circle class="shop" cx="215.0" cy="176.7" r="3.4"><title>The Quire, Glasgow</title></circle>
+<circle class="shop" cx="215.0" cy="176.9" r="3.4"><title>Verso and Recto, Glasgow</title></circle>
+<circle class="shop" cx="291.9" cy="134.7" r="3.4"><title>Gutter and Gilt, St Andrews</title></circle>
+<circle class="shop" cx="216.4" cy="34.0" r="3.4"><title>Northern Light Books, Inverness</title></circle>
+<text class="pin" x="225.4" y="37.6" text-anchor="start">Inverness</text>
+<circle class="shop" cx="113.4" cy="39.2" r="3.4"><title>The Sea Margin, Portree</title></circle>
+<text class="pin" x="122.4" y="42.8" text-anchor="start">Portree</text>
+<circle class="shop" cx="333.2" cy="185.4" r="3.4"><title>Borderprint, Berwick-upon-Tweed</title></circle>
+<circle class="shop booktown" cx="305.7" cy="314.1" r="5.0"><title>The Dales Folio, Sedbergh</title></circle>
+<text class="pin" x="314.7" y="317.7" text-anchor="start">Sedbergh</text>
+<circle class="shop booktown" cx="305.5" cy="313.5" r="5.0"><title>Errata, Sedbergh</title></circle>
+<circle class="shop" cx="294.7" cy="312.9" r="3.4"><title>Pressmark, Kendal</title></circle>
+<circle class="shop" cx="274.1" cy="288.4" r="3.4"><title>Bookbarrow, Keswick</title></circle>
+<circle class="shop" cx="381.4" cy="346.0" r="3.4"><title>Endpapers, York</title></circle>
+<text class="pin" x="372.4" y="349.6" text-anchor="end">York</text>
+<circle class="shop" cx="381.1" cy="346.1" r="3.4"><title>The Bookwyrm, York</title></circle>
+<circle class="shop" cx="406.0" cy="299.0" r="3.4"><title>The Harbour Page, Whitby</title></circle>
+<circle class="shop" cx="320.2" cy="388.3" r="3.4"><title>Cotton Quarto, Manchester</title></circle>
+<text class="pin" x="329.2" y="391.9" text-anchor="start">Manchester</text>
+<circle class="shop" cx="281.0" cy="394.3" r="3.4"><title>Signature Books, Liverpool</title></circle>
+<circle class="shop" cx="294.4" cy="456.5" r="3.4"><title>Severn Leaf, Shrewsbury</title></circle>
+<circle class="shop" cx="295.8" cy="487.0" r="3.4"><title>The Dog-Eared, Ludlow</title></circle>
+<circle class="shop" cx="372.3" cy="541.7" r="3.4"><title>Candlemas Books, Oxford</title></circle>
+<circle class="shop" cx="444.8" cy="501.2" r="3.4"><title>Chapter and Verse, Cambridge</title></circle>
+<circle class="shop" cx="506.6" cy="463.4" r="3.4"><title>The Broads Bindery, Norwich</title></circle>
+<circle class="shop" cx="431.2" cy="563.3" r="3.4"><title>Ex Libris, London</title></circle>
+<text class="pin" x="422.2" y="566.9" text-anchor="end">London</text>
+<circle class="shop" cx="431.8" cy="562.9" r="3.4"><title>Turn the Page, London</title></circle>
+<circle class="shop" cx="314.4" cy="573.9" r="3.4"><title>The Crescent Bookroom, Bath</title></circle>
+<circle class="shop orphan" cx="252.7" cy="632.6" r="3.4"><title>West Quay Books, Exeter</title></circle>
+<text class="pin" x="261.7" y="636.2" text-anchor="start">Exeter</text>
+<circle class="shop orphan" cx="148.2" cy="686.0" r="3.4"><title>Penwith Pages, Penzance</title></circle>
+<text class="pin" x="157.2" y="689.6" text-anchor="start">Penzance</text>
+<circle class="shop booktown" cx="274.7" cy="512.6" r="5.0"><title>Castle Steps Books, Hay-on-Wye</title></circle>
+<text class="pin" x="283.7" y="516.2" text-anchor="start">Hay-on-Wye</text>
+<circle class="shop booktown" cx="274.0" cy="512.9" r="5.0"><title>The Clock Tower, Hay-on-Wye</title></circle>
+<circle class="shop" cx="224.5" cy="482.6" r="3.4"><title>Cliff Road Books, Aberystwyth</title></circle>
+<circle class="shop" cx="271.6" cy="565.2" r="3.4"><title>Taff Margin, Cardiff</title></circle>
+<text class="mapnote" x="34" y="710">Larger dots are the three real book towns. The pale pair, bottom left, connects to nothing.</text>
+</svg>
+<div class="aside">
+  <p>Thirty-three shops at their real coordinates, joined by the walking
+    route. Longitude is squashed by cos(latitude) so the plot isn't stretched
+    east&ndash;west &mdash; the same correction module&nbsp;09 teaches.</p>
+  <p>The pale pair at the bottom left is the deliberate second component. No
+    route reaches it, which is what makes <code>bs:connectsTo+</code> worth
+    running.</p>
+</div>
+</div><span class="num">4 / 24</span></section>
+<section class="slide figure">
+<h2>The shape of the data</h2>
+<div class="figure-wrap">
+
+<svg viewBox="0 0 900 560" role="img" aria-labelledby="schema-title schema-desc"
+     class="schema">
+  <title id="schema-title">The Bookshop Trail data model</title>
+  <desc id="schema-desc">Bookshops sit in settlements, which nest inside council
+  areas, regions and countries. Shops stock works, which have authors and
+  genres. Events are held at shops. Trail segments join shops to each
+  other.</desc>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5"
+            markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" class="arrowhead"/>
+    </marker>
+  </defs>
+
+  <!-- the place spine -->
+  <g class="node place">
+    <rect x="30" y="40" width="150" height="42" rx="3"/>
+    <text x="105" y="60">bs:Country</text><text x="105" y="74" class="sub">3</text>
+  </g>
+  <g class="node place">
+    <rect x="30" y="130" width="150" height="42" rx="3"/>
+    <text x="105" y="150">bs:Region</text><text x="105" y="164" class="sub">7 — England only</text>
+  </g>
+  <g class="node place">
+    <rect x="30" y="220" width="150" height="42" rx="3"/>
+    <text x="105" y="240">bs:CouncilArea</text><text x="105" y="254" class="sub">23</text>
+  </g>
+  <g class="node place">
+    <rect x="30" y="310" width="150" height="42" rx="3"/>
+    <text x="105" y="330">bs:Settlement</text><text x="105" y="344" class="sub">30 — 4 with no shop</text>
+  </g>
+
+  <path d="M 105 130 L 105 92"   class="edge" marker-end="url(#arrow)"/>
+  <path d="M 105 220 L 105 182"  class="edge" marker-end="url(#arrow)"/>
+  <path d="M 105 310 L 105 272"  class="edge" marker-end="url(#arrow)"/>
+  <path d="M 22 240 C -6 200, -6 110, 22 62" class="edge dashed" marker-end="url(#arrow)"/>
+  <text x="16" y="152" class="elabel vert">bs:within</text>
+  <text x="118" y="200" class="elabel">bs:within</text>
+  <text x="118" y="290" class="elabel">bs:within</text>
+
+  <!-- the shop -->
+  <g class="node accent">
+    <rect x="300" y="300" width="160" height="60" rx="3"/>
+    <text x="380" y="325">bs:Bookshop</text><text x="380" y="343" class="sub">33</text>
+  </g>
+  <path d="M 300 330 L 190 330" class="edge" marker-end="url(#arrow)"/>
+  <text x="245" y="322" class="elabel mid">bs:locatedIn</text>
+
+  <!-- trail loop -->
+  <path d="M 340 300 C 320 250, 440 250, 420 300" class="edge accent-edge"
+        marker-end="url(#arrow)"/>
+  <text x="380" y="258" class="elabel mid accent-text">bs:connectsTo</text>
+
+  <!-- events -->
+  <g class="node">
+    <rect x="300" y="430" width="160" height="60" rx="3"/>
+    <text x="380" y="455">bs:Event</text><text x="380" y="473" class="sub">59</text>
+  </g>
+  <path d="M 380 430 L 380 372" class="edge" marker-end="url(#arrow)"/>
+  <text x="390" y="405" class="elabel">bs:heldAt</text>
+
+  <!-- works -->
+  <g class="node">
+    <rect x="580" y="300" width="160" height="60" rx="3"/>
+    <text x="660" y="325">bs:Work</text><text x="660" y="343" class="sub">74</text>
+  </g>
+  <path d="M 470 330 L 570 330" class="edge" marker-end="url(#arrow)"/>
+  <text x="520" y="322" class="elabel mid">bs:stocks</text>
+
+  <!-- authors -->
+  <g class="node">
+    <rect x="580" y="180" width="160" height="60" rx="3"/>
+    <text x="660" y="205">bs:Author</text><text x="660" y="223" class="sub">32</text>
+  </g>
+  <path d="M 660 300 L 660 252" class="edge" marker-end="url(#arrow)"/>
+  <text x="670" y="280" class="elabel">bs:author</text>
+  <path d="M 620 180 C 600 130, 720 130, 700 180" class="edge accent-edge"
+        marker-end="url(#arrow)"/>
+  <text x="660" y="138" class="elabel mid accent-text">bs:influencedBy</text>
+  <path d="M 580 210 L 480 210" class="edge" marker-end="url(#arrow)"/>
+  <text x="530" y="202" class="elabel mid">bs:featuring</text>
+  <path d="M 470 210 C 400 215, 400 420, 380 428" class="edge"/>
+
+  <!-- genres -->
+  <g class="node">
+    <rect x="580" y="430" width="160" height="60" rx="3"/>
+    <text x="660" y="455">skos:Concept</text><text x="660" y="473" class="sub">31 genres</text>
+  </g>
+  <path d="M 660 430 L 660 372" class="edge" marker-end="url(#arrow)"/>
+  <text x="670" y="405" class="elabel">bs:genre</text>
+  <path d="M 740 460 C 800 440, 800 480, 745 478" class="edge accent-edge"
+        marker-end="url(#arrow)"/>
+  <text x="800" y="462" class="elabel accent-text">skos:broader</text>
+
+  <!-- publishers -->
+  <g class="node">
+    <rect x="790" y="300" width="90" height="60" rx="3"/>
+    <text x="835" y="325">Publisher</text><text x="835" y="343" class="sub">13</text>
+  </g>
+  <path d="M 750 330 L 780 330" class="edge" marker-end="url(#arrow)"/>
+  <path d="M 835 300 C 855 265, 880 300, 862 305" class="edge accent-edge"
+        marker-end="url(#arrow)"/>
+  <text x="838" y="258" class="elabel mid accent-text">bs:imprintOf</text>
+
+  <text x="450" y="530" class="caption">
+    Curved edges point back to the same class — the recursive links. They are
+    where the property-path module lives.
+  </text>
+</svg>
+
+<div class="aside">
+  <p>Five classes carry most of the course.</p>
+  <p>The three curved edges are the recursive ones &mdash; a place inside a
+    place, an author who read an author, a genre under a genre. That's where
+    module&nbsp;05 lives, and it's the reason the dataset is a graph rather
+    than a spreadsheet.</p>
+</div>
+</div><span class="num">5 / 24</span></section>
+<section class="slide stats">
+<h2>What's in it</h2>
+<div class="grid">
+  <div class="stat"><b>4,796</b><span>triples, RDF 1.1</span></div>
+  <div class="stat"><b>33</b><span>bookshops</span></div>
+  <div class="stat"><b>26</b><span>towns with a shop</span></div>
+  <div class="stat"><b>4</b><span>towns with none</span></div>
+  <div class="stat"><b>74</b><span>works</span></div>
+  <div class="stat"><b>32</b><span>authors</span></div>
+  <div class="stat"><b>13</b><span>publishers</span></div>
+  <div class="stat"><b>31</b><span>genres, 4 deep</span></div>
+  <div class="stat"><b>59</b><span>events</span></div>
+  <div class="stat"><b>33</b><span>trail segments</span></div>
+  <div class="stat"><b>95</b><span>stock records</span></div>
+  <div class="stat"><b>5</b><span>languages</span></div>
+</div>
+<p class="note">Small enough to read; large enough that an average means
+  something.</p>
+<span class="num">6 / 24</span></section>
+<section class="slide plain">
+<h2>Awkward on purpose &mdash; 1</h2>
+<h3>The hierarchy is uneven</h3>
+<div class="cols">
+  <div>
+<pre class="ascii">ENGLAND                    SCOTLAND / WALES
+
+york                       edinburgh
+  | within                   | within
+north-yorkshire            edinburgh-city
+  | within                   | within
+yorkshire                  scotland
+  | within                   | within
+england                    gb
+  | within
+gb
+
+    4 levels                   3 levels</pre>
+  </div>
+  <div>
+    <p>England has a region level. Scotland and Wales don't.</p>
+    <p>So a pattern hard-coded to three hops finds England and
+      <b>silently misses two countries</b>:</p>
+<pre class="code"><code><span class="t-var">?town</span> <span class="t-pname">bs:within</span>/<span class="t-pname">bs:within</span>/<span class="t-pname">bs:within</span> <span class="t-var">?country</span></code></pre>
+    <p class="note">A wrong answer that looks reasonable is worse than an
+      error. That single fact is why property paths get ten queries.</p>
+  </div>
+</div>
+<span class="num">7 / 24</span></section>
+<section class="slide plain">
+<h2>Awkward on purpose &mdash; 2, 3 and 4</h2>
+<div class="three">
+  <div>
+    <h3>A stranded pair</h3>
+    <p>Two shops in the south west connect to each other and to nothing
+      else.</p>
+    <p class="note">So <code>bs:connectsTo+</code> returns strictly fewer than
+      all the shops, and reachability is a real question rather than a
+      formality.</p>
+  </div>
+  <div>
+    <h3>No ISBNs before 1970</h3>
+    <p>Because there were none. Eleven works have no
+      <code>bs:isbn</code>.</p>
+    <p class="note">A gap with a reason behind it, which gives
+      <code>OPTIONAL</code> and <code>NOT EXISTS</code> something real to
+      find.</p>
+  </div>
+  <div>
+    <h3>Disputed dates</h3>
+    <p>Four shops have rival founding years from different sources, with
+      confidences.</p>
+    <p class="note">The RDF 1.2 module needs a real disagreement to reason
+      about, not a toy one.</p>
+  </div>
+</div>
+<span class="num">8 / 24</span></section>
+<section class="slide divider">
+<p class="eyebrow">Part two</p>
+<h1>The queries</h1>
+<p class="lede">Fifteen modules. The arc runs from "what's a triple pattern"
+  to "why did the optimiser move my filter".</p>
+<span class="num">9 / 24</span></section>
+<section class="slide plain">
+<h2>The arc</h2>
+<div class="modules">
+  <div><b>00</b> The lab &mdash; the editor, its graph view, its reasoner</div>
+  <div><b>01</b> First queries &mdash; patterns, joins, ORDER BY</div>
+  <div><b>02</b> Filtering &mdash; FILTER, BIND, and the datatype traps</div>
+  <div><b>03</b> Optionality &mdash; OPTIONAL, UNION, MINUS vs NOT EXISTS</div>
+  <div><b>04</b> Aggregation &mdash; GROUP BY, HAVING, counting absence</div>
+  <div class="hi"><b>05</b> Property paths &mdash; the module everything builds toward</div>
+  <div class="hi"><b>06</b> Sub-queries &mdash; above average, top per group</div>
+  <div><b>07</b> Other query forms &mdash; CONSTRUCT, ASK, DESCRIBE</div>
+  <div><b>08</b> Named graphs &mdash; provenance for free</div>
+  <div><b>09</b> Geography with arithmetic &mdash; no trig, no square root</div>
+  <div><b>10</b> GeoSPARQL proper &mdash; geof: functions</div>
+  <div class="hi"><b>11</b> SPARQL 1.2 &mdash; saying things about statements</div>
+  <div><b>12</b> Graphs in, graphs out &mdash; the three forms in earnest</div>
+  <div><b>13</b> Planning and debugging &mdash; reading the plan</div>
+  <div><b>14</b> Putting it together</div>
+</div>
+<span class="num">10 / 24</span></section>
+<section class="slide query">
+<h2>A query is a graph pattern</h2>
+<pre class="code"><code><span class="t-kw">SELECT</span> <span class="t-var">?shop</span> <span class="t-var">?name</span>
+<span class="t-kw">WHERE</span> {
+  <span class="t-var">?shop</span> <span class="t-kw">a</span>          <span class="t-pname">bs:Bookshop</span> ;
+        <span class="t-pname">rdfs:label</span> <span class="t-var">?name</span> .
+}
+<span class="t-kw">ORDER</span> <span class="t-kw">BY</span> <span class="t-var">?name</span></code></pre><pre class="ascii">?shop  ---- rdf:type ---->  bs:Bookshop
+  |
+  '------- rdfs:label --->  ?name
+
+Both lines constrain the SAME ?shop, so a row
+survives only if both are true of it.</pre>
+<p class="take"><b>Take away.</b> You draw the shape you want; the engine finds
+  every place it fits. Repeating a variable is the join &mdash; there's no
+  JOIN keyword because there doesn't need to be one.</p>
+<span class="num">11 / 24</span></section>
+<section class="slide query">
+<h2>FILTER removes rows. BIND adds a column.</h2>
+<div class="cols">
+  <div>
+<pre class="code"><code><span class="t-kw">FILTER</span>( <span class="t-var">?cafe</span> &amp;&amp; <span class="t-var">?area</span> &gt; <span class="t-num">150</span> )</code></pre>
+    <p>Constrains. Never creates a binding. A FILTER anywhere in a group
+      applies to the whole group, not just the lines above it.</p>
+  </div>
+  <div>
+<pre class="code"><code><span class="t-kw">BIND</span>( <span class="t-fn">IF</span>(<span class="t-var">?price</span> &lt; <span class="t-num">12.00</span>, <span class="t-string">"cheap"</span>,
+      <span class="t-fn">IF</span>(<span class="t-var">?price</span> &lt; <span class="t-num">18.00</span>, <span class="t-string">"mid"</span>, <span class="t-string">"dear"</span>)) <span class="t-kw">AS</span> <span class="t-var">?band</span> )</code></pre>
+    <p>Computes. Sees only what's bound <em>above</em> it, which is the
+      commonest reason a BIND comes back empty.</p>
+  </div>
+</div>
+<p class="take"><b>Take away.</b> These are the two halves of expression
+  handling, and mixing them up is the single most common beginner error after
+  forgetting OPTIONAL.</p>
+<span class="num">12 / 24</span></section>
+<section class="slide query">
+<h2>OPTIONAL is a left join</h2>
+<pre class="ascii">required                      optional
++--------------------+       +-----------------------+
+| ?shop a bs:Bookshop|------>| ?shop bs:website ?site|
++--------------------+       +-----------------------+
+         33 rows                        |
+                             +----------+----------+
+                             v                     v
+                      matched: ?site bound    no match:
+                                              ?site UNBOUND
+                                              row still kept
+                                     |
+                                     v
+                                  33 rows</pre>
+<p class="take"><b>Take away.</b> Drop the OPTIONAL and you get fewer rows, with
+  no warning. An unbound variable isn't an empty string and not zero &mdash;
+  it's absent, and <code>BOUND()</code> is how you test for it.</p>
+<span class="num">13 / 24</span></section>
+<section class="slide query">
+<h2>The one that changes everything</h2>
+<div class="cols">
+  <div>
+<pre class="code"><code><span class="t-comment"># wrong, and it won't tell you</span>
+<span class="t-var">?town</span> <span class="t-pname">bs:within</span>/<span class="t-pname">bs:within</span>/<span class="t-pname">bs:within</span> <span class="t-var">?country</span>
+
+<span class="t-comment"># right</span>
+<span class="t-var">?town</span> <span class="t-pname">bs:within</span>+ <span class="t-var">?country</span></code></pre>
+    <p>Measured on this dataset: the fixed chain finds England's shops and
+      reports <b>nothing at all</b> for Scotland and Wales.</p>
+  </div>
+  <div>
+<pre class="ascii">bs:within+   one or more hops
+bs:within*   zero or more -- includes itself
+bs:within?   zero or one
+^bs:within   backwards
+a | b        either
+a / b        then
+!(a|b)       any predicate but these</pre>
+  </div>
+</div>
+<p class="take"><b>Take away.</b> Real hierarchies are rarely of uniform depth.
+  When you mean "at any depth", say so &mdash; and paths are cycle-safe, which
+  a hand-rolled recursive join isn't.</p>
+<span class="num">14 / 24</span></section>
+<section class="slide query">
+<h2>Sub-queries: group, then join back</h2>
+<pre class="ascii">step 1  what is the maximum, per shop?
+
+  SELECT ?shop (MAX(?a) AS ?best)
+  GROUP BY ?shop
+                +-----------+-----+
+                | ex-libris | 320 |
+                +-----------+-----+
+                      |
+step 2  join back to find WHICH event that was
+
+  ?event bs:heldAt ?shop ; bs:attendance ?best
+                                         ---+
+                     the join condition -----'</pre>
+<p class="take"><b>Take away.</b> Aggregating throws the detail away; joining
+  the aggregate back recovers it. This one shape answers "the best in each
+  group", and it's the most reusable thing in the course.</p>
+<span class="num">15 / 24</span></section>
+<section class="slide query">
+<h2>Geography with no trigonometry</h2>
+<div class="cols">
+  <div>
+    <p>SPARQL 1.1 has <code>+ - * /</code>, <code>ABS</code>,
+      <code>ROUND</code>. It has no <code>sin</code>, no <code>sqrt</code>.</p>
+    <p>So a great-circle distance is out of reach. But:</p>
+<pre class="ascii">sqrt is monotonic
+
+  ordering by x  ==  ordering by sqrt(x)
+
+so rank on the SQUARE and never take the root:
+
+  ?d2 = dx*dx + dy*dy
+
+and for a radius, square the threshold instead:
+
+  dx*dx + dy*dy  <  50000 * 50000</pre>
+  </div>
+  <div>
+    <p>That makes bounding boxes, nearest-neighbour and radius queries work in
+      an engine with <b>no geospatial support whatever</b> &mdash; including
+      the one in the browser.</p>
+    <p class="note">The dataset also carries British National Grid eastings and
+      northings, so the same arithmetic isn't merely a ranking but
+      <em>exact</em>: a projected grid is already flat and already in
+      metres.</p>
+    <p class="note">Module 10 then does it properly with
+      <code>geof:</code>, and the comparison is the lesson.</p>
+  </div>
+</div>
+<span class="num">16 / 24</span></section>
+<section class="slide query">
+<h2>RDF 1.2: saying something about a statement</h2>
+<pre class="code"><code><span class="t-var">?shop</span> <span class="t-pname">bs:founded</span> <span class="t-var">?year</span> <span class="t-annot">{|</span> <span class="t-pname">bs:claimedBy</span> <span class="t-var">?source</span> ; <span class="t-pname">bs:confidence</span> <span class="t-var">?c</span> <span class="t-annot">|}</span> .</code></pre><pre class="ascii">in the data:
+
+  bt:shop-ex-libris bs:founded 1919
+      {| bs:claimedBy bt:source-national-register ;
+         bs:confidence 0.99 |} .
+  bt:shop-ex-libris bs:founded 1921
+      {| bs:claimedBy bt:source-local-paper ;
+         bs:confidence 0.40 |} .
+
+Both claims are in the graph.  Neither is privileged.
+Deciding between them is the QUERY's job.</pre>
+<p class="take"><b>Take away.</b> A dataset can hold two contradictory claims
+  without being broken, as long as each is attributed. That turns "which fact
+  is true?" from a modelling problem into a query &mdash; and you can change
+  the policy without touching the data.</p>
+<span class="num">17 / 24</span></section>
+<section class="slide query">
+<h2>What the sugar really is</h2>
+<pre class="ascii">what you write
+
+  bt:shop-ex-libris bs:founded 1919 {| bs:confidence 0.99 |} .
+
+what the parser produces -- ordinary triples, plus one new term type
+
+  bt:shop-ex-libris bs:founded 1919 .            <- still asserted
+  _:r rdf:reifies <<( bt:shop-ex-libris bs:founded 1919 )>> .
+  _:r bs:confidence 0.99 .
+      ^                     ^
+      |                     '-- an ordinary triple about _:r
+      '-- the "reifier": a name for the statement
+
+<<( s p o )>> is a TRIPLE TERM: one RDF term whose value is a
+triple.  In RDF 1.2 it may only appear as an OBJECT.</pre>
+<p class="take"><b>Take away.</b> It isn't a new kind of data. It's ordinary
+  triples with a term type for talking about statements &mdash; and all three
+  engines here read it.</p>
+<span class="num">18 / 24</span></section>
+<section class="slide divider">
+<p class="eyebrow">Part three</p>
+<h1>What three engines taught us</h1>
+<p class="lede">Every query run everywhere, and the answers compared value by
+  value rather than by row count.</p>
+<span class="num">19 / 24</span></section>
+<section class="slide plain">
+<h2>The silent failures</h2>
+<table class="matrix">
+  <thead><tr><th>Written the obvious way</th><th>Editor</th><th>HOLOS</th><th>Fuseki</th></tr></thead>
+  <tbody>
+    <tr><td><code>xsd:integer(?gYear)</code></td>
+        <td class="no">0 rows</td><td class="no">0 rows</td><td class="yes">works</td></tr>
+    <tr><td><code>?gYearA != ?gYearB</code></td>
+        <td class="no">0 rows</td><td class="no">0 rows</td><td class="yes">works</td></tr>
+    <tr><td><code>?wktA != ?wktB</code></td>
+        <td class="meh">&mdash;</td><td class="no">0 rows</td><td class="meh">&mdash;</td></tr>
+    <tr><td><code>geof:distance</code> in metres</td>
+        <td class="meh">no geo</td><td class="yes">works</td><td class="no">unbound</td></tr>
+    <tr><td><code>CONSTRUCT</code> duplicate triples</td>
+        <td class="no">kept</td><td class="yes">merged</td><td class="yes">merged</td></tr>
+    <tr><td><code>&lt;&lt; s p o ~ ?r &gt;&gt;</code> in a query</td>
+        <td class="no">parse error</td><td class="no">parse error</td><td class="no">parse error</td></tr>
+  </tbody>
+</table>
+<p class="take"><b>Not one of the first three raises an error.</b> They return a
+  confident, plausible, wrong answer. Row counts hide all of it, which is why
+  the harness compares values &mdash; and why the fix is always the same:
+  <code>STR()</code> first, then compare.</p>
+<span class="num">20 / 24</span></section>
+<section class="slide plain">
+<h2>Reading the plan</h2>
+<div class="cols">
+  <div>
+<pre class="ascii">JENA, as written -- the filter is where you put it
+
+  (project (?name ?site)
+    (filter (> (strlen ?name) 8)
+      (leftjoin
+        (sequence
+          (bgp ...)
+          (path ?town (path+ bs:within) ...))
+        (bgp (triple ?shop bs:website ?site)))))
+
+JENA, optimised -- it has MOVED INWARDS
+
+  (project (?name ?site)
+    (conditional
+      (sequence
+        (filter (> (strlen ?name) 8)
+          (bgp (triple ?shop rdf:type bs:Bookshop)
+               (triple ?shop rdfs:label ?name)))
+        ...)))</pre>
+  </div>
+  <div>
+<pre class="ascii">HOLOS -- the same pushdown, plus the algorithms
+
+  Project(?name, ?site)
+  +- LeftJoin(HashBuildRightProbeLeft, keys = ?shop)
+     +- LeftJoin(HashBuildLeftProbeRight, keys = ?town)
+        +- QuadPattern(?shop rdf:type bs:Bookshop)
+        +- Filter(STRLEN(?name) > 8)
+           +- QuadPattern(?shop rdfs:label ?name)</pre>
+    <p class="note">Jena shows <em>what</em>; HOLOS shows <em>how</em>.
+      Comunica names the actor that handled each operator.</p>
+    <p class="take"><b>Take away.</b> Two independently written optimisers
+      pushing the same filter to the same place is a good sign the rewrite is
+      the right one. If yours has <em>not</em> moved, it usually can't.</p>
+  </div>
+</div>
+<span class="num">21 / 24</span></section>
+<section class="slide plain">
+<h2>The debugging playbook</h2>
+<div class="cols">
+  <div>
+    <h3>Empty result &mdash; in payoff order</h3>
+    <ol class="play">
+      <li>A datatype comparison. Go via <code>STR()</code>.</li>
+      <li>A language tag. <code>"Cardiff"</code> never equals
+        <code>"Cardiff"@en</code>.</li>
+      <li>A mistyped prefix. <code>http</code> vs <code>https</code>,
+        <code>#</code> vs <code>/</code>.</li>
+      <li>A <code>FILTER</code> that escaped its <code>OPTIONAL</code>.</li>
+      <li><code>MINUS</code> with no shared variable, which removes
+        nothing.</li>
+    </ol>
+  </div>
+  <div>
+    <h3>Far too many rows</h3>
+    <ol class="play">
+      <li>Count each pattern alone and <b>multiply</b>. If the product matches
+        your row count, nothing joined.</li>
+      <li>Look for a mistyped variable.</li>
+    </ol>
+    <h3>Numbers wrong, rows look right</h3>
+    <ol class="play">
+      <li><code>COUNT(DISTINCT ?x)</code> differs from
+        <code>COUNT(?x)</code>? Something multiplied before the
+        aggregate.</li>
+      <li><code>SUM</code> and <code>AVG</code> can't be repaired with
+        DISTINCT. Split into sub-queries.</li>
+    </ol>
+  </div>
+</div>
+<span class="num">22 / 24</span></section>
+<section class="slide plain">
+<h2>Where the specification stops</h2>
+<div class="cols">
+  <div>
+    <p>The vocabulary is a valid <b>OWL 2 DL</b> ontology, checked with the
+      OWL API's own profile checker rather than asserted.</p>
+    <p>Getting there taught something worth passing on:</p>
+    <ul class="ticks">
+      <li>Every class, property and datatype must be <b>declared</b> &mdash;
+        including borrowed ones.</li>
+      <li>A property is object, datatype or annotation. Exactly one.</li>
+      <li>A transitive property may not be declared functional.</li>
+    </ul>
+  </div>
+  <div>
+<pre class="ascii">the trap that cost the most time:
+
+  xsd:gYear and xsd:date are NOT in the
+  OWL 2 datatype map.
+
+  declaring them makes it WORSE --
+
+    xsd:gYear a rdfs:Datatype .
+
+  turns a built-in into a user-defined
+  datatype, and using one of those in an
+  assertion is a second, different violation.</pre>
+    <p class="take"><b>Take away.</b> The dataset keeps <code>xsd:gYear</code>
+      anyway, because the portability trap it creates is one of the best
+      lessons here. A conformant copy ships alongside it.</p>
+  </div>
+</div>
+<span class="num">23 / 24</span></section>
+<section class="slide end">
+<h2>Start here</h2>
+<div class="cols">
+  <div>
+    <p>The fastest route in needs nothing but a browser.</p>
+<pre class="code"><code>./scripts/setup-editor.ps1</code></pre>
+    <p>Then load <code>data/04-bookshops.ttl</code>, look at the graph, and
+      run:</p>
+<pre class="code"><code><span class="t-kw">SELECT</span> <span class="t-var">?shop</span> <span class="t-var">?name</span>
+<span class="t-kw">WHERE</span> {
+  <span class="t-var">?shop</span> <span class="t-kw">a</span>          <span class="t-pname">bs:Bookshop</span> ;
+        <span class="t-pname">rdfs:label</span> <span class="t-var">?name</span> .
+}
+<span class="t-kw">ORDER</span> <span class="t-kw">BY</span> <span class="t-var">?name</span></code></pre>
+  </div>
+  <div>
+    <h3>Then</h3>
+    <ul class="ticks">
+      <li><b>Module 00</b> &mdash; twenty minutes on the editor itself,
+        including its OWL 2 RL reasoner</li>
+      <li><b>Modules 05 and 06</b> &mdash; where SPARQL stops being a table
+        language</li>
+      <li><b>Module 13</b> &mdash; the moment a query first surprises you</li>
+    </ul>
+    <p class="note">Every <code>.rq</code> file carries its own lesson: what it
+      asks, how it works, a diagram of the mechanism, what to take away, and
+      the row count it returned on each engine.</p>
+  </div>
+</div>
+<span class="num">24 / 24</span></section>
+</div>
+
+<script>
+(function () {
+  var deck = document.getElementById('deck');
+  var bar = document.getElementById('bar');
+  var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+
+  function current() {
+    var top = deck.scrollTop, best = 0, bestD = Infinity;
+    slides.forEach(function (s, i) {
+      var d = Math.abs(s.offsetTop - top);
+      if (d < bestD) { bestD = d; best = i; }
+    });
+    return best;
+  }
+  function go(i) {
+    i = Math.max(0, Math.min(slides.length - 1, i));
+    deck.scrollTo({ top: slides[i].offsetTop, behavior: 'smooth' });
+  }
+  function progress() {
+    bar.style.width = ((current() + 1) / slides.length * 100) + '%';
+  }
+  deck.addEventListener('scroll', progress, { passive: true });
+  progress();
+
+  document.addEventListener('keydown', function (e) {
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    switch (e.key) {
+      case 'ArrowRight': case 'ArrowDown': case 'PageDown': case ' ':
+        e.preventDefault(); go(current() + 1); break;
+      case 'ArrowLeft': case 'ArrowUp': case 'PageUp':
+        e.preventDefault(); go(current() - 1); break;
+      case 'Home': e.preventDefault(); go(0); break;
+      case 'End': e.preventDefault(); go(slides.length - 1); break;
+    }
+  });
+})();
+</script>

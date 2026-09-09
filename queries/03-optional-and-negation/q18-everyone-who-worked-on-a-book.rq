@@ -1,0 +1,66 @@
+# ==========================================================================
+#  Q18  Everyone who worked on a book
+# ==========================================================================
+#
+#  ASKS
+#    List every person credited on a work, whether as author or translator.
+#
+#  HOW IT WORKS
+#    UNION evaluates both branches independently and concatenates the
+#    results. The two branches need not bind the same variables; here they
+#    deliberately bind ?role differently so the output says which branch a
+#    row came from.
+#
+#  DIAGRAM
+#             ┌──────────────────────────┐
+#             │ ?work bs:author ?person  │  ──▶ ?role = "author"
+#             │                          │
+#             └──────────────────────────┘
+#                         UNION                    both result sets
+#             ┌──────────────────────────┐         concatenated
+#             │ ?work bs:translatedBy ?p │  ──▶ ?role = "translator"
+#             └──────────────────────────┘
+#
+#        UNION does NOT deduplicate.  Add DISTINCT if you need that.
+#        A person appearing in both branches gets two rows, which here
+#        is exactly right: they did two different jobs.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - UNION concatenates; it doesn't merge or deduplicate.
+#    - Branches may bind different variables. Anything a branch doesn't
+#      bind comes out unbound for its rows.
+#    - Binding a constant per branch is the standard trick for labelling
+#      which alternative matched.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  36 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT DISTINCT ?personName ?role
+WHERE {
+  {
+    ?work bs:author ?person .
+    BIND( "author" AS ?role )
+  }
+  UNION
+  {
+    ?work bs:translatedBy ?person .
+    BIND( "translator" AS ?role )
+  }
+  ?person rdfs:label ?personName .
+}
+ORDER BY ?personName ?role

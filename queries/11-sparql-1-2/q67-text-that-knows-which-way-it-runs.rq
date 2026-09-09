@@ -1,0 +1,68 @@
+# ==========================================================================
+#  Q67  Text that knows which way it runs
+# ==========================================================================
+#
+#  ASKS
+#    Which labels are written right to left?
+#
+#  HOW IT WORKS
+#    RDF 1.2 adds a base direction to language-tagged strings, written @ar
+#    --rtl. LANGDIR returns it, hasLANGDIR tests for it, and STRLANGDIR
+#    constructs one. Without the direction, a renderer has to guess where
+#    to put a trailing bracket -- and it guesses wrong often enough to
+#    matter.
+#
+#  DIAGRAM
+#        "البحر المظلم"@ar--rtl
+#         ──────┬─────  ─┬─ ─┬─
+#               │        │   └── base direction: rtl
+#               │        └────── language: Arabic
+#               └─────────────── the text
+#
+#        LANGDIR(?l)      ──▶  "rtl"
+#        hasLANGDIR(?l)   ──▶  true   (false for plain @ar)
+#        LANG(?l)         ──▶  "ar"   (unchanged from 1.1)
+#        STRLANGDIR("hi","en","ltr")  ──▶  "hi"@en--ltr
+#
+#        why it matters:
+#
+#          title (2019)      with direction, the bracket is placed
+#          (2019) title      without it, the renderer may guess wrongly
+#
+#        A language tag says how to pronounce it.  A direction says how
+#        to lay it out.  They are different questions.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - @lang--dir attaches a base direction to a literal; LANGDIR reads
+#      it.
+#    - hasLANGDIR distinguishes a directional literal from a plain
+#      language-tagged one, which matters because most data has neither.
+#    - Direction is a rendering fact, not a linguistic one, and RDF 1.1
+#      had nowhere to put it.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?label ?language ?direction
+WHERE {
+  ?thing rdfs:label ?label .
+  FILTER( isLITERAL(?label) && hasLANGDIR(?label) )
+  BIND( LANG(?label)    AS ?language )
+  BIND( LANGDIR(?label) AS ?direction )
+}
+ORDER BY ?language ?label

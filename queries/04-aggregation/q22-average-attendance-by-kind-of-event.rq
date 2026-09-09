@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q22  Average attendance by kind of event
+# ==========================================================================
+#
+#  ASKS
+#    Which kinds of event draw the biggest crowds?
+#
+#  HOW IT WORKS
+#    One row per event goes in; one row per event kind comes out, carrying
+#    the mean, the extremes and the count. Reporting the count alongside
+#    the average is a habit worth forming: an average over two events means
+#    much less than one over twenty.
+#
+#  DIAGRAM
+#        59 events
+#           │
+#           ├─ Launch    ──┐
+#           ├─ Reading   ──┤   GROUP BY ?kind
+#           ├─ Panel     ──┤        │
+#           ├─ Workshop  ──┤        ▼
+#           └─ ...       ──┘   ┌─────────┬─────┬─────┬─────┬─────┐
+#                              │ kind    │  n  │ avg │ min │ max │
+#                              ├─────────┼─────┼─────┼─────┼─────┤
+#                              │ Launch  │  8  │ 190 │ 102 │ 320 │
+#                              │ Workshop│  8  │  21 │  14 │  28 │
+#                              └─────────┴─────┴─────┴─────┴─────┘
+#
+#        Several aggregates over the same grouping cost one pass.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - COUNT, SUM, AVG, MIN, MAX and SAMPLE can all appear in one SELECT
+#      over the same grouping.
+#    - Always show the group size next to an average.
+#    - MIN and MAX work on any ordered type, including dates and strings.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  7 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?kind
+       (COUNT(?event) AS ?events)
+       (ROUND(AVG(?attendance)) AS ?meanAttendance)
+       (MIN(?attendance) AS ?smallest)
+       (MAX(?attendance) AS ?largest)
+WHERE {
+  ?event a             bs:Event ;
+         bs:eventKind  ?kind ;
+         bs:attendance ?attendance .
+}
+GROUP BY ?kind
+ORDER BY DESC(?meanAttendance)

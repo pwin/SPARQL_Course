@@ -1,0 +1,59 @@
+# ==========================================================================
+#  Q10  Titles containing a word
+# ==========================================================================
+#
+#  ASKS
+#    Which books have 'sea' or 'water' somewhere in the title?
+#
+#  HOW IT WORKS
+#    REGEX matches a regular expression against a string. The third
+#    argument 'i' makes it case-insensitive. Because REGEX has to look
+#    inside every title, it can't use an index -- fine on 74 books,
+#    something to think about on 74 million.
+#
+#  DIAGRAM
+#        ?work ──rdfs:label──▶ ?title      74 titles
+#
+#        FILTER( REGEX(?title, "sea|water", "i") )
+#                              ───┬─────  ─┬─
+#                                 │        └── flags: i = ignore case
+#                                 └── alternation: either word
+#
+#               "The Dark Sea"   ✓        "High Water"  ✓
+#               "Cold Harbour"   ✗        "Scree"       ✗
+#
+#        CONTAINS(?title, "Sea") is cheaper when you do not need a pattern.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - REGEX(text, pattern, flags) is the general string test; CONTAINS,
+#      STRSTARTS and STRENDS are the cheap specific ones.
+#    - REGEX works on the lexical form, so a language-tagged literal and
+#      a plain one behave the same way here.
+#    - Regular expressions defeat text indexes. Prefer the specific
+#      functions when they will do.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?title
+WHERE {
+  ?work a          bs:Work ;
+        rdfs:label ?title .
+  FILTER( REGEX(?title, "sea|water", "i") )
+}
+ORDER BY ?title

@@ -1,0 +1,75 @@
+# ==========================================================================
+#  Q64  What the annotation syntax really is
+# ==========================================================================
+#
+#  ASKS
+#    Strip away the sugar: what triples does {| ... |} actually create?
+#
+#  HOW IT WORKS
+#    An annotation is shorthand. Writing `s p o {| a b |}` asserts the base
+#    triple, mints a reifier, links it to a triple term with rdf:reifies,
+#    and hangs the annotation off the reifier. This query asks for the
+#    reifier directly, which is what the shorthand was hiding.
+#
+#  DIAGRAM
+#        what you write:
+#
+#            bt:shop-ex-libris bs:founded 1919 {| bs:confidence 0.99 |} .
+#
+#        what the parser produces -- four things, three of them triples:
+#
+#            bt:shop-ex-libris bs:founded 1919 .          <- the base triple
+#            _:r rdf:reifies <<( bt:shop-ex-libris bs:founded 1919 )>> .
+#            _:r bs:confidence 0.99 .
+#                ▲                ▲
+#                │                └── an ordinary triple about _:r
+#                └── _:r is the "reifier": a name for the statement
+#
+#            <<( s p o )>> is a TRIPLE TERM: a single RDF term whose
+#            value is a triple.  It may only appear as an object.
+#
+#        So the annotation syntax is not a new kind of data.  It is
+#        ordinary triples, with a term type for talking about statements.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - {| ... |} is syntactic sugar over rdf:reifies plus a triple term.
+#    - A triple term <<( s p o )>> is one RDF term, legal only in object
+#      position. This is the main thing RDF 1.2 changed from the earlier
+#      RDF-star drafts.
+#    - The base triple is still asserted. Annotating a statement doesn't
+#      make it hypothetical.
+#    - The reifier is usually a blank node, so never sort or page on it.
+#      This query filters on the statement's subject and predicate
+#      instead, using the SPARQL 1.2 term functions from q66.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?statement ?p ?o
+WHERE {
+  ?reifier rdf:reifies ?statement ;
+           ?p ?o .
+  FILTER( ?p != rdf:reifies )
+
+  # Narrow to the two rival claims about one shop, so the expansion is
+  # small enough to read.  Ordering by ?reifier would not work: reifiers
+  # are blank nodes, and no two engines sort those alike.
+  FILTER( SUBJECT(?statement)   = bt:shop-ex-libris )
+  FILTER( PREDICATE(?statement) = bs:founded )
+}
+ORDER BY ?p ?o

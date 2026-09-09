@@ -1,0 +1,70 @@
+# ==========================================================================
+#  Q33  Every book of fiction, however narrow the genre
+# ==========================================================================
+#
+#  ASKS
+#    Find all fiction, including books filed under sub-genres several
+#    levels down.
+#
+#  HOW IT WORKS
+#    The genre scheme is a SKOS tree of uneven depth: Tartan Noir is three
+#    levels below Fiction, Classics is one. skos:broader+ climbs from a
+#    book's own genre to every broader concept above it, so a book counts
+#    as fiction whichever level it was filed at.
+#
+#  DIAGRAM
+#        Literature
+#          └─ Fiction                       <- the target
+#               ├─ Crime Fiction
+#               │    ├─ Cosy Crime          <- 3 levels down
+#               │    └─ Tartan Noir         <- 3 levels down
+#               ├─ Speculative Fiction
+#               │    ├─ Science Fiction
+#               │    │    ├─ Hard SF        <- 4 levels down
+#               │    │    └─ Space Opera
+#               │    └─ Fantasy
+#               │         └─ Folk Fantasy
+#               └─ Classics                 <- 2 levels down
+#
+#        ?book bs:genre/skos:broader* bt:genre-fiction
+#                       ───────┬────
+#                 climb zero or more levels, so a book filed
+#                 directly under Fiction still counts
+#
+#        17 concepts sit under Fiction.  A two-hop pattern finds 5.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - skos:broader+ is the standard way to query a subject hierarchy.
+#    - Use * rather than + after a step that may already have arrived:
+#      here, a book filed directly as Fiction needs zero further climbs.
+#    - A path can be built from several steps: bs:genre/skos:broader* is
+#      one hop then any number of hops.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  12 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?genreName (COUNT(?book) AS ?books)
+WHERE {
+  ?book a        bs:Work ;
+        bs:genre ?g .
+  ?g skos:broader* bt:genre-fiction .
+  ?g skos:prefLabel ?genreName .
+  FILTER( LANG(?genreName) = "en" )
+}
+GROUP BY ?genreName
+ORDER BY DESC(?books) ?genreName

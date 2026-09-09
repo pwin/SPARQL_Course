@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q48  What graphs are in this dataset
+# ==========================================================================
+#
+#  ASKS
+#    The TriG file splits the data by subject matter. What are the parts
+#    called, and how big is each?
+#
+#  HOW IT WORKS
+#    GRAPH ?g binds the name of the graph a pattern matched in. With the
+#    pattern left completely open, the result is an inventory of the
+#    dataset -- the first thing worth asking of an endpoint you haven't
+#    seen before.
+#
+#  DIAGRAM
+#        a dataset is a default graph plus zero or more named graphs:
+#
+#        ┌ default graph ──────────────────────────┐
+#        │  bt:dataset rdfs:label "The Bookshop..."│
+#        └─────────────────────────────────────────┘
+#        ┌ bt:graph-places ─┐ ┌ bt:graph-books ─┐
+#        │ 30 settlements   │ │ 74 works        │
+#        │ 23 councils ...  │ │ ...             │
+#        └──────────────────┘ └─────────────────┘
+#
+#        GRAPH ?g { ?s ?p ?o }
+#              │
+#              └── binds to the NAME of whichever graph matched
+#
+#        Triples in the default graph are NOT visible to GRAPH ?g.
+#        That catches people out: the dataset description in the default
+#        graph does not appear in this count.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - GRAPH ?g { ... } binds ?g to the name of the graph the pattern
+#      matched in.
+#    - The default graph isn't one of the named graphs and won't be found
+#      this way.
+#    - Counting triples per graph is the fastest way to understand an
+#      unfamiliar dataset's layout.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?g (COUNT(*) AS ?triples)
+WHERE {
+  GRAPH ?g { ?s ?p ?o }
+}
+GROUP BY ?g
+ORDER BY DESC(?triples)

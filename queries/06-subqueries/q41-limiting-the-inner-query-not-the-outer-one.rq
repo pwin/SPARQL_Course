@@ -1,0 +1,75 @@
+# ==========================================================================
+#  Q41  Limiting the inner query, not the outer one
+# ==========================================================================
+#
+#  ASKS
+#    Show every book by the three most prolific authors.
+#
+#  HOW IT WORKS
+#    Putting LIMIT in the outer query would cut off books. Putting it in
+#    the sub-query picks three authors and then lets the outer query fetch
+#    all of their books. The sub-query decides who; the outer query decides
+#    what to show.
+#
+#  DIAGRAM
+#        WRONG                          RIGHT
+#        ?author ...                    { SELECT ?author
+#        ?book bs:author ?author          WHERE {...}
+#        LIMIT 3                          ORDER BY DESC(?n)
+#                                         LIMIT 3 }
+#        ──▶ 3 BOOKS                    ?book bs:author ?author
+#
+#                                       ──▶ 3 AUTHORS,
+#                                           all their books
+#
+#        The sub-query is a filter on WHICH authors, evaluated once.
+#        LIMIT inside it limits authors; LIMIT outside limits rows.
+#
+#        ORDER BY inside a sub-query is meaningful precisely because
+#        LIMIT is there to use it.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - LIMIT inside a sub-query restricts what the outer query joins
+#      against, which is a completely different operation from truncating
+#      the output.
+#    - ORDER BY plus LIMIT inside a sub-query is the idiom for 'the top N
+#      of something, then everything about them'.
+#    - Ordering an outer query doesn't order its sub-queries, and vice
+#      versa.
+#    - Add a tie-break. Six authors have three books; without ?author as
+#      a second sort key, which three come back is up to the engine, and
+#      the three engines really do choose differently.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?authorName ?title ?year
+WHERE {
+  {
+    SELECT ?author (COUNT(?b) AS ?books)
+    WHERE { ?b a bs:Work ; bs:author ?author . }
+    GROUP BY ?author
+    ORDER BY DESC(?books) ?author
+    LIMIT 3
+  }
+  ?book  bs:author          ?author ;
+         rdfs:label         ?title ;
+         bs:publicationYear ?year .
+  ?author rdfs:label        ?authorName .
+}
+ORDER BY ?authorName ?year

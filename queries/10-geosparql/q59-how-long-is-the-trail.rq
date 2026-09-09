@@ -1,0 +1,73 @@
+# ==========================================================================
+#  Q59  How long is the trail
+# ==========================================================================
+#
+#  ASKS
+#    Measure each trail segment from its geometry, and compare with the
+#    distance recorded in the data.
+#
+#  HOW IT WORKS
+#    geof:length measures a LineString. The dataset also stores
+#    bs:distanceKm, computed when the data was built as the straight-line
+#    distance between the endpoints. The segment geometry bends through a
+#    midpoint, so the measured length should be a little longer -- and if
+#    it weren't, something would be wrong.
+#
+#  DIAGRAM
+#        the geometry is a three-point line, deliberately bent:
+#
+#            shop A ●─────────╮
+#                              ●  midpoint, nudged sideways
+#                     ╭────────╯
+#            shop B ●─╯
+#
+#        bs:distanceKm   = straight line A to B      (stored)
+#        geof:length     = along the bent line       (measured)
+#
+#        measured  >  stored,  always, by the amount of the bend.
+#
+#        Two numbers that should differ in a known direction are a good
+#        consistency check: if the sign ever flips, a geometry has been
+#        written wrongly.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - geof:length, geof:area and geof:perimeter measure geometries;
+#      geof:envelope, geof:convexHull, geof:buffer and geof:boundary
+#      derive new ones.
+#    - Storing a derived number and measuring it are different things.
+#      Comparing them catches errors.
+#    - Deriving geometry in the query rather than storing it keeps the
+#      data smaller, at the cost of doing the work every time.
+#
+#  NOTE
+#    geof:length is a linear measure, so it shares q57's fate on Jena:
+#    registered, callable, and unbound on return. HOLOS answers it.
+#
+#  DATA     bookshop-trail-full.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
+#  RUNS ON  holos
+#  RETURNS  10 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?label ?storedKm ?measuredKm
+WHERE {
+  ?seg a bs:TrailSegment ;
+       rdfs:label ?label ;
+       bs:distanceKm ?storedKm ;
+       geo:hasDefaultGeometry/geo:asWKT ?line .
+  BIND( ROUND(geof:length(?line) / 100) / 10 AS ?measuredKm )
+}
+ORDER BY DESC(?storedKm)
+LIMIT 10

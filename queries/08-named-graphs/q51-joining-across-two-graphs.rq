@@ -1,0 +1,67 @@
+# ==========================================================================
+#  Q51  Joining across two graphs
+# ==========================================================================
+#
+#  ASKS
+#    Pair each shop with its town's name, when the shops and the places
+#    live in different graphs.
+#
+#  HOW IT WORKS
+#    One GRAPH block per source, joined on the shared variable exactly as
+#    ordinary patterns are. Nothing about the join changes because the data
+#    is filed separately -- which is the point of named graphs.
+#
+#  DIAGRAM
+#        ┌ bt:graph-shops ────────────┐
+#        │ ?shop bs:locatedIn ?town   │──┐
+#        └────────────────────────────┘  │  joined on ?town
+#        ┌ bt:graph-places ───────────┐  │
+#        │ ?town rdfs:label ?townName │◀─┘
+#        └────────────────────────────┘
+#
+#        The join is the shared variable, as always.  Graph boundaries do
+#        not obstruct it.
+#
+#        This is how federated queries work too: SERVICE replaces GRAPH,
+#        and the other side is a different server rather than a different
+#        graph.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Patterns in different GRAPH blocks join on shared variables like
+#      any others.
+#    - Named graphs partition storage; they don't partition querying.
+#    - The same shape scales up to SERVICE, where the other graph is on
+#      another machine.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  20 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?townName
+WHERE {
+  GRAPH bt:graph-shops {
+    ?shop a          bs:Bookshop ;
+          rdfs:label ?shopName ;
+          bs:locatedIn ?town .
+  }
+  GRAPH bt:graph-places {
+    ?town rdfs:label ?townName .
+  }
+  FILTER( LANG(?townName) = "en" )
+}
+ORDER BY ?townName ?shopName
+LIMIT 20

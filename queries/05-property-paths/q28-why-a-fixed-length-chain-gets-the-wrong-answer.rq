@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q28  Why a fixed-length chain gets the wrong answer
+# ==========================================================================
+#
+#  ASKS
+#    Count the shops in each country, first with a fixed chain of hops and
+#    then with a path.
+#
+#  HOW IT WORKS
+#    The place hierarchy is deliberately uneven. An English town sits
+#    inside a council area inside a region inside a country; a Scottish or
+#    Welsh one sits inside a council area inside the country, with no
+#    region in between. A pattern hard-coded to three hops finds England
+#    and misses Scotland and Wales entirely -- and reports no error while
+#    doing it.
+#
+#  DIAGRAM
+#        ENGLAND (4 levels)            SCOTLAND / WALES (3 levels)
+#
+#        york                          edinburgh
+#          │ within                      │ within
+#        north-yorkshire               edinburgh-city
+#          │ within                      │ within
+#        yorkshire                     scotland
+#          │ within                      │ within
+#        england                       gb
+#          │ within
+#        gb
+#
+#        ?town bs:within/bs:within/bs:within ?country
+#                 ──── exactly 3 hops ────
+#        matches York -> england          ✓
+#        misses Edinburgh -> scotland     ✗   (only 2 hops away)
+#
+#        ?town bs:within+ ?country        matches both
+#
+#        The wrong query returns a plausible, confident, incomplete answer.
+#        That is what makes it dangerous.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Real hierarchies are rarely of uniform depth, and a fixed-length
+#      chain silently drops the branches that don't match.
+#    - A wrong answer that looks reasonable is worse than an error.
+#    - When you mean 'contained in, at any depth', say so with +.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?countryName ?viaFixedChain ?viaPath
+WHERE {
+  ?country a bs:Country ; rdfs:label ?countryName .
+  FILTER( LANG(?countryName) = "en" )
+
+  {
+    SELECT ?country (COUNT(DISTINCT ?shop) AS ?viaFixedChain)
+    WHERE {
+      ?shop a bs:Bookshop ; bs:locatedIn ?town .
+      ?town bs:within/bs:within/bs:within ?country .
+      ?country a bs:Country .
+    }
+    GROUP BY ?country
+  }
+  UNION
+  {
+    SELECT ?country (COUNT(DISTINCT ?shop) AS ?viaPath)
+    WHERE {
+      ?shop a bs:Bookshop ; bs:locatedIn ?town .
+      ?town bs:within+ ?country .
+      ?country a bs:Country .
+    }
+    GROUP BY ?country
+  }
+}
+ORDER BY ?countryName

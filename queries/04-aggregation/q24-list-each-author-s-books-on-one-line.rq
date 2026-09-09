@@ -1,0 +1,67 @@
+# ==========================================================================
+#  Q24  List each author's books on one line
+# ==========================================================================
+#
+#  ASKS
+#    For each author, put all their titles into a single cell.
+#
+#  HOW IT WORKS
+#    GROUP_CONCAT folds the values of a group into one string with a
+#    separator. It's the aggregate you reach for when the consumer of the
+#    result wants a summary rather than a row per item.
+#
+#  DIAGRAM
+#        Agnes Varden ─┬─ "Minster Yard"
+#                      ├─ "The Chapter House"
+#                      └─ "A Cold Coming"
+#                            │
+#           GROUP_CONCAT(?title; SEPARATOR=" / ")
+#                            │
+#                            ▼
+#        "Minster Yard / The Chapter House / A Cold Coming"
+#
+#        The separator is a keyword argument after a semicolon -- the one
+#        place in SPARQL where that syntax appears.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - GROUP_CONCAT(?x; SEPARATOR=", ") flattens a group into one string.
+#    - The order inside the concatenation isn't guaranteed unless you
+#      sort in a sub-query first.
+#    - COUNT alongside it tells the reader how many items were folded in.
+#
+#  NOTE
+#    engines-differ: the ORDER of the titles inside the concatenated string
+#    isn't specified, and the three engines really do differ. The set of
+#    titles is identical; only the sequence varies. If order matters, sort
+#    in a sub-query first -- and even then, not every engine promises to
+#    honour it.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  12 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?author (COUNT(?book) AS ?titles)
+       (GROUP_CONCAT(?title; SEPARATOR=" / ") AS ?works)
+WHERE {
+  ?book a          bs:Work ;
+        rdfs:label ?title ;
+        bs:author  ?person .
+  ?person rdfs:label ?author .
+}
+GROUP BY ?person ?author
+ORDER BY DESC(?titles) ?author
+LIMIT 12

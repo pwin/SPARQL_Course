@@ -1,0 +1,320 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  10  CLAIMS ABOUT CLAIMS  (RDF 1.2 ONLY)
+############################################################################
+#  This file will not parse in an RDF 1.1 tool, and that is deliberate:
+#  it is the file that shows what RDF 1.2 buys you. Everything here is a
+#  statement about a statement -- who said it, when, how much they are
+#  trusted -- written with the annotation syntax {| ... |} and with
+#  triple terms <<( s p o )>>.
+#
+
+# ------------------------------------------------------------------------
+# Stock, said in RDF 1.2 -- compare with file 09
+# ------------------------------------------------------------------------
+# The base triple is asserted by the annotation syntax itself, so
+# this file re-states nothing that file 09 already holds.
+
+bt:shop-inkwell bs:stocks bt:book-the-book-town
+    {| bs:copies "12"^^xsd:integer ;
+       bs:shelfPrice "9.99"^^xsd:decimal |} .
+
+bt:shop-inkwell bs:stocks bt:book-a-margin-of-error
+    {| bs:copies "8"^^xsd:integer ;
+       bs:shelfPrice "10.99"^^xsd:decimal |} .
+
+bt:shop-inkwell bs:stocks bt:book-the-clyde-tapes
+    {| bs:copies "5"^^xsd:integer ;
+       bs:shelfPrice "8.99"^^xsd:decimal |} .
+
+bt:shop-marginalia bs:stocks bt:book-gwreiddiau
+    {| bs:copies "6"^^xsd:integer ;
+       bs:shelfPrice "11.50"^^xsd:decimal |} .
+
+bt:shop-marginalia bs:stocks bt:book-rootstock
+    {| bs:copies "9"^^xsd:integer ;
+       bs:shelfPrice "12.00"^^xsd:decimal |} .
+
+bt:shop-marginalia bs:stocks bt:book-cerrig-a-chysgod
+    {| bs:copies "3"^^xsd:integer ;
+       bs:shelfPrice "10.00"^^xsd:decimal |} .
+
+bt:shop-colophon bs:stocks bt:book-the-tenement-key
+    {| bs:copies "21"^^xsd:integer ;
+       bs:shelfPrice "14.99"^^xsd:decimal |} .
+
+bt:shop-colophon bs:stocks bt:book-closes-and-wynds
+    {| bs:copies "18"^^xsd:integer ;
+       bs:shelfPrice "15.99"^^xsd:decimal |} .
+
+bt:shop-colophon bs:stocks bt:book-the-glasshouse
+    {| bs:copies "7"^^xsd:integer ;
+       bs:shelfPrice "12.99"^^xsd:decimal |} .
+
+bt:shop-colophon bs:stocks bt:book-cold-harbour
+    {| bs:copies "4"^^xsd:integer ;
+       bs:shelfPrice "18.00"^^xsd:decimal |} .
+
+bt:shop-broken-spine bs:stocks bt:book-the-clyde-tapes
+    {| bs:copies "6"^^xsd:integer ;
+       bs:shelfPrice "7.50"^^xsd:decimal |} .
+
+bt:shop-broken-spine bs:stocks bt:book-dead-reckoning
+    {| bs:copies "4"^^xsd:integer ;
+       bs:shelfPrice "7.50"^^xsd:decimal |} .
+
+bt:shop-quire bs:stocks bt:book-machine-time
+    {| bs:copies "15"^^xsd:integer ;
+       bs:shelfPrice "16.99"^^xsd:decimal |} .
+
+bt:shop-quire bs:stocks bt:book-the-canal-and-the-mill
+    {| bs:copies "11"^^xsd:integer ;
+       bs:shelfPrice "15.50"^^xsd:decimal |} .
+
+bt:shop-verso bs:stocks bt:book-the-crossing-season
+    {| bs:copies "14"^^xsd:integer ;
+       bs:shelfPrice "13.99"^^xsd:decimal |} .
+
+bt:shop-verso bs:stocks bt:book-a-second-country
+    {| bs:copies "10"^^xsd:integer ;
+       bs:shelfPrice "14.99"^^xsd:decimal |} .
+
+bt:shop-verso bs:stocks bt:book-the-dark-sea-ar
+    {| bs:copies "5"^^xsd:integer ;
+       bs:shelfPrice "17.50"^^xsd:decimal |} .
+
+bt:shop-gutter-gilt bs:stocks bt:book-links-and-lies
+    {| bs:copies "9"^^xsd:integer ;
+       bs:shelfPrice "11.99"^^xsd:decimal |} .
+
+bt:shop-gutter-gilt bs:stocks bt:book-west-sands
+    {| bs:copies "7"^^xsd:integer ;
+       bs:shelfPrice "12.99"^^xsd:decimal |} .
+
+bt:shop-northern-light bs:stocks bt:book-the-selkie-ledger
+    {| bs:copies "8"^^xsd:integer ;
+       bs:shelfPrice "13.00"^^xsd:decimal |} .
+
+bt:shop-northern-light bs:stocks bt:book-sgeulachdan-mara
+    {| bs:copies "5"^^xsd:integer ;
+       bs:shelfPrice "14.00"^^xsd:decimal |} .
+
+bt:shop-northern-light bs:stocks bt:book-fell-and-force
+    {| bs:copies "12"^^xsd:integer ;
+       bs:shelfPrice "12.50"^^xsd:decimal |} .
+
+bt:shop-sea-margin bs:stocks bt:book-the-selkie-ledger
+    {| bs:copies "6"^^xsd:integer ;
+       bs:shelfPrice "13.00"^^xsd:decimal |} .
+
+bt:shop-sea-margin bs:stocks bt:book-the-tarn-gd
+    {| bs:copies "3"^^xsd:integer ;
+       bs:shelfPrice "15.00"^^xsd:decimal |} .
+
+
+# ------------------------------------------------------------------------
+# Disputed founding dates -- two sources, one shop, different answers
+# ------------------------------------------------------------------------
+bt:shop-ex-libris bs:founded "1919"^^xsd:gYear
+    {| bs:claimedBy bt:source-national-register ;
+       bs:confidence "0.99"^^xsd:decimal |} .
+
+bt:shop-ex-libris bs:founded "1921"^^xsd:gYear
+    {| bs:claimedBy bt:source-local-paper ;
+       bs:confidence "0.40"^^xsd:decimal |} .
+
+bt:shop-endpapers bs:founded "1949"^^xsd:gYear
+    {| bs:claimedBy bt:source-national-register ;
+       bs:confidence "0.97"^^xsd:decimal |} .
+
+bt:shop-endpapers bs:founded "1946"^^xsd:gYear
+    {| bs:claimedBy bt:source-trail-guide-2019 ;
+       bs:confidence "0.55"^^xsd:decimal |} .
+
+bt:shop-candlemas bs:founded "1931"^^xsd:gYear
+    {| bs:claimedBy bt:source-national-register ;
+       bs:confidence "0.98"^^xsd:decimal |} .
+
+bt:shop-candlemas bs:founded "1928"^^xsd:gYear
+    {| bs:claimedBy bt:source-local-paper ;
+       bs:confidence "0.35"^^xsd:decimal |} .
+
+bt:shop-gutter-gilt bs:founded "1955"^^xsd:gYear
+    {| bs:claimedBy bt:source-county-survey ;
+       bs:confidence "0.92"^^xsd:decimal |} .
+
+bt:shop-gutter-gilt bs:founded "1955"^^xsd:gYear
+    {| bs:claimedBy bt:source-shop-website ;
+       bs:confidence "0.80"^^xsd:decimal |} .
+
+bt:shop-castle-steps bs:founded "1962"^^xsd:gYear
+    {| bs:claimedBy bt:source-trail-guide-2024 ;
+       bs:confidence "0.85"^^xsd:decimal |} .
+
+bt:shop-castle-steps bs:founded "1965"^^xsd:gYear
+    {| bs:claimedBy bt:source-trail-guide-2019 ;
+       bs:confidence "0.45"^^xsd:decimal |} .
+
+
+# ------------------------------------------------------------------------
+# Attendance as reported by different sources
+# ------------------------------------------------------------------------
+bt:event-ex-libris-2025-01-18 bs:attendance "320"^^xsd:integer
+    {| bs:claimedBy bt:source-shop-website |} .
+
+bt:event-ex-libris-2025-01-18 bs:attendance "285"^^xsd:integer
+    {| bs:claimedBy bt:source-local-paper |} .
+
+bt:event-cotton-quarto-2025-02-08 bs:attendance "240"^^xsd:integer
+    {| bs:claimedBy bt:source-shop-website |} .
+
+bt:event-cotton-quarto-2025-02-08 bs:attendance "240"^^xsd:integer
+    {| bs:claimedBy bt:source-county-survey |} .
+
+bt:event-endpapers-2025-01-25 bs:attendance "210"^^xsd:integer
+    {| bs:claimedBy bt:source-shop-website |} .
+
+bt:event-endpapers-2025-01-25 bs:attendance "175"^^xsd:integer
+    {| bs:claimedBy bt:source-local-paper |} .
+
+
+# ------------------------------------------------------------------------
+# Reviews -- the score is the fact, the reviewer is the annotation
+# ------------------------------------------------------------------------
+bt:book-the-clyde-tapes bs:rating "9"^^xsd:integer
+    {| bs:critic "H. Ravenscroft" ;
+       bs:statedOn "2025-02-14"^^xsd:date ;
+       bs:publication "The Marches Advertiser" |} .
+
+bt:book-the-clyde-tapes bs:rating "7"^^xsd:integer
+    {| bs:critic "P. Odunsi" ;
+       bs:statedOn "2025-03-02"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-the-tenement-key bs:rating "8"^^xsd:integer
+    {| bs:critic "H. Ravenscroft" ;
+       bs:statedOn "2025-04-09"^^xsd:date ;
+       bs:publication "The Marches Advertiser" |} .
+
+bt:book-the-book-town bs:rating "9"^^xsd:integer
+    {| bs:critic "M. Ferriday" ;
+       bs:statedOn "2025-01-30"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-a-margin-of-error bs:rating "6"^^xsd:integer
+    {| bs:critic "M. Ferriday" ;
+       bs:statedOn "2025-05-11"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-the-long-station bs:rating "10"^^xsd:integer
+    {| bs:critic "P. Odunsi" ;
+       bs:statedOn "2025-06-21"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-orbital-decay bs:rating "8"^^xsd:integer
+    {| bs:critic "P. Odunsi" ;
+       bs:statedOn "2025-02-03"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-the-flood-meadow bs:rating "9"^^xsd:integer
+    {| bs:critic "S. Achebe" ;
+       bs:statedOn "2025-07-15"^^xsd:date ;
+       bs:publication "The Coastal Word" |} .
+
+bt:book-high-water bs:rating "7"^^xsd:integer
+    {| bs:critic "S. Achebe" ;
+       bs:statedOn "2025-08-19"^^xsd:date ;
+       bs:publication "The Coastal Word" |} .
+
+bt:book-machine-time bs:rating "9"^^xsd:integer
+    {| bs:critic "S. Achebe" ;
+       bs:statedOn "2025-09-05"^^xsd:date ;
+       bs:publication "The Coastal Word" |} .
+
+bt:book-the-dark-sea bs:rating "8"^^xsd:integer
+    {| bs:critic "M. Ferriday" ;
+       bs:statedOn "2025-03-28"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-a-second-country bs:rating "10"^^xsd:integer
+    {| bs:critic "H. Ravenscroft" ;
+       bs:statedOn "2025-10-02"^^xsd:date ;
+       bs:publication "The Marches Advertiser" |} .
+
+bt:book-the-crossing-season bs:rating "9"^^xsd:integer
+    {| bs:critic "H. Ravenscroft" ;
+       bs:statedOn "2025-04-22"^^xsd:date ;
+       bs:publication "The Marches Advertiser" |} .
+
+bt:book-granite-and-rain bs:rating "8"^^xsd:integer
+    {| bs:critic "S. Achebe" ;
+       bs:statedOn "2025-11-07"^^xsd:date ;
+       bs:publication "The Coastal Word" |} .
+
+bt:book-saltmarsh-year bs:rating "7"^^xsd:integer
+    {| bs:critic "M. Ferriday" ;
+       bs:statedOn "2025-06-30"^^xsd:date ;
+       bs:publication "Northern Review" |} .
+
+bt:book-the-tarn bs:rating "9"^^xsd:integer
+    {| bs:critic "S. Achebe" ;
+       bs:statedOn "2025-05-08"^^xsd:date ;
+       bs:publication "The Coastal Word" |} .
+
+
+# ------------------------------------------------------------------------
+# Triple terms in object position -- a source pointing at a statement it rejects
+# ------------------------------------------------------------------------
+bt:source-national-register
+    bs:disputes  <<( bt:shop-ex-libris bs:founded "1921"^^xsd:gYear )>> .
+
+bt:source-county-survey
+    bs:disputes  <<( bt:shop-candlemas bs:founded "1928"^^xsd:gYear )>> .
+
+bt:source-trail-guide-2024
+    bs:disputes  <<( bt:shop-castle-steps bs:founded "1965"^^xsd:gYear )>> .
+
+
+# ------------------------------------------------------------------------
+# Language with a base direction
+# ------------------------------------------------------------------------
+# Every translation label in file 06 already carries a direction where
+# the script needs one.  These are the shop notices in the same
+# languages, so hasLANGDIR has more than six rows to work with.
+
+bt:shop-verso
+    skos:note  "Translated fiction from twenty languages"@en .
+
+bt:shop-verso
+    skos:note  "خيال مترجم من عشرين لغة"@ar--rtl .
+
+bt:shop-turn-the-page
+    skos:note  "New translations every month"@en .
+
+bt:shop-turn-the-page
+    skos:note  "תרגומים חדשים מדי חודש"@he--rtl .
+
+bt:shop-cliff-road
+    skos:note  "Barddoniaeth Gymraeg"@cy .
+
+bt:shop-castle-steps
+    skos:note  "Llyfrau hanes lleol"@cy .
+
+bt:shop-northern-light
+    skos:note  "Leabhraichean Gaidhlig"@gd .
+
+bt:shop-sea-margin
+    skos:note  "Sgeulachdan an eilein"@gd .
+

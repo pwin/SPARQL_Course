@@ -1,0 +1,68 @@
+# ==========================================================================
+#  Q80  Describe everything that matches
+# ==========================================================================
+#
+#  ASKS
+#    Give me a description of every bookshop in Wales.
+#
+#  HOW IT WORKS
+#    DESCRIBE takes a WHERE clause. The pattern selects the resources, and
+#    the engine then describes each one. It's the quickest way to pull a
+#    subgraph out of an endpoint when you don't yet know what the resources
+#    look like.
+#
+#  DIAGRAM
+#        DESCRIBE ?shop
+#        WHERE {
+#          ?shop a bs:Bookshop ;
+#                bs:locatedIn/bs:within+ bt:place-wales .
+#        }
+#
+#        step 1   the WHERE clause finds 4 shops
+#        step 2   the engine describes each of them
+#        step 3   the descriptions are merged into ONE graph
+#
+#                 ┌──────────────┐
+#                 │ Cliff Road   │──┐
+#                 ├──────────────┤  │
+#                 │ Taff Margin  │──┤   one graph,
+#                 ├──────────────┤  ├─▶ not four
+#                 │ Castle Steps │──┤
+#                 ├──────────────┤  │
+#                 │ Clock Tower  │──┘
+#                 └──────────────┘
+#
+#        The result is a graph, so the shops are not separable in it
+#        afterwards except by querying it again.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - DESCRIBE accepts a WHERE clause, and describes every resource the
+#      pattern binds.
+#    - The descriptions merge into a single graph; there's no boundary
+#      between them in the result.
+#    - Good for grabbing a subgraph to look at. Still engine-defined, so
+#      still not for a pipeline -- q82 shows the replacement.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  74 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+DESCRIBE ?shop
+WHERE {
+  ?shop a            bs:Bookshop ;
+        bs:locatedIn/bs:within+ bt:place-wales .
+}

@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q85  Republish it in someone else's vocabulary
+# ==========================================================================
+#
+#  ASKS
+#    Turn the shops into schema.org, so a search engine could read them.
+#
+#  HOW IT WORKS
+#    A template may use any vocabulary, not just the one the data is in.
+#    This is the everyday use of CONSTRUCT: your data stays in the model
+#    that suits you, and a query publishes it in the model your consumer
+#    expects. The blank node in the template builds structure that does not
+#    exist in the source at all.
+#
+#  DIAGRAM
+#        source model                    published model
+#
+#        bs:Bookshop                     schema:BookStore
+#        rdfs:label                      schema:name
+#        bs:founded                      schema:foundingDate
+#        bs:locatedIn ─▶ place ─▶ label  schema:address ─▶ [ a PostalAddress ;
+#                                                            addressLocality ]
+#        wgs84:lat / long                schema:latitude / longitude
+#
+#        the blank node:
+#
+#          schema:address [ a schema:PostalAddress ;
+#                           schema:addressLocality ?town ]
+#                         ▲
+#                         └── a FRESH blank node per solution, invented
+#                             by the template; nothing like it exists in
+#                             the source data
+#
+#        Each solution gets its own.  Two shops never share one, which
+#        is what you want here and is worth knowing when it is not.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A CONSTRUCT template can use any vocabulary. Storing in one model
+#      and publishing in another is a query, not a migration.
+#    - Blank nodes in a template are minted fresh for each solution, so
+#      structure can be invented that the source doesn't have.
+#    - This is how you serve schema.org, or DCAT, or anything else, from
+#      data you did not model that way.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  264 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+PREFIX schema: <https://schema.org/>
+
+CONSTRUCT {
+  ?shop a                    schema:BookStore ;
+        schema:name          ?name ;
+        schema:foundingDate  ?year ;
+        schema:latitude      ?lat ;
+        schema:longitude     ?long ;
+        schema:address       [ a schema:PostalAddress ;
+                               schema:addressLocality ?town ] .
+}
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?name ;
+        bs:founded   ?year ;
+        wgs84:lat    ?lat ;
+        wgs84:long   ?long ;
+        bs:locatedIn ?place .
+  ?place rdfs:label  ?town .
+  FILTER( LANG(?town) = "en" )
+}

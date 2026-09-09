@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q96  Find the mistyped IRI
+# ==========================================================================
+#
+#  ASKS
+#    A pattern matches nothing and the vocabulary looks right. How do I
+#    check?
+#
+#  HOW IT WORKS
+#    Take a census of the predicate namespaces actually in use. A mistyped
+#    prefix produces an IRI in a namespace that appears nowhere else, or
+#    doesn't appear at all -- and either is obvious the moment the real
+#    namespaces are listed next to their counts.
+#
+#  DIAGRAM
+#        strip each predicate back to its namespace and count:
+#
+#          REPLACE( STR(?p), "[^#/]*$", "" )
+#
+#          <...bookshop-trail/schema#founded>  ──▶  <...schema#>
+#
+#        ┌─────────────────────────────────────────────┬───────┐
+#        │ https://example.org/bookshop-trail/schema#  │ 2,248 │
+#        │ http://www.w3.org/1999/02/22-rdf-syntax-ns# │ 1,088 │
+#        │ http://www.w3.org/2000/01/rdf-schema#       │   620 │
+#        │ http://www.opengis.net/ont/geosparql#       │   387 │
+#        │ http://www.w3.org/2004/02/skos/core#        │   152 │
+#        │ http://www.w3.org/2003/01/geo/wgs84_pos#    │   126 │
+#        │ http://purl.org/dc/terms/                   │    74 │
+#        │ http://www.w3.org/2002/07/owl#              │     3 │
+#        └─────────────────────────────────────────────┴───────┘
+#
+#        Eight namespaces, and the counts are a sanity check in
+#        themselves: owl# appears three times, because the vocabulary
+#        declares exactly three OWL characteristics.
+#
+#        Now compare with what your query is asking for.  The two
+#        mistakes this catches:
+#
+#          schema:  vs  schema#     one character, no match, no error
+#          https:   vs  http:       the same, and easier to miss
+#
+#        This dataset uses https://example.org/... and http://www.w3.org/...
+#        -- both schemes, deliberately, because real data does.
+#
+#        The same census on rdf:type objects tells you the classes:
+#            SELECT ?class (COUNT(*) AS ?n)
+#            WHERE { ?s a ?class } GROUP BY ?class
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Listing the namespaces actually in use finds a mistyped prefix in
+#      one query.
+#    - A wrong IRI isn't an error in SPARQL. It's a pattern that matches
+#      nothing, which looks exactly like an empty dataset.
+#    - http versus https, and # versus /, are the two that catch
+#      everyone. Copy IRIs from the data; don't retype them.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  8 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?namespace (COUNT(*) AS ?uses)
+WHERE {
+  ?s ?p ?o .
+  BIND( REPLACE(STR(?p), "[^#/]*$", "") AS ?namespace )
+}
+GROUP BY ?namespace
+ORDER BY DESC(?uses)

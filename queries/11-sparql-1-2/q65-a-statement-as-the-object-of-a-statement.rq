@@ -1,0 +1,68 @@
+# ==========================================================================
+#  Q65  A statement as the object of a statement
+# ==========================================================================
+#
+#  ASKS
+#    Which claims does the National Register explicitly reject?
+#
+#  HOW IT WORKS
+#    A triple term can be the object of an ordinary triple, which is how
+#    you point at a statement without asserting it. bs:disputes does
+#    exactly that: the disputed statement appears inside <<( ... )>> and
+#    isn't thereby claimed to be true.
+#
+#  DIAGRAM
+#        bt:source-national-register bs:disputes
+#            <<( bt:shop-ex-libris bs:founded "1921"^^xsd:gYear )>> .
+#
+#        ┌───────────────────────────────────────────────────┐
+#        │  the OBJECT of this triple is itself a triple      │
+#        │                                                    │
+#        │  and crucially, it is NOT asserted:                │
+#        │  saying "X disputes S" does not put S in the graph │
+#        └───────────────────────────────────────────────────┘
+#
+#        contrast with the annotation syntax, which DOES assert:
+#
+#          s p o {| ... |}        asserts s p o
+#          ?x bs:disputes <<(s p o)>>   does not
+#
+#        matching one in a query, with variables inside:
+#
+#          ?source bs:disputes <<( ?shop ?prop ?value )>>
+#
+#        binds ?shop, ?prop and ?value from inside the triple term.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A triple term names a statement without asserting it -- the thing
+#      reification was always trying to do.
+#    - Triple terms may appear in a query pattern with variables inside,
+#      and those variables bind.
+#    - Use annotation syntax when the statement is true and you want to
+#      say more about it; use a bare triple term when it may not be.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?sourceName ?shopName ?disputedYear
+WHERE {
+  ?source bs:disputes <<( ?shop bs:founded ?disputedYear )>> .
+  ?source rdfs:label ?sourceName .
+  ?shop   rdfs:label ?shopName .
+}
+ORDER BY ?shopName

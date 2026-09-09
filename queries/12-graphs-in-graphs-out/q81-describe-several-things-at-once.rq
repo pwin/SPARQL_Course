@@ -1,0 +1,57 @@
+# ==========================================================================
+#  Q81  Describe several things at once
+# ==========================================================================
+#
+#  ASKS
+#    Describe a shop, the town it's in, and an author who lives there.
+#
+#  HOW IT WORKS
+#    DESCRIBE takes a list of IRIs with no WHERE clause at all. The three
+#    descriptions come back merged, which is convenient when you want the
+#    neighbourhood of a few known resources and don't care where one ends
+#    and the next begins.
+#
+#  DIAGRAM
+#        DESCRIBE bt:shop-inkwell bt:place-wigtown bt:author-rab-fingal
+#
+#        no WHERE clause: the resources are named directly
+#
+#            shop-inkwell   ──┐
+#            place-wigtown  ──┼──▶  one merged graph
+#            author-rab-fingal ┘
+#
+#        Note what is NOT here.  Nothing links the three in the result
+#        unless the data already linked them -- DESCRIBE does not invent
+#        connections, and it does not follow them either.
+#
+#        bt:shop-inkwell bs:locatedIn bt:place-wigtown   is in the graph
+#        because the shop's own description contains it.  The reverse
+#        direction is not, unless your engine chooses to include
+#        incoming statements.  Most do not.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - DESCRIBE takes a bare list of IRIs, which is the shortest useful
+#      query in SPARQL.
+#    - It describes each resource independently and merges the results.
+#    - Incoming statements are usually absent. If you need 'what points
+#      at this?', ask for it explicitly with ^ or a second pattern.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  41 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+DESCRIBE bt:shop-inkwell bt:place-wigtown bt:author-rab-fingal

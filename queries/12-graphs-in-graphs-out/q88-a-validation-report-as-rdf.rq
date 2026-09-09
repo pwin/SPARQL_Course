@@ -1,0 +1,98 @@
+# ==========================================================================
+#  Q88  A validation report, as RDF
+# ==========================================================================
+#
+#  ASKS
+#    Produce a graph listing everything questionable in the dataset.
+#
+#  HOW IT WORKS
+#    Three checks in a UNION, each binding a message, and a template that
+#    mints a fresh blank node per finding. The result is a report you can
+#    query, diff against last week's, or hand to another tool -- which a
+#    printed table isn't.
+#
+#  DIAGRAM
+#        ┌ works with no ISBN ───────────┐
+#        │ FILTER NOT EXISTS {?w bs:isbn}│─┐
+#        ├ shops with no website ────────┤ │
+#        │ FILTER NOT EXISTS {?s website}│─┼─ UNION ─▶ CONSTRUCT
+#        ├ shops off the trail ──────────┤ │             │
+#        │ FILTER NOT EXISTS {path}      │─┘             │
+#        └───────────────────────────────┘               ▼
+#
+#          []  a          bs:DataIssue ;
+#              bs:about   ?thing ;
+#              bs:message ?message .
+#          ▲
+#          └── a fresh blank node for every finding
+#
+#        ┌──────────────────────┬────────────────────────────────┐
+#        │ bt:book-cold-harbour │ Work has no ISBN               │
+#        │ bt:shop-marginalia   │ Shop publishes no website      │
+#        │ bt:shop-west-quay    │ Not reachable on foot from the │
+#        │                      │ start of the trail             │
+#        └──────────────────────┴────────────────────────────────┘
+#
+#        19 findings, 57 triples -- three per finding:
+#
+#          11  works published before 1970, so no ISBN existed
+#           6  shops that publish no website
+#           2  the south-western pair, joined to each other and
+#              to nothing else
+#
+#        Every one is expected in this dataset.  A report of
+#        known-acceptable findings is still worth generating: what you
+#        watch is the diff against last time.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A report that's RDF can be queried, diffed and stored. A report
+#      that's a printed table can only be read.
+#    - [] in a template mints a fresh blank node per solution -- the
+#      right choice when the finding has no identity of its own.
+#    - UNION with a bound message is how you run several unrelated checks
+#      in one pass.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  57 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  []  a          bs:DataIssue ;
+      bs:about   ?thing ;
+      bs:message ?message .
+}
+WHERE {
+  {
+    ?thing a bs:Work .
+    FILTER NOT EXISTS { ?thing bs:isbn ?isbn }
+    BIND( "Work has no ISBN. Expected for titles published before 1970." AS ?message )
+  }
+  UNION
+  {
+    ?thing a bs:Bookshop .
+    FILTER NOT EXISTS { ?thing bs:website ?site }
+    BIND( "Shop publishes no website." AS ?message )
+  }
+  UNION
+  {
+    ?thing a bs:Bookshop .
+    FILTER NOT EXISTS {
+      bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ ?thing .
+    }
+    BIND( "Shop is not reachable on foot from the start of the trail." AS ?message )
+  }
+}

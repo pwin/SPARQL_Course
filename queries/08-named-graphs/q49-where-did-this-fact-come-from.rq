@@ -1,0 +1,61 @@
+# ==========================================================================
+#  Q49  Where did this fact come from
+# ==========================================================================
+#
+#  ASKS
+#    Which part of the dataset asserts each thing known about The Inkwell?
+#
+#  HOW IT WORKS
+#    The same pattern as an ordinary query, wrapped in GRAPH ?g. Every
+#    solution now carries the name of the graph that supplied it, which is
+#    provenance at its cheapest -- no extra vocabulary, no annotation, just
+#    the filing system.
+#
+#  DIAGRAM
+#        bt:shop-inkwell ?p ?o
+#
+#        without GRAPH:  where did that come from?  no idea
+#
+#        GRAPH ?g { bt:shop-inkwell ?p ?o }
+#
+#          ?g = bt:graph-shops   ?p = bs:founded    ?o = 1979
+#          ?g = bt:graph-shops   ?p = bs:hasCafe    ?o = true
+#          ?g = bt:graph-stock   ?p = bs:stocks     ?o = bt:book-...
+#          ?g = bt:graph-trail   ?p = bs:connectsTo ?o = bt:shop-...
+#                     │
+#                     └── the same subject, facts from three graphs
+#
+#        Named graphs give you per-triple provenance for free, as long as
+#        "which file it came from" is the granularity you need.  For finer
+#        grain -- who said it, when, how sure -- see module 11.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Wrapping a pattern in GRAPH ?g adds the source to every row.
+#    - This is the cheapest provenance mechanism there's, and often
+#      enough.
+#    - It records where a fact is filed, not who asserted it. RDF 1.2
+#      annotations answer the second question.
+#
+#  DATA     bookshop-trail.trig
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  23 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?g ?p ?o
+WHERE {
+  GRAPH ?g { bt:shop-inkwell ?p ?o }
+}
+ORDER BY ?g ?p

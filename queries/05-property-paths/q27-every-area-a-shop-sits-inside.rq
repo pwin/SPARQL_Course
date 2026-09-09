@@ -1,0 +1,62 @@
+# ==========================================================================
+#  Q27  Every area a shop sits inside
+# ==========================================================================
+#
+#  ASKS
+#    For one shop, list every containing place all the way up to Great
+#    Britain.
+#
+#  HOW IT WORKS
+#    bs:within+ follows the containment link one or more times and returns
+#    every place it can reach. Writing the same thing as a chain of
+#    patterns would need one line per level -- and you would have to know
+#    in advance how many levels there are.
+#
+#  DIAGRAM
+#        bt:shop-endpapers
+#              │ bs:locatedIn
+#              ▼
+#          place-york ──within──▶ north-yorkshire ──within──▶ yorkshire
+#                                                                  │ within
+#                                                                  ▼
+#                                              place-gb ◀──within── england
+#
+#        bs:within+  collects EVERY place on that road:
+#
+#            north-yorkshire, yorkshire, england, gb        (4 rows)
+#
+#        The + means "one or more hops".  The engine keeps walking until
+#        it runs out of edges, and it remembers where it has been.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - path+ means one or more hops, and returns every node reachable
+#      that way.
+#    - A path expression replaces a chain of patterns whose length you do
+#      not know.
+#    - The result is a set of endpoints, not a route: SPARQL won't tell
+#      you which way it went. q32 shows what to do when you need that.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?areaName
+WHERE {
+  bt:shop-endpapers bs:locatedIn/bs:within+ ?area .
+  ?area rdfs:label ?areaName .
+  FILTER( LANG(?areaName) = "en" )
+}

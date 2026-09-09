@@ -1,0 +1,582 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  08  THE TRAIL
+############################################################################
+#  Thirty-three segments joining the shops. Mostly linear, with two
+#  branches and one loop -- and one pair of shops in the south west that
+#  connects to nothing else. bs:connectsTo+ therefore returns a strictly
+#  smaller set than 'every shop', which is the point.
+#
+bt:seg-inkwell-marginalia
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Inkwell to Marginalia"@en ;
+    bs:segmentFrom          bt:shop-inkwell ;
+    bs:segmentTo            bt:shop-marginalia ;
+    bs:distanceKm           "0.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-inkwell-marginalia ;
+    geo:hasDefaultGeometry  bt:geom-seg-inkwell-marginalia .
+
+bt:geom-seg-inkwell-marginalia
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.43821 54.87061, -4.45249 54.85650, -4.44087 54.87287)"^^geo:wktLiteral .
+
+bt:shop-inkwell
+    bs:connectsTo  bt:shop-marginalia .
+
+bt:seg-marginalia-broken-spine
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Marginalia to The Broken Spine"@en ;
+    bs:segmentFrom          bt:shop-marginalia ;
+    bs:segmentTo            bt:shop-broken-spine ;
+    bs:distanceKm           "143.6"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-marginalia-broken-spine ;
+    geo:hasDefaultGeometry  bt:geom-seg-marginalia-broken-spine .
+
+bt:geom-seg-marginalia-broken-spine
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.44087 54.87287, -3.82965 55.42789, -3.19227 55.95265)"^^geo:wktLiteral .
+
+bt:shop-marginalia
+    bs:connectsTo  bt:shop-broken-spine .
+
+bt:seg-inkwell-colophon
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Inkwell to Colophon Books"@en ;
+    bs:segmentFrom          bt:shop-inkwell ;
+    bs:segmentTo            bt:shop-colophon ;
+    bs:distanceKm           "143.7"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-inkwell-colophon ;
+    geo:hasDefaultGeometry  bt:geom-seg-inkwell-colophon .
+
+bt:geom-seg-inkwell-colophon
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.43821 54.87061, -3.82593 55.42582, -3.18751 55.95075)"^^geo:wktLiteral .
+
+bt:shop-inkwell
+    bs:connectsTo  bt:shop-colophon .
+
+bt:seg-broken-spine-colophon
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Broken Spine to Colophon Books"@en ;
+    bs:segmentFrom          bt:shop-broken-spine ;
+    bs:segmentTo            bt:shop-colophon ;
+    bs:distanceKm           "0.4"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-broken-spine-colophon ;
+    geo:hasDefaultGeometry  bt:geom-seg-broken-spine-colophon .
+
+bt:geom-seg-broken-spine-colophon
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.19227 55.95265, -3.18248 55.97027, -3.18751 55.95075)"^^geo:wktLiteral .
+
+bt:shop-broken-spine
+    bs:connectsTo  bt:shop-colophon .
+
+bt:seg-colophon-quire
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Colophon Books to The Quire"@en ;
+    bs:segmentFrom          bt:shop-colophon ;
+    bs:segmentTo            bt:shop-quire ;
+    bs:distanceKm           "67.4"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-colophon-quire ;
+    geo:hasDefaultGeometry  bt:geom-seg-colophon-quire .
+
+bt:geom-seg-colophon-quire
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.18751 55.95075, -3.72113 55.88872, -4.25789 55.86656)"^^geo:wktLiteral .
+
+bt:shop-colophon
+    bs:connectsTo  bt:shop-quire .
+
+bt:seg-quire-verso
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Quire to Verso and Recto"@en ;
+    bs:segmentFrom          bt:shop-quire ;
+    bs:segmentTo            bt:shop-verso ;
+    bs:distanceKm           "0.2"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-quire-verso ;
+    geo:hasDefaultGeometry  bt:geom-seg-quire-verso .
+
+bt:geom-seg-quire-verso
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.25789 55.86656, -4.23789 55.86570, -4.25788 55.86463)"^^geo:wktLiteral .
+
+bt:shop-quire
+    bs:connectsTo  bt:shop-verso .
+
+bt:seg-verso-northern-light
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Verso and Recto to Northern Light Books"@en ;
+    bs:segmentFrom          bt:shop-verso ;
+    bs:segmentTo            bt:shop-northern-light ;
+    bs:distanceKm           "179.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-verso-northern-light ;
+    geo:hasDefaultGeometry  bt:geom-seg-verso-northern-light .
+
+bt:geom-seg-verso-northern-light
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.25788 55.86463, -4.26438 56.67137, -4.23088 57.47744)"^^geo:wktLiteral .
+
+bt:shop-verso
+    bs:connectsTo  bt:shop-northern-light .
+
+bt:seg-northern-light-sea-margin
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Northern Light Books to The Sea Margin"@en ;
+    bs:segmentFrom          bt:shop-northern-light ;
+    bs:segmentTo            bt:shop-sea-margin ;
+    bs:distanceKm           "117.7"^^xsd:decimal ;
+    bs:waymarked            false ;
+    geo:hasGeometry         bt:geom-seg-northern-light-sea-margin ;
+    geo:hasDefaultGeometry  bt:geom-seg-northern-light-sea-margin .
+
+bt:geom-seg-northern-light-sea-margin
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.23088 57.47744, -5.21222 57.42782, -6.19476 57.41819)"^^geo:wktLiteral .
+
+bt:shop-northern-light
+    bs:connectsTo  bt:shop-sea-margin .
+
+bt:seg-colophon-gutter-gilt
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Colophon Books to Gutter and Gilt"@en ;
+    bs:segmentFrom          bt:shop-colophon ;
+    bs:segmentTo            bt:shop-gutter-gilt ;
+    bs:distanceKm           "49.8"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-colophon-gutter-gilt ;
+    geo:hasDefaultGeometry  bt:geom-seg-colophon-gutter-gilt .
+
+bt:geom-seg-colophon-gutter-gilt
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.18751 55.95075, -3.00397 56.15994, -2.79233 56.34066)"^^geo:wktLiteral .
+
+bt:shop-colophon
+    bs:connectsTo  bt:shop-gutter-gilt .
+
+bt:seg-gutter-gilt-borderprint
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Gutter and Gilt to Borderprint"@en ;
+    bs:segmentFrom          bt:shop-gutter-gilt ;
+    bs:segmentTo            bt:shop-borderprint ;
+    bs:distanceKm           "80.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-gutter-gilt-borderprint ;
+    geo:hasDefaultGeometry  bt:geom-seg-gutter-gilt-borderprint .
+
+bt:geom-seg-gutter-gilt-borderprint
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.79233 56.34066, -2.38634 56.07084, -2.00383 55.76865)"^^geo:wktLiteral .
+
+bt:shop-gutter-gilt
+    bs:connectsTo  bt:shop-borderprint .
+
+bt:seg-borderprint-endpapers
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Borderprint to Endpapers"@en ;
+    bs:segmentFrom          bt:shop-borderprint ;
+    bs:segmentTo            bt:shop-endpapers ;
+    bs:distanceKm           "210.0"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-borderprint-endpapers ;
+    geo:hasDefaultGeometry  bt:geom-seg-borderprint-endpapers .
+
+bt:geom-seg-borderprint-endpapers
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.00383 55.76865, -1.52672 54.87134, -1.08529 53.95595)"^^geo:wktLiteral .
+
+bt:shop-borderprint
+    bs:connectsTo  bt:shop-endpapers .
+
+bt:seg-endpapers-bookwyrm
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Endpapers to The Bookwyrm"@en ;
+    bs:segmentFrom          bt:shop-endpapers ;
+    bs:segmentTo            bt:shop-bookwyrm ;
+    bs:distanceKm           "0.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-endpapers-bookwyrm ;
+    geo:hasDefaultGeometry  bt:geom-seg-endpapers-bookwyrm .
+
+bt:geom-seg-endpapers-bookwyrm
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-1.08529 53.95595, -1.08499 53.93579, -1.09041 53.95521)"^^geo:wktLiteral .
+
+bt:shop-endpapers
+    bs:connectsTo  bt:shop-bookwyrm .
+
+bt:seg-bookwyrm-harbour-page
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Bookwyrm to The Harbour Page"@en ;
+    bs:segmentFrom          bt:shop-bookwyrm ;
+    bs:segmentTo            bt:shop-harbour-page ;
+    bs:distanceKm           "66.6"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-bookwyrm-harbour-page ;
+    geo:hasDefaultGeometry  bt:geom-seg-bookwyrm-harbour-page .
+
+bt:geom-seg-bookwyrm-harbour-page
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-1.09041 53.95521, -0.86787 54.23407, -0.61552 54.48626)"^^geo:wktLiteral .
+
+bt:shop-bookwyrm
+    bs:connectsTo  bt:shop-harbour-page .
+
+bt:seg-endpapers-dales-folio
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Endpapers to The Dales Folio"@en ;
+    bs:segmentFrom          bt:shop-endpapers ;
+    bs:segmentTo            bt:shop-dales-folio ;
+    bs:distanceKm           "102.2"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-endpapers-dales-folio ;
+    geo:hasDefaultGeometry  bt:geom-seg-endpapers-dales-folio .
+
+bt:geom-seg-endpapers-dales-folio
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-1.08529 53.95595, -1.81207 54.11680, -2.52916 54.31646)"^^geo:wktLiteral .
+
+bt:shop-endpapers
+    bs:connectsTo  bt:shop-dales-folio .
+
+bt:seg-dales-folio-errata
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Dales Folio to Errata"@en ;
+    bs:segmentFrom          bt:shop-dales-folio ;
+    bs:segmentTo            bt:shop-errata ;
+    bs:distanceKm           "0.8"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-dales-folio-errata ;
+    geo:hasDefaultGeometry  bt:geom-seg-dales-folio-errata .
+
+bt:geom-seg-dales-folio-errata
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.52916 54.31646, -2.54824 54.30933, -2.53316 54.32302)"^^geo:wktLiteral .
+
+bt:shop-dales-folio
+    bs:connectsTo  bt:shop-errata .
+
+bt:seg-errata-pressmark
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Errata to Pressmark"@en ;
+    bs:segmentFrom          bt:shop-errata ;
+    bs:segmentTo            bt:shop-pressmark ;
+    bs:distanceKm           "13.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-errata-pressmark ;
+    geo:hasDefaultGeometry  bt:geom-seg-errata-pressmark .
+
+bt:geom-seg-errata-pressmark
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.53316 54.32302, -2.63657 54.30623, -2.73873 54.32943)"^^geo:wktLiteral .
+
+bt:shop-errata
+    bs:connectsTo  bt:shop-pressmark .
+
+bt:seg-pressmark-bookbarrow
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Pressmark to Bookbarrow"@en ;
+    bs:segmentFrom          bt:shop-pressmark ;
+    bs:segmentTo            bt:shop-bookbarrow ;
+    bs:distanceKm           "39.9"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-pressmark-bookbarrow ;
+    geo:hasDefaultGeometry  bt:geom-seg-pressmark-bookbarrow .
+
+bt:geom-seg-pressmark-bookbarrow
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.73873 54.32943, -2.94636 54.45172, -3.13089 54.60668)"^^geo:wktLiteral .
+
+bt:shop-pressmark
+    bs:connectsTo  bt:shop-bookbarrow .
+
+bt:seg-bookbarrow-cotton-quarto
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Bookbarrow to Cotton Quarto"@en ;
+    bs:segmentFrom          bt:shop-bookbarrow ;
+    bs:segmentTo            bt:shop-cotton-quarto ;
+    bs:distanceKm           "137.9"^^xsd:decimal ;
+    bs:waymarked            false ;
+    geo:hasGeometry         bt:geom-seg-bookbarrow-cotton-quarto ;
+    geo:hasDefaultGeometry  bt:geom-seg-bookbarrow-cotton-quarto .
+
+bt:geom-seg-bookbarrow-cotton-quarto
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.13089 54.60668, -2.67574 54.05520, -2.25215 53.47914)"^^geo:wktLiteral .
+
+bt:shop-bookbarrow
+    bs:connectsTo  bt:shop-cotton-quarto .
+
+bt:seg-cotton-quarto-signature
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Cotton Quarto to Signature Books"@en ;
+    bs:segmentFrom          bt:shop-cotton-quarto ;
+    bs:segmentTo            bt:shop-signature ;
+    bs:distanceKm           "50.0"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-cotton-quarto-signature ;
+    geo:hasDefaultGeometry  bt:geom-seg-cotton-quarto-signature .
+
+bt:geom-seg-cotton-quarto-signature
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.25215 53.47914, -2.62372 53.42519, -2.99892 53.41108)"^^geo:wktLiteral .
+
+bt:shop-cotton-quarto
+    bs:connectsTo  bt:shop-signature .
+
+bt:seg-signature-severn-leaf
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Signature Books to Severn Leaf"@en ;
+    bs:segmentFrom          bt:shop-signature ;
+    bs:segmentTo            bt:shop-severn-leaf ;
+    bs:distanceKm           "79.9"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-signature-severn-leaf ;
+    geo:hasDefaultGeometry  bt:geom-seg-signature-severn-leaf .
+
+bt:geom-seg-signature-severn-leaf
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.99892 53.41108, -2.85277 53.06704, -2.74423 52.70936)"^^geo:wktLiteral .
+
+bt:shop-signature
+    bs:connectsTo  bt:shop-severn-leaf .
+
+bt:seg-severn-leaf-dog-eared
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Severn Leaf to The Dog-Eared"@en ;
+    bs:segmentFrom          bt:shop-severn-leaf ;
+    bs:segmentTo            bt:shop-dog-eared ;
+    bs:distanceKm           "38.4"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-severn-leaf-dog-eared ;
+    geo:hasDefaultGeometry  bt:geom-seg-severn-leaf-dog-eared .
+
+bt:geom-seg-severn-leaf-dog-eared
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.74423 52.70936, -2.71079 52.53859, -2.71722 52.36469)"^^geo:wktLiteral .
+
+bt:shop-severn-leaf
+    bs:connectsTo  bt:shop-dog-eared .
+
+bt:seg-dog-eared-castle-steps
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Dog-Eared to Castle Steps Books"@en ;
+    bs:segmentFrom          bt:shop-dog-eared ;
+    bs:segmentTo            bt:shop-castle-steps ;
+    bs:distanceKm           "42.2"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-dog-eared-castle-steps ;
+    geo:hasDefaultGeometry  bt:geom-seg-dog-eared-castle-steps .
+
+bt:geom-seg-dog-eared-castle-steps
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.71722 52.36469, -2.90634 52.20383, -3.11883 52.07542)"^^geo:wktLiteral .
+
+bt:shop-dog-eared
+    bs:connectsTo  bt:shop-castle-steps .
+
+bt:seg-castle-steps-clock-tower
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Castle Steps Books to The Clock Tower"@en ;
+    bs:segmentFrom          bt:shop-castle-steps ;
+    bs:segmentTo            bt:shop-clock-tower ;
+    bs:distanceKm           "1.1"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-castle-steps-clock-tower ;
+    geo:hasDefaultGeometry  bt:geom-seg-castle-steps-clock-tower .
+
+bt:geom-seg-castle-steps-clock-tower
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.11883 52.07542, -3.12160 52.05427, -3.13331 52.07210)"^^geo:wktLiteral .
+
+bt:shop-castle-steps
+    bs:connectsTo  bt:shop-clock-tower .
+
+bt:seg-clock-tower-cliff-road
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Clock Tower to Cliff Road Books"@en ;
+    bs:segmentFrom          bt:shop-clock-tower ;
+    bs:segmentTo            bt:shop-cliff-road ;
+    bs:distanceKm           "74.7"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-clock-tower-cliff-road ;
+    geo:hasDefaultGeometry  bt:geom-seg-clock-tower-cliff-road .
+
+bt:geom-seg-clock-tower-cliff-road
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.13331 52.07210, -3.61220 52.22427, -4.07746 52.41404)"^^geo:wktLiteral .
+
+bt:shop-clock-tower
+    bs:connectsTo  bt:shop-cliff-road .
+
+bt:seg-cliff-road-taff-margin
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Cliff Road Books to Taff Margin"@en ;
+    bs:segmentFrom          bt:shop-cliff-road ;
+    bs:segmentTo            bt:shop-taff-margin ;
+    bs:distanceKm           "120.6"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-cliff-road-taff-margin ;
+    geo:hasDefaultGeometry  bt:geom-seg-cliff-road-taff-margin .
+
+bt:geom-seg-cliff-road-taff-margin
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-4.07746 52.41404, -3.61325 51.96210, -3.17781 51.48237)"^^geo:wktLiteral .
+
+bt:shop-cliff-road
+    bs:connectsTo  bt:shop-taff-margin .
+
+bt:seg-taff-margin-crescent
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Taff Margin to The Crescent Bookroom"@en ;
+    bs:segmentFrom          bt:shop-taff-margin ;
+    bs:segmentTo            bt:shop-crescent ;
+    bs:distanceKm           "57.5"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-taff-margin-crescent ;
+    geo:hasDefaultGeometry  bt:geom-seg-taff-margin-crescent .
+
+bt:geom-seg-taff-margin-crescent
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.17781 51.48237, -2.76791 51.45312, -2.36280 51.38415)"^^geo:wktLiteral .
+
+bt:shop-taff-margin
+    bs:connectsTo  bt:shop-crescent .
+
+bt:seg-crescent-candlemas
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Crescent Bookroom to Candlemas Books"@en ;
+    bs:segmentFrom          bt:shop-crescent ;
+    bs:segmentTo            bt:shop-candlemas ;
+    bs:distanceKm           "86.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-crescent-candlemas ;
+    geo:hasDefaultGeometry  bt:geom-seg-crescent-candlemas .
+
+bt:geom-seg-crescent-candlemas
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-2.36280 51.38415, -1.81737 51.58490, -1.25943 51.74766)"^^geo:wktLiteral .
+
+bt:shop-crescent
+    bs:connectsTo  bt:shop-candlemas .
+
+bt:seg-candlemas-chapter-verse
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Candlemas Books to Chapter and Verse"@en ;
+    bs:segmentFrom          bt:shop-candlemas ;
+    bs:segmentTo            bt:shop-chapter-verse ;
+    bs:distanceKm           "107.5"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-candlemas-chapter-verse ;
+    geo:hasDefaultGeometry  bt:geom-seg-candlemas-chapter-verse .
+
+bt:geom-seg-candlemas-chapter-verse
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-1.25943 51.74766, -0.57425 51.99501, 0.12347 52.20438)"^^geo:wktLiteral .
+
+bt:shop-candlemas
+    bs:connectsTo  bt:shop-chapter-verse .
+
+bt:seg-chapter-verse-broads-bindery
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Chapter and Verse to The Broads Bindery"@en ;
+    bs:segmentFrom          bt:shop-chapter-verse ;
+    bs:segmentTo            bt:shop-broads-bindery ;
+    bs:distanceKm           "92.9"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-chapter-verse-broads-bindery ;
+    geo:hasDefaultGeometry  bt:geom-seg-chapter-verse-broads-bindery .
+
+bt:geom-seg-chapter-verse-broads-bindery
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(0.12347 52.20438, 0.70571 52.43659, 1.30157 52.63119)"^^geo:wktLiteral .
+
+bt:shop-chapter-verse
+    bs:connectsTo  bt:shop-broads-bindery .
+
+bt:seg-broads-bindery-ex-libris
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "The Broads Bindery to Ex Libris"@en ;
+    bs:segmentFrom          bt:shop-broads-bindery ;
+    bs:segmentTo            bt:shop-ex-libris ;
+    bs:distanceKm           "159.2"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-broads-bindery-ex-libris ;
+    geo:hasDefaultGeometry  bt:geom-seg-broads-bindery-ex-libris .
+
+bt:geom-seg-broads-bindery-ex-libris
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(1.30157 52.63119, 0.59549 52.05199, -0.13527 51.50426)"^^geo:wktLiteral .
+
+bt:shop-broads-bindery
+    bs:connectsTo  bt:shop-ex-libris .
+
+bt:seg-ex-libris-turn-the-page
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Ex Libris to Turn the Page"@en ;
+    bs:segmentFrom          bt:shop-ex-libris ;
+    bs:segmentTo            bt:shop-turn-the-page ;
+    bs:distanceKm           "0.8"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-ex-libris-turn-the-page ;
+    geo:hasDefaultGeometry  bt:geom-seg-ex-libris-turn-the-page .
+
+bt:geom-seg-ex-libris-turn-the-page
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-0.13527 51.50426, -0.13656 51.52499, -0.12467 51.50796)"^^geo:wktLiteral .
+
+bt:shop-ex-libris
+    bs:connectsTo  bt:shop-turn-the-page .
+
+bt:seg-turn-the-page-crescent
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "Turn the Page to The Crescent Bookroom"@en ;
+    bs:segmentFrom          bt:shop-turn-the-page ;
+    bs:segmentTo            bt:shop-crescent ;
+    bs:distanceKm           "155.7"^^xsd:decimal ;
+    bs:waymarked            false ;
+    geo:hasGeometry         bt:geom-seg-turn-the-page-crescent ;
+    geo:hasDefaultGeometry  bt:geom-seg-turn-the-page-crescent .
+
+bt:geom-seg-turn-the-page-crescent
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-0.12467 51.50796, -1.24263 51.42609, -2.36280 51.38415)"^^geo:wktLiteral .
+
+bt:shop-turn-the-page
+    bs:connectsTo  bt:shop-crescent .
+
+bt:seg-west-quay-penwith
+    a                       bs:TrailSegment, geo:Feature ;
+    rdfs:label              "West Quay Books to Penwith Pages"@en ;
+    bs:segmentFrom          bt:shop-west-quay ;
+    bs:segmentTo            bt:shop-penwith ;
+    bs:distanceKm           "156.3"^^xsd:decimal ;
+    bs:waymarked            true ;
+    geo:hasGeometry         bt:geom-seg-west-quay-penwith ;
+    geo:hasDefaultGeometry  bt:geom-seg-west-quay-penwith .
+
+bt:geom-seg-west-quay-penwith
+    a          sf:LineString, geo:Geometry ;
+    geo:asWKT  "<http://www.opengis.net/def/crs/OGC/1.3/CRS84> LINESTRING(-3.53818 50.72200, -4.52903 50.40131, -5.53147 50.11890)"^^geo:wktLiteral .
+
+bt:shop-west-quay
+    bs:connectsTo  bt:shop-penwith .
+

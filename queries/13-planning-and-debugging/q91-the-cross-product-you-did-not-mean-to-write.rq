@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q91  The cross product you did not mean to write
+# ==========================================================================
+#
+#  ASKS
+#    What happens when two patterns in the same group share no variable?
+#
+#  HOW IT WORKS
+#    Two patterns in one group are joined. If they have no variable in
+#    common there's nothing to join on, so every row of one is paired with
+#    every row of the other. No error is raised. The result is simply
+#    enormous, and every aggregate over it's wrong.
+#
+#  DIAGRAM
+#        joined -- ?town is shared:
+#
+#          ?shop bs:locatedIn ?town .
+#          ?town rdfs:label   ?name .
+#                 ▲       ▲
+#                 └───────┘  the join
+#                              ──▶  63 rows
+#
+#        crossed -- one letter changed, and nothing is shared:
+#
+#          ?shop bs:locatedIn ?town .
+#          ?other rdfs:label  ?name .
+#           ─┬───
+#            └── a different variable, so no join at all
+#                              ──▶  46 x 434  =  19,964 rows
+#
+#        ┌──────────────────────────────────────────────┐
+#        │  the symptom:  far too many rows, and every  │
+#        │  COUNT and SUM inflated by the same factor   │
+#        │                                              │
+#        │  the cause:    almost always a typo in a     │
+#        │                variable name                 │
+#        └──────────────────────────────────────────────┘
+#
+#        Spotting it: the crossed count is EXACTLY the product of the
+#        two pattern sizes.  Count each pattern alone, as in q90, and
+#        multiply.  If the answer matches, nothing joined.
+#
+#        Note that 19,964 / 63 is not a round number.  The ratio is not
+#        the tell -- the product is.  The joined query returns 63 rather
+#        than 46 because some towns carry two labels, so even the
+#        correct query multiplies a little.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Patterns in the same group are joined on shared variables. With
+#      none shared, you get the Cartesian product and no warning.
+#    - The tell is that the row count equals the product of the pattern
+#      sizes measured separately. Count them with q90 and multiply.
+#    - The cause is nearly always a mistyped variable, which is why
+#      consistent naming pays for itself.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?joined ?crossed ?ratio
+WHERE {
+  {
+    SELECT (COUNT(*) AS ?joined) WHERE {
+      ?shop bs:locatedIn ?town .
+      ?town rdfs:label   ?name .
+    }
+  }
+  {
+    SELECT (COUNT(*) AS ?crossed) WHERE {
+      ?shop  bs:locatedIn ?town .
+      ?other rdfs:label   ?name .
+    }
+  }
+  BIND( ?crossed / ?joined AS ?ratio )
+}

@@ -1,0 +1,83 @@
+# ==========================================================================
+#  Q82  The CONSTRUCT that replaces DESCRIBE
+# ==========================================================================
+#
+#  ASKS
+#    Get a description of The Quire that every engine will produce
+#    identically -- and that's actually readable.
+#
+#  HOW IT WORKS
+#    DESCRIBE leaves the choice of what to include to the engine. Writing
+#    the same thing as CONSTRUCT pins it down, and lets you add what a bare
+#    description always lacks: the labels of the things it points at, so
+#    the result reads without a second query.
+#
+#  DIAGRAM
+#        DESCRIBE bt:shop-quire        engine decides.  Not reproducible.
+#
+#        CONSTRUCT {                   you decide.  Reproducible.
+#          bt:shop-quire ?p ?o .
+#          ?o rdfs:label ?oLabel .     <- the useful addition
+#        }
+#        WHERE {
+#          bt:shop-quire ?p ?o .
+#          OPTIONAL { ?o rdfs:label ?oLabel }
+#        }
+#
+#        without the labels:            with them:
+#
+#          bs:locatedIn                   bs:locatedIn
+#            bt:place-glasgow               bt:place-glasgow
+#                                         bt:place-glasgow rdfs:label
+#                                           "Glasgow"@en
+#
+#        The OPTIONAL matters: ?o is often a literal or a geometry node
+#        with no label, and without it those statements vanish from the
+#        output along with the rest of the row.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Anything DESCRIBE does, CONSTRUCT does explicitly and identically
+#      on every engine.
+#    - Pulling in the labels of referenced resources is what makes a
+#      description legible; DESCRIBE won't do it for you.
+#    - OPTIONAL around the label is required, or objects without one take
+#      their whole row with them.
+#    - Glasgow has a label in English and another in Gaelic, so the row
+#      for bs:locatedIn is produced twice and the base triple with it.
+#      Q44 explains why that changes the triple count on one engine and
+#      not the other two.
+#
+#  NOTE
+#    engines-differ: 26 triples from the browser editor, 25 from HOLOS and
+#    Fuseki, for the reason set out in q44 -- the template is instantiated
+#    once per solution, and bt:place-glasgow has two labels, so `bt:shop-
+#    quire bs:locatedIn bt:place-glasgow` is built twice. Comunica returns
+#    the stream; the other two return the set. Load either into a graph and
+#    they are identical.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  editor 26, fuseki 25, holos 25  (see the note above)
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  bt:shop-quire ?p ?o .
+  ?o rdfs:label ?oLabel .
+}
+WHERE {
+  bt:shop-quire ?p ?o .
+  OPTIONAL { ?o rdfs:label ?oLabel . }
+}

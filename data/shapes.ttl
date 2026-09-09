@@ -1,0 +1,302 @@
+@prefix bt:    <https://example.org/bookshop-trail/> .
+@prefix bs:    <https://example.org/bookshop-trail/schema#> .
+@prefix sh:    <http://www.w3.org/ns/shacl#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:   <http://www.w3.org/2001/XMLSchema#> .
+@prefix geo:   <http://www.opengis.net/ont/geosparql#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix skos:  <http://www.w3.org/2004/02/skos/core#> .
+
+############################################################################
+#  SHACL SHAPES FOR THE BOOKSHOP TRAIL
+############################################################################
+#  Constraints, as opposed to the documentation in 01-vocabulary.ttl. The
+#  rdfs:domain and rdfs:range there describe intent; these shapes are checked.
+#
+#  Validate with any of:
+#
+#    holos validate --data data/bookshop-trail-1.1.ttl --shapes data/shapes.ttl
+#    shacl validate --shapes data/shapes.ttl --data data/bookshop-trail-1.1.ttl
+#    (Turtle Editor Viewer: it bundles rdf-validate-shacl)
+#
+#  A clean run reports no violations. Break something in the data on purpose
+#  and run it again -- that is the fastest way to learn what a shape means.
+#
+#  shapes-advanced.ttl holds the constraints written as SPARQL (sh:sparql).
+#  They are in a separate file because not every validator implements them:
+#  HOLOS's incremental evaluator refuses them by design, and says so.
+############################################################################
+
+
+bt:BookshopShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Bookshop ;
+    rdfs:label      "Every bookshop needs a name, a town and a founding year." ;
+
+    sh:property [
+        sh:path     rdfs:label ;
+        sh:minCount 1 ;
+        sh:nodeKind sh:Literal ;
+        sh:message  "A bookshop must have at least one rdfs:label. Note the node kind, not the datatype: these labels carry a language tag, so their datatype is rdf:langString rather than xsd:string." ;
+    ] ;
+    sh:property [
+        sh:path     bs:locatedIn ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Settlement ;
+        sh:message  "A bookshop sits in exactly one settlement." ;
+    ] ;
+    sh:property [
+        sh:path     bs:founded ;
+        sh:minCount 1 ;
+        sh:datatype xsd:gYear ;
+        sh:message  "A bookshop must record the year it opened, as an xsd:gYear." ;
+    ] ;
+    sh:property [
+        sh:path         bs:staffCount ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:integer ;
+        sh:minInclusive 1 ;
+        sh:message      "Staff count must be a positive integer: a shop with nobody in it is not trading." ;
+    ] ;
+    sh:property [
+        sh:path            bs:floorArea ;
+        sh:maxCount        1 ;
+        sh:datatype        xsd:decimal ;
+        sh:minExclusive    0 ;
+        sh:message         "Floor area must be a positive number of square metres." ;
+    ] ;
+    sh:property [
+        sh:path     bs:hasCafe ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:boolean ;
+    ] ;
+    sh:property [
+        sh:path     bs:website ;
+        sh:maxCount 1 ;
+        sh:message  "At most one website. Not every shop has one, and that is fine." ;
+    ] ;
+    sh:property [
+        sh:path     bs:specialises ;
+        sh:maxCount 1 ;
+        sh:class    skos:Concept ;
+        sh:message  "A specialism must be a concept from the genre scheme." ;
+    ] .
+
+
+bt:SettlementShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Settlement ;
+    rdfs:label      "A settlement needs a parent area and plausible coordinates." ;
+
+    sh:property [
+        sh:path     rdfs:label ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path     bs:within ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:CouncilArea ;
+        sh:message  "A settlement is inside exactly one council area." ;
+    ] ;
+    sh:property [
+        sh:path         wgs84:lat ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:minInclusive -90 ;
+        sh:maxInclusive 90 ;
+        sh:message      "Latitude must be between -90 and 90." ;
+    ] ;
+    sh:property [
+        sh:path         wgs84:long ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:minInclusive -180 ;
+        sh:maxInclusive 180 ;
+        sh:message      "Longitude must be between -180 and 180." ;
+    ] ;
+    sh:property [
+        sh:path         bs:population ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:integer ;
+        sh:minInclusive 0 ;
+    ] ;
+    sh:property [
+        sh:path     geo:hasDefaultGeometry ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:message  "Exactly one default geometry. Several geometries are allowed; only one may be the default." ;
+    ] .
+
+
+bt:WorkShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Work ;
+    rdfs:label      "A work needs an author, a publisher and a year." ;
+
+    sh:property [
+        sh:path     rdfs:label ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path     bs:author ;
+        sh:minCount 1 ;
+        sh:class    bs:Author ;
+        sh:message  "Every work has an author. Translations carry the original author." ;
+    ] ;
+    sh:property [
+        sh:path     bs:publishedBy ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Publisher ;
+    ] ;
+    sh:property [
+        sh:path     bs:publicationYear ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:gYear ;
+    ] ;
+    sh:property [
+        sh:path         bs:pages ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:integer ;
+        sh:minInclusive 1 ;
+    ] ;
+    sh:property [
+        sh:path         bs:rrp ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:decimal ;
+        sh:minInclusive 0 ;
+    ] ;
+    sh:property [
+        sh:path     bs:isbn ;
+        sh:maxCount 1 ;
+        sh:pattern  "^97[89][0-9]{10}$" ;
+        sh:message  "An ISBN-13 is 978 or 979 followed by ten digits. Books published before 1970 have none, which is allowed." ;
+    ] .
+
+
+bt:AuthorShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Author ;
+    rdfs:label      "An author must be born before they die." ;
+
+    sh:property [
+        sh:path     rdfs:label ;
+        sh:minCount 1 ;
+    ] ;
+    sh:property [
+        sh:path      bs:born ;
+        sh:minCount  1 ;
+        sh:maxCount  1 ;
+        sh:datatype  xsd:gYear ;
+        sh:lessThan  bs:died ;
+        sh:message   "Year of birth must be earlier than year of death. sh:lessThan constrains THIS path against the named one, so it belongs on bs:born -- putting it on bs:died asserts the opposite, and flags every author who has died." ;
+    ] ;
+    sh:property [
+        sh:path      bs:died ;
+        sh:maxCount  1 ;
+        sh:datatype  xsd:gYear ;
+    ] ;
+    sh:property [
+        sh:path     bs:basedIn ;
+        sh:maxCount 1 ;
+        sh:class    bs:Settlement ;
+    ] .
+
+
+bt:EventShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Event ;
+    rdfs:label      "An event happens at one shop on one day." ;
+
+    sh:property [
+        sh:path     bs:heldAt ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Bookshop ;
+    ] ;
+    sh:property [
+        sh:path     bs:eventDate ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:date ;
+    ] ;
+    sh:property [
+        sh:path     bs:featuring ;
+        sh:minCount 1 ;
+        sh:class    bs:Author ;
+    ] ;
+    sh:property [
+        sh:path         bs:attendance ;
+        sh:datatype     xsd:integer ;
+        sh:minInclusive 0 ;
+        sh:message      "Attendance cannot be negative. Note there may be several, each from a different source." ;
+    ] ;
+    sh:property [
+        sh:path         bs:ticketPrice ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:decimal ;
+        sh:minInclusive 0 ;
+        sh:message      "Ticket price in pounds; zero means free." ;
+    ] .
+
+
+bt:TrailSegmentShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:TrailSegment ;
+    rdfs:label      "A segment joins two different shops." ;
+
+    sh:property [
+        sh:path     bs:segmentFrom ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Bookshop ;
+    ] ;
+    sh:property [
+        sh:path     bs:segmentTo ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Bookshop ;
+    ] ;
+    sh:property [
+        sh:path         bs:distanceKm ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:decimal ;
+        sh:minExclusive 0 ;
+    ] .
+
+
+bt:StockRecordShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:StockRecord ;
+    rdfs:label      "A stock record needs a shop, a work, a count and a price." ;
+
+    sh:property [
+        sh:path     bs:atShop ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Bookshop ;
+    ] ;
+    sh:property [
+        sh:path     bs:ofWork ;
+        sh:minCount 1 ;
+        sh:maxCount 1 ;
+        sh:class    bs:Work ;
+    ] ;
+    sh:property [
+        sh:path         bs:copies ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:integer ;
+        sh:minInclusive 0 ;
+    ] ;
+    sh:property [
+        sh:path         bs:shelfPrice ;
+        sh:minCount     1 ;
+        sh:maxCount     1 ;
+        sh:datatype     xsd:decimal ;
+        sh:minInclusive 0 ;
+    ] .

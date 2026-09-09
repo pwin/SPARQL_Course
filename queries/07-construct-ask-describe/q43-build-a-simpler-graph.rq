@@ -1,0 +1,66 @@
+# ==========================================================================
+#  Q43  Build a simpler graph
+# ==========================================================================
+#
+#  ASKS
+#    Produce a small graph of shops and the names of their towns, ready to
+#    paste back into the editor.
+#
+#  HOW IT WORKS
+#    CONSTRUCT returns RDF instead of a table. The template between the
+#    braces is filled in once per solution, so the output is a graph whose
+#    shape you chose rather than the one the data happens to have.
+#
+#  DIAGRAM
+#        WHERE  finds solutions          CONSTRUCT  builds triples
+#
+#        ?shop = bt:shop-inkwell         bt:shop-inkwell
+#        ?name = "The Inkwell"    ──▶        rdfs:label "The Inkwell" ;
+#        ?town = "Wigtown"                   bs:townName "Wigtown" .
+#
+#        one solution  ─────────────▶  two triples
+#
+#        The template may invent predicates that appear nowhere in the
+#        source: bs:townName is created here, purely for the output.
+#
+#        In the Turtle Editor Viewer the result comes back as Turtle --
+#        paste it into the editor pane and the graph view will draw it.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - CONSTRUCT returns a graph. Its template is instantiated once per
+#      solution.
+#    - It's the standard way to reshape data for another tool, or to
+#      simplify before visualising.
+#    - A graph is a set, so duplicate triples collapse once the result is
+#      loaded somewhere. The result stream itself is another matter --
+#      see q44, where the three engines disagree about exactly that.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  66 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT {
+  ?shop rdfs:label  ?shopName ;
+        bs:townName ?townName .
+}
+WHERE {
+  ?shop a            bs:Bookshop ;
+        rdfs:label   ?shopName ;
+        bs:locatedIn ?town .
+  ?town rdfs:label   ?townName .
+  FILTER( LANG(?townName) = "en" )
+}

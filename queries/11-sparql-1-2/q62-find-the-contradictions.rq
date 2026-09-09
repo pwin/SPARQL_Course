@@ -1,0 +1,70 @@
+# ==========================================================================
+#  Q62  Find the contradictions
+# ==========================================================================
+#
+#  ASKS
+#    Which shops have two different founding dates on record?
+#
+#  HOW IT WORKS
+#    Join the annotated pattern to itself and keep the pairs where the
+#    years differ. The self-join is on the shop; the inequality does the
+#    rest. The STR comparison on the sources keeps each disagreeing pair
+#    once rather than twice.
+#
+#  DIAGRAM
+#        ?shop bs:founded ?yearA {| bs:claimedBy ?srcA |} .
+#        ?shop bs:founded ?yearB {| bs:claimedBy ?srcB |} .
+#          ▲                ▲
+#          └── same shop ───┘ different years
+#
+#        FILTER( STR(?yearA) != STR(?yearB) )   <- a genuine contradiction
+#        FILTER( STR(?srcA) < STR(?srcB) ) <- report each pair once
+#
+#        Ex Libris     1919 vs 1921
+#        Endpapers     1949 vs 1946
+#        Candlemas   1931 vs 1928
+#        Castle Steps  1962 vs 1965
+#
+#        Gutter and Gilt does NOT appear: two sources, same year, so
+#        there is no contradiction -- there is corroboration.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - An annotated pattern joins to itself exactly as a plain one does.
+#    - Comparing the source IRIs as strings is the standard way to emit
+#      an unordered pair once instead of twice.
+#    - Recording disagreement is more useful than resolving it at load
+#      time, because the right resolution depends on the question.
+#    - STR() around both years, and for the same reason as q07: comparing
+#      two xsd:gYear values directly returns nothing at all on two of the
+#      three engines. Written the obvious way, this query reports no
+#      contradictions and looks like good news.
+#
+#  DATA     bookshop-trail-1.2.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  4 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?shopName ?yearA ?sourceA ?yearB ?sourceB
+WHERE {
+  ?shop bs:founded ?yearA {| bs:claimedBy ?srcA |} .
+  ?shop bs:founded ?yearB {| bs:claimedBy ?srcB |} .
+  FILTER( STR(?yearA) != STR(?yearB) )
+  FILTER( STR(?srcA) < STR(?srcB) )
+  ?shop rdfs:label ?shopName .
+  ?srcA rdfs:label ?sourceA .
+  ?srcB rdfs:label ?sourceB .
+}
+ORDER BY ?shopName

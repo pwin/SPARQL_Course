@@ -1,0 +1,1150 @@
+@prefix bt: <https://example.org/bookshop-trail/> .
+@prefix bs: <https://example.org/bookshop-trail/schema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix dct: <http://purl.org/dc/terms/> .
+@prefix geo: <http://www.opengis.net/ont/geosparql#> .
+@prefix sf: <http://www.opengis.net/ont/sf#> .
+@prefix wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+############################################################################
+#  06  WORKS
+############################################################################
+#  Sixty-eight books and six translations. Books published before 1970
+#  have no ISBN, which is both true of the world and useful: it gives
+#  OPTIONAL and NOT EXISTS something real to find.
+#
+bt:book-cold-harbour
+    a                    bs:Work ;
+    rdfs:label           "Cold Harbour"@en ;
+    dct:title            "Cold Harbour"@en ;
+    bs:author            bt:author-rhona-blackwood ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "1948"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "336"^^xsd:integer ;
+    bs:rrp               "12.15"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-lamp-room
+    a                    bs:Work ;
+    rdfs:label           "The Lamp Room"@en ;
+    dct:title            "The Lamp Room"@en ;
+    bs:author            bt:author-rhona-blackwood ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "1955"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "448"^^xsd:integer ;
+    bs:rrp               "13.73"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-afon-hir
+    a                    bs:Work ;
+    rdfs:label           "Afon Hir"@cy ;
+    dct:title            "Afon Hir"@cy ;
+    bs:author            bt:author-iolo-vaughan ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1951"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "144"^^xsd:integer ;
+    bs:rrp               "17.20"^^xsd:decimal ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-long-river
+    a                    bs:Work ;
+    rdfs:label           "The Long River"@cy ;
+    dct:title            "The Long River"@cy ;
+    bs:author            bt:author-iolo-vaughan ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1963"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "336"^^xsd:integer ;
+    bs:rrp               "16.43"^^xsd:decimal ;
+    bs:originalLanguage  "cy" .
+
+bt:book-north-of-the-tweed
+    a                    bs:Work ;
+    rdfs:label           "North of the Tweed"@en ;
+    dct:title            "North of the Tweed"@en ;
+    bs:author            bt:author-gerard-tyne ;
+    bs:publishedBy       bt:pub-harbourmaster ;
+    bs:publicationYear   "1947"^^xsd:gYear ;
+    bs:genre             bt:genre-maritime-history ;
+    bs:pages             "608"^^xsd:integer ;
+    bs:rrp               "19.72"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-herring-and-hemp
+    a                    bs:Work ;
+    rdfs:label           "Herring and Hemp"@en ;
+    dct:title            "Herring and Hemp"@en ;
+    bs:author            bt:author-gerard-tyne ;
+    bs:publishedBy       bt:pub-harbourmaster ;
+    bs:publicationYear   "1959"^^xsd:gYear ;
+    bs:genre             bt:genre-maritime-history ;
+    bs:pages             "432"^^xsd:integer ;
+    bs:rrp               "13.68"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-quarry-glass
+    a                    bs:Work ;
+    rdfs:label           "The Quarry Glass"@en ;
+    dct:title            "The Quarry Glass"@en ;
+    bs:author            bt:author-maud-ellery ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1961"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "360"^^xsd:integer ;
+    bs:rrp               "14.44"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-evensong-for-a-thief
+    a                    bs:Work ;
+    rdfs:label           "Evensong for a Thief"@en ;
+    dct:title            "Evensong for a Thief"@en ;
+    bs:author            bt:author-maud-ellery ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1968"^^xsd:gYear ;
+    bs:genre             bt:genre-crime-fiction ;
+    bs:pages             "320"^^xsd:integer ;
+    bs:rrp               "11.29"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-shieling
+    a                    bs:Work ;
+    rdfs:label           "The Shieling"@gd ;
+    dct:title            "The Shieling"@gd ;
+    bs:author            bt:author-callum-strachan ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "1964"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "560"^^xsd:integer ;
+    bs:rrp               "18.51"^^xsd:decimal ;
+    bs:originalLanguage  "gd" .
+
+bt:book-nine-winters
+    a                    bs:Work ;
+    rdfs:label           "Nine Winters"@gd ;
+    dct:title            "Nine Winters"@gd ;
+    bs:author            bt:author-callum-strachan ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "1972"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "320"^^xsd:integer ;
+    bs:rrp               "15.49"^^xsd:decimal ;
+    bs:isbn              "9788728721575" ;
+    bs:originalLanguage  "gd" .
+
+bt:book-hedgerow-alphabet
+    a                    bs:Work ;
+    rdfs:label           "A Hedgerow Alphabet"@en ;
+    dct:title            "A Hedgerow Alphabet"@en ;
+    bs:author            bt:author-perrin-oakes ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1966"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "448"^^xsd:integer ;
+    bs:rrp               "21.27"^^xsd:decimal ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-marches
+    a                    bs:Work ;
+    rdfs:label           "The Marches"@en ;
+    dct:title            "The Marches"@en ;
+    bs:author            bt:author-perrin-oakes ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1974"^^xsd:gYear ;
+    bs:genre             bt:genre-travel-writing ;
+    bs:pages             "240"^^xsd:integer ;
+    bs:rrp               "16.54"^^xsd:decimal ;
+    bs:isbn              "9783710846960" ;
+    bs:originalLanguage  "en" .
+
+bt:book-llyfr-y-mynydd
+    a                    bs:Work ;
+    rdfs:label           "Llyfr y Mynydd"@cy ;
+    dct:title            "Llyfr y Mynydd"@cy ;
+    bs:author            bt:author-nesta-hywel ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1969"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "296"^^xsd:integer ;
+    bs:rrp               "17.59"^^xsd:decimal ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-mountain-book
+    a                    bs:Work ;
+    rdfs:label           "The Mountain Book"@cy ;
+    dct:title            "The Mountain Book"@cy ;
+    bs:author            bt:author-nesta-hywel ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1977"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "408"^^xsd:integer ;
+    bs:rrp               "15.09"^^xsd:decimal ;
+    bs:isbn              "9783719207496" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-dockhead
+    a                    bs:Work ;
+    rdfs:label           "Dockhead"@en ;
+    dct:title            "Dockhead"@en ;
+    bs:author            bt:author-dermot-lisle ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "1971"^^xsd:gYear ;
+    bs:genre             bt:genre-industrial-history ;
+    bs:pages             "576"^^xsd:integer ;
+    bs:rrp               "17.49"^^xsd:decimal ;
+    bs:isbn              "9786020171616" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-pilot-boat
+    a                    bs:Work ;
+    rdfs:label           "The Pilot Boat"@en ;
+    dct:title            "The Pilot Boat"@en ;
+    bs:author            bt:author-dermot-lisle ;
+    bs:publishedBy       bt:pub-harbourmaster ;
+    bs:publicationYear   "1980"^^xsd:gYear ;
+    bs:genre             bt:genre-crime-fiction ;
+    bs:pages             "208"^^xsd:integer ;
+    bs:rrp               "14.42"^^xsd:decimal ;
+    bs:isbn              "9787850595276" ;
+    bs:originalLanguage  "en" .
+
+bt:book-minster-yard
+    a                    bs:Work ;
+    rdfs:label           "Minster Yard"@en ;
+    dct:title            "Minster Yard"@en ;
+    bs:author            bt:author-agnes-varden ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1975"^^xsd:gYear ;
+    bs:genre             bt:genre-cosy-crime ;
+    bs:pages             "232"^^xsd:integer ;
+    bs:rrp               "14.51"^^xsd:decimal ;
+    bs:isbn              "9787333070481" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-chapter-house
+    a                    bs:Work ;
+    rdfs:label           "The Chapter House"@en ;
+    dct:title            "The Chapter House"@en ;
+    bs:author            bt:author-agnes-varden ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1982"^^xsd:gYear ;
+    bs:genre             bt:genre-cosy-crime ;
+    bs:pages             "152"^^xsd:integer ;
+    bs:rrp               "10.65"^^xsd:decimal ;
+    bs:isbn              "9780807254943" ;
+    bs:originalLanguage  "en" .
+
+bt:book-a-cold-coming
+    a                    bs:Work ;
+    rdfs:label           "A Cold Coming"@en ;
+    dct:title            "A Cold Coming"@en ;
+    bs:author            bt:author-agnes-varden ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "1991"^^xsd:gYear ;
+    bs:genre             bt:genre-police-procedural ;
+    bs:pages             "624"^^xsd:integer ;
+    bs:rrp               "9.40"^^xsd:decimal ;
+    bs:isbn              "9781266891298" ;
+    bs:originalLanguage  "en" .
+
+bt:book-sgeulachdan-mara
+    a                    bs:Work ;
+    rdfs:label           "Sgeulachdan Mara"@gd ;
+    dct:title            "Sgeulachdan Mara"@gd ;
+    bs:author            bt:author-torin-mackay ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "1978"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "280"^^xsd:integer ;
+    bs:rrp               "13.66"^^xsd:decimal ;
+    bs:isbn              "9783721782172" ;
+    bs:originalLanguage  "gd" .
+
+bt:book-the-selkie-ledger
+    a                    bs:Work ;
+    rdfs:label           "The Selkie Ledger"@gd ;
+    dct:title            "The Selkie Ledger"@gd ;
+    bs:author            bt:author-torin-mackay ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "1986"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "256"^^xsd:integer ;
+    bs:rrp               "19.81"^^xsd:decimal ;
+    bs:isbn              "9784096003916" ;
+    bs:originalLanguage  "gd" .
+
+bt:book-coal-and-chapel
+    a                    bs:Work ;
+    rdfs:label           "Coal and Chapel"@cy ;
+    dct:title            "Coal and Chapel"@cy ;
+    bs:author            bt:author-bryn-caradoc ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1983"^^xsd:gYear ;
+    bs:genre             bt:genre-industrial-history ;
+    bs:pages             "576"^^xsd:integer ;
+    bs:rrp               "14.25"^^xsd:decimal ;
+    bs:isbn              "9785656799324" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-tramroad
+    a                    bs:Work ;
+    rdfs:label           "The Tramroad"@cy ;
+    dct:title            "The Tramroad"@cy ;
+    bs:author            bt:author-bryn-caradoc ;
+    bs:publishedBy       bt:pub-greenslate ;
+    bs:publicationYear   "1992"^^xsd:gYear ;
+    bs:genre             bt:genre-local-history ;
+    bs:pages             "144"^^xsd:integer ;
+    bs:rrp               "23.37"^^xsd:decimal ;
+    bs:isbn              "9789496733364" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-orrery
+    a                    bs:Work ;
+    rdfs:label           "The Orrery"@en ;
+    dct:title            "The Orrery"@en ;
+    bs:author            bt:author-selina-frayne ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "1984"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "544"^^xsd:integer ;
+    bs:rrp               "20.75"^^xsd:decimal ;
+    bs:isbn              "9786673954352" ;
+    bs:originalLanguage  "en" .
+
+bt:book-pump-room-winter
+    a                    bs:Work ;
+    rdfs:label           "Pump Room Winter"@en ;
+    dct:title            "Pump Room Winter"@en ;
+    bs:author            bt:author-selina-frayne ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "1993"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "424"^^xsd:integer ;
+    bs:rrp               "20.33"^^xsd:decimal ;
+    bs:isbn              "9782260427230" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-cotton-line
+    a                    bs:Work ;
+    rdfs:label           "The Cotton Line"@en ;
+    dct:title            "The Cotton Line"@en ;
+    bs:author            bt:author-hal-morrow ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "1987"^^xsd:gYear ;
+    bs:genre             bt:genre-industrial-history ;
+    bs:pages             "176"^^xsd:integer ;
+    bs:rrp               "12.74"^^xsd:decimal ;
+    bs:isbn              "9783377705372" ;
+    bs:originalLanguage  "en" .
+
+bt:book-smokestack
+    a                    bs:Work ;
+    rdfs:label           "Smokestack"@en ;
+    dct:title            "Smokestack"@en ;
+    bs:author            bt:author-hal-morrow ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "1996"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "432"^^xsd:integer ;
+    bs:rrp               "17.97"^^xsd:decimal ;
+    bs:isbn              "9783075269961" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-glasshouse
+    a                    bs:Work ;
+    rdfs:label           "The Glasshouse"@en ;
+    dct:title            "The Glasshouse"@en ;
+    bs:author            bt:author-ines-calloway ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1989"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "328"^^xsd:integer ;
+    bs:rrp               "9.92"^^xsd:decimal ;
+    bs:isbn              "9780517598115" ;
+    bs:originalLanguage  "en" .
+
+bt:book-river-terminus
+    a                    bs:Work ;
+    rdfs:label           "River Terminus"@en ;
+    dct:title            "River Terminus"@en ;
+    bs:author            bt:author-ines-calloway ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1999"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "632"^^xsd:integer ;
+    bs:rrp               "11.65"^^xsd:decimal ;
+    bs:isbn              "9788519760004" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-quiet-service
+    a                    bs:Work ;
+    rdfs:label           "The Quiet Service"@en ;
+    dct:title            "The Quiet Service"@en ;
+    bs:author            bt:author-ines-calloway ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "2007"^^xsd:gYear ;
+    bs:genre             bt:genre-crime-fiction ;
+    bs:pages             "144"^^xsd:integer ;
+    bs:rrp               "11.37"^^xsd:decimal ;
+    bs:isbn              "9788259365835" ;
+    bs:originalLanguage  "en" .
+
+bt:book-fell-and-force
+    a                    bs:Work ;
+    rdfs:label           "Fell and Force"@en ;
+    dct:title            "Fell and Force"@en ;
+    bs:author            bt:author-fenella-drew ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "1990"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "640"^^xsd:integer ;
+    bs:rrp               "23.91"^^xsd:decimal ;
+    bs:isbn              "9787504927590" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-limestone-year
+    a                    bs:Work ;
+    rdfs:label           "The Limestone Year"@en ;
+    dct:title            "The Limestone Year"@en ;
+    bs:author            bt:author-fenella-drew ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "2000"^^xsd:gYear ;
+    bs:genre             bt:genre-geology ;
+    bs:pages             "288"^^xsd:integer ;
+    bs:rrp               "13.49"^^xsd:decimal ;
+    bs:isbn              "9782560076015" ;
+    bs:originalLanguage  "en" .
+
+bt:book-cerrig-a-chysgod
+    a                    bs:Work ;
+    rdfs:label           "Cerrig a Chysgod"@cy ;
+    dct:title            "Cerrig a Chysgod"@cy ;
+    bs:author            bt:author-owain-preece ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "1994"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "216"^^xsd:integer ;
+    bs:rrp               "19.38"^^xsd:decimal ;
+    bs:isbn              "9783358064474" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-stones-and-shadow
+    a                    bs:Work ;
+    rdfs:label           "Stones and Shadow"@cy ;
+    dct:title            "Stones and Shadow"@cy ;
+    bs:author            bt:author-owain-preece ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "2003"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "424"^^xsd:integer ;
+    bs:rrp               "12.89"^^xsd:decimal ;
+    bs:isbn              "9787625845261" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-clyde-tapes
+    a                    bs:Work ;
+    rdfs:label           "The Clyde Tapes"@en ;
+    dct:title            "The Clyde Tapes"@en ;
+    bs:author            bt:author-kirsty-lammond ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "1995"^^xsd:gYear ;
+    bs:genre             bt:genre-tartan-noir ;
+    bs:pages             "368"^^xsd:integer ;
+    bs:rrp               "10.08"^^xsd:decimal ;
+    bs:isbn              "9789015058497" ;
+    bs:originalLanguage  "en" .
+
+bt:book-dead-reckoning
+    a                    bs:Work ;
+    rdfs:label           "Dead Reckoning"@en ;
+    dct:title            "Dead Reckoning"@en ;
+    bs:author            bt:author-kirsty-lammond ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "2002"^^xsd:gYear ;
+    bs:genre             bt:genre-tartan-noir ;
+    bs:pages             "272"^^xsd:integer ;
+    bs:rrp               "21.23"^^xsd:decimal ;
+    bs:isbn              "9787682529128" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-govan-inheritance
+    a                    bs:Work ;
+    rdfs:label           "The Govan Inheritance"@en ;
+    dct:title            "The Govan Inheritance"@en ;
+    bs:author            bt:author-kirsty-lammond ;
+    bs:publishedBy       bt:pub-bell-rock ;
+    bs:publicationYear   "2011"^^xsd:gYear ;
+    bs:genre             bt:genre-tartan-noir ;
+    bs:pages             "416"^^xsd:integer ;
+    bs:rrp               "12.70"^^xsd:decimal ;
+    bs:isbn              "9784811214108" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-third-map
+    a                    bs:Work ;
+    rdfs:label           "The Third Map"@en ;
+    dct:title            "The Third Map"@en ;
+    bs:author            bt:author-marek-oyelaran ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "1998"^^xsd:gYear ;
+    bs:genre             bt:genre-speculative-fiction ;
+    bs:pages             "256"^^xsd:integer ;
+    bs:rrp               "16.42"^^xsd:decimal ;
+    bs:isbn              "9780702410239" ;
+    bs:originalLanguage  "en" .
+
+bt:book-orbital-decay
+    a                    bs:Work ;
+    rdfs:label           "Orbital Decay"@en ;
+    dct:title            "Orbital Decay"@en ;
+    bs:author            bt:author-marek-oyelaran ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "2005"^^xsd:gYear ;
+    bs:genre             bt:genre-hard-sf ;
+    bs:pages             "568"^^xsd:integer ;
+    bs:rrp               "16.87"^^xsd:decimal ;
+    bs:isbn              "9784398320438" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-long-station
+    a                    bs:Work ;
+    rdfs:label           "The Long Station"@en ;
+    dct:title            "The Long Station"@en ;
+    bs:author            bt:author-marek-oyelaran ;
+    bs:publishedBy       bt:pub-pica ;
+    bs:publicationYear   "2013"^^xsd:gYear ;
+    bs:genre             bt:genre-space-opera ;
+    bs:pages             "360"^^xsd:integer ;
+    bs:rrp               "15.87"^^xsd:decimal ;
+    bs:isbn              "9784586105106" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-fen-tiger
+    a                    bs:Work ;
+    rdfs:label           "The Fen Tiger"@en ;
+    dct:title            "The Fen Tiger"@en ;
+    bs:author            bt:author-delia-stannard ;
+    bs:publishedBy       bt:pub-saltmarsh ;
+    bs:publicationYear   "2001"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "632"^^xsd:integer ;
+    bs:rrp               "18.49"^^xsd:decimal ;
+    bs:isbn              "9784952268787" ;
+    bs:originalLanguage  "en" .
+
+bt:book-drainage
+    a                    bs:Work ;
+    rdfs:label           "Drainage"@en ;
+    dct:title            "Drainage"@en ;
+    bs:author            bt:author-delia-stannard ;
+    bs:publishedBy       bt:pub-saltmarsh ;
+    bs:publicationYear   "2009"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "400"^^xsd:integer ;
+    bs:rrp               "11.32"^^xsd:decimal ;
+    bs:isbn              "9785332679285" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-book-town
+    a                    bs:Work ;
+    rdfs:label           "The Book Town"@en ;
+    dct:title            "The Book Town"@en ;
+    bs:author            bt:author-rab-fingal ;
+    bs:publishedBy       bt:pub-bell-rock ;
+    bs:publicationYear   "2004"^^xsd:gYear ;
+    bs:genre             bt:genre-cosy-crime ;
+    bs:pages             "544"^^xsd:integer ;
+    bs:rrp               "22.69"^^xsd:decimal ;
+    bs:isbn              "9787063088596" ;
+    bs:originalLanguage  "en" .
+
+bt:book-a-margin-of-error
+    a                    bs:Work ;
+    rdfs:label           "A Margin of Error"@en ;
+    dct:title            "A Margin of Error"@en ;
+    bs:author            bt:author-rab-fingal ;
+    bs:publishedBy       bt:pub-bell-rock ;
+    bs:publicationYear   "2012"^^xsd:gYear ;
+    bs:genre             bt:genre-cosy-crime ;
+    bs:pages             "408"^^xsd:integer ;
+    bs:rrp               "16.81"^^xsd:decimal ;
+    bs:isbn              "9785973924850" ;
+    bs:originalLanguage  "en" .
+
+bt:book-whalebone-street
+    a                    bs:Work ;
+    rdfs:label           "Whalebone Street"@en ;
+    dct:title            "Whalebone Street"@en ;
+    bs:author            bt:author-juno-verrall ;
+    bs:publishedBy       bt:pub-harbourmaster ;
+    bs:publicationYear   "2006"^^xsd:gYear ;
+    bs:genre             bt:genre-historical-fiction ;
+    bs:pages             "488"^^xsd:integer ;
+    bs:rrp               "18.60"^^xsd:decimal ;
+    bs:isbn              "9781326786700" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-jet-workers
+    a                    bs:Work ;
+    rdfs:label           "The Jet Workers"@en ;
+    dct:title            "The Jet Workers"@en ;
+    bs:author            bt:author-juno-verrall ;
+    bs:publishedBy       bt:pub-harbourmaster ;
+    bs:publicationYear   "2014"^^xsd:gYear ;
+    bs:genre             bt:genre-local-history ;
+    bs:pages             "296"^^xsd:integer ;
+    bs:rrp               "16.57"^^xsd:decimal ;
+    bs:isbn              "9780093196286" ;
+    bs:originalLanguage  "en" .
+
+bt:book-y-mor-tywyll
+    a                    bs:Work ;
+    rdfs:label           "Y Mor Tywyll"@cy ;
+    dct:title            "Y Mor Tywyll"@cy ;
+    bs:author            bt:author-elin-morgan ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "2008"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "568"^^xsd:integer ;
+    bs:rrp               "18.31"^^xsd:decimal ;
+    bs:isbn              "9789773896157" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-dark-sea
+    a                    bs:Work ;
+    rdfs:label           "The Dark Sea"@cy ;
+    dct:title            "The Dark Sea"@cy ;
+    bs:author            bt:author-elin-morgan ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "2016"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "568"^^xsd:integer ;
+    bs:rrp               "12.64"^^xsd:decimal ;
+    bs:isbn              "9781915125682" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-links-and-lies
+    a                    bs:Work ;
+    rdfs:label           "Links and Lies"@en ;
+    dct:title            "Links and Lies"@en ;
+    bs:author            bt:author-sandy-cleghorn ;
+    bs:publishedBy       bt:pub-bell-rock ;
+    bs:publicationYear   "2010"^^xsd:gYear ;
+    bs:genre             bt:genre-police-procedural ;
+    bs:pages             "152"^^xsd:integer ;
+    bs:rrp               "21.24"^^xsd:decimal ;
+    bs:isbn              "9780949568441" ;
+    bs:originalLanguage  "en" .
+
+bt:book-west-sands
+    a                    bs:Work ;
+    rdfs:label           "West Sands"@en ;
+    dct:title            "West Sands"@en ;
+    bs:author            bt:author-sandy-cleghorn ;
+    bs:publishedBy       bt:pub-bell-rock ;
+    bs:publicationYear   "2018"^^xsd:gYear ;
+    bs:genre             bt:genre-police-procedural ;
+    bs:pages             "232"^^xsd:integer ;
+    bs:rrp               "19.57"^^xsd:decimal ;
+    bs:isbn              "9787850186061" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-broad-and-the-cut
+    a                    bs:Work ;
+    rdfs:label           "The Broad and the Cut"@en ;
+    dct:title            "The Broad and the Cut"@en ;
+    bs:author            bt:author-priya-nandakumar ;
+    bs:publishedBy       bt:pub-saltmarsh ;
+    bs:publicationYear   "2011"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "512"^^xsd:integer ;
+    bs:rrp               "15.66"^^xsd:decimal ;
+    bs:isbn              "9787493803592" ;
+    bs:originalLanguage  "en" .
+
+bt:book-saltmarsh-year
+    a                    bs:Work ;
+    rdfs:label           "Saltmarsh Year"@en ;
+    dct:title            "Saltmarsh Year"@en ;
+    bs:author            bt:author-priya-nandakumar ;
+    bs:publishedBy       bt:pub-saltmarsh ;
+    bs:publicationYear   "2019"^^xsd:gYear ;
+    bs:genre             bt:genre-ornithology ;
+    bs:pages             "544"^^xsd:integer ;
+    bs:rrp               "12.54"^^xsd:decimal ;
+    bs:isbn              "9780284810731" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-tenement-key
+    a                    bs:Work ;
+    rdfs:label           "The Tenement Key"@en ;
+    dct:title            "The Tenement Key"@en ;
+    bs:author            bt:author-tam-brodie ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "2013"^^xsd:gYear ;
+    bs:genre             bt:genre-tartan-noir ;
+    bs:pages             "336"^^xsd:integer ;
+    bs:rrp               "13.95"^^xsd:decimal ;
+    bs:isbn              "9782328857122" ;
+    bs:originalLanguage  "en" .
+
+bt:book-closes-and-wynds
+    a                    bs:Work ;
+    rdfs:label           "Closes and Wynds"@en ;
+    dct:title            "Closes and Wynds"@en ;
+    bs:author            bt:author-tam-brodie ;
+    bs:publishedBy       bt:pub-northwind ;
+    bs:publicationYear   "2021"^^xsd:gYear ;
+    bs:genre             bt:genre-tartan-noir ;
+    bs:pages             "480"^^xsd:integer ;
+    bs:rrp               "20.57"^^xsd:decimal ;
+    bs:isbn              "9787337428080" ;
+    bs:originalLanguage  "en" .
+
+bt:book-gwreiddiau
+    a                    bs:Work ;
+    rdfs:label           "Gwreiddiau"@cy ;
+    dct:title            "Gwreiddiau"@cy ;
+    bs:author            bt:author-cerys-lloyd ;
+    bs:publishedBy       bt:pub-drovers-road ;
+    bs:publicationYear   "2015"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "432"^^xsd:integer ;
+    bs:rrp               "9.18"^^xsd:decimal ;
+    bs:isbn              "9785185897423" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-rootstock
+    a                    bs:Work ;
+    rdfs:label           "Rootstock"@cy ;
+    dct:title            "Rootstock"@cy ;
+    bs:author            bt:author-cerys-lloyd ;
+    bs:publishedBy       bt:pub-drovers-road ;
+    bs:publicationYear   "2022"^^xsd:gYear ;
+    bs:genre             bt:genre-poetry ;
+    bs:pages             "328"^^xsd:integer ;
+    bs:rrp               "12.35"^^xsd:decimal ;
+    bs:isbn              "9783091319671" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-crossing-season
+    a                    bs:Work ;
+    rdfs:label           "The Crossing Season"@ar ;
+    dct:title            "The Crossing Season"@ar ;
+    bs:author            bt:author-noor-haddad ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "2016"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "320"^^xsd:integer ;
+    bs:rrp               "11.38"^^xsd:decimal ;
+    bs:isbn              "9782347311223" ;
+    bs:originalLanguage  "ar" .
+
+bt:book-a-second-country
+    a                    bs:Work ;
+    rdfs:label           "A Second Country"@ar ;
+    dct:title            "A Second Country"@ar ;
+    bs:author            bt:author-noor-haddad ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "2023"^^xsd:gYear ;
+    bs:genre             bt:genre-literary-fiction ;
+    bs:pages             "480"^^xsd:integer ;
+    bs:rrp               "23.96"^^xsd:decimal ;
+    bs:isbn              "9787921829774" ;
+    bs:originalLanguage  "ar" .
+
+bt:book-the-tarn
+    a                    bs:Work ;
+    rdfs:label           "The Tarn"@en ;
+    dct:title            "The Tarn"@en ;
+    bs:author            bt:author-bram-tillotson ;
+    bs:publishedBy       bt:pub-wrenline ;
+    bs:publicationYear   "2017"^^xsd:gYear ;
+    bs:genre             bt:genre-mountaineering ;
+    bs:pages             "424"^^xsd:integer ;
+    bs:rrp               "17.43"^^xsd:decimal ;
+    bs:isbn              "9787265099932" ;
+    bs:originalLanguage  "en" .
+
+bt:book-scree
+    a                    bs:Work ;
+    rdfs:label           "Scree"@en ;
+    dct:title            "Scree"@en ;
+    bs:author            bt:author-bram-tillotson ;
+    bs:publishedBy       bt:pub-wrenline ;
+    bs:publicationYear   "2024"^^xsd:gYear ;
+    bs:genre             bt:genre-mountaineering ;
+    bs:pages             "376"^^xsd:integer ;
+    bs:rrp               "20.41"^^xsd:decimal ;
+    bs:isbn              "9783377609663" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-tin-coast
+    a                    bs:Work ;
+    rdfs:label           "The Tin Coast"@en ;
+    dct:title            "The Tin Coast"@en ;
+    bs:author            bt:author-orla-finnerty ;
+    bs:publishedBy       bt:pub-tide-and-tiller ;
+    bs:publicationYear   "2018"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "160"^^xsd:integer ;
+    bs:rrp               "9.77"^^xsd:decimal ;
+    bs:isbn              "9783970489327" ;
+    bs:originalLanguage  "en" .
+
+bt:book-wrecking
+    a                    bs:Work ;
+    rdfs:label           "Wrecking"@en ;
+    dct:title            "Wrecking"@en ;
+    bs:author            bt:author-orla-finnerty ;
+    bs:publishedBy       bt:pub-tide-and-tiller ;
+    bs:publicationYear   "2023"^^xsd:gYear ;
+    bs:genre             bt:genre-maritime-history ;
+    bs:pages             "272"^^xsd:integer ;
+    bs:rrp               "16.09"^^xsd:decimal ;
+    bs:isbn              "9786841425776" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-flood-meadow
+    a                    bs:Work ;
+    rdfs:label           "The Flood Meadow"@en ;
+    dct:title            "The Flood Meadow"@en ;
+    bs:author            bt:author-magnus-thole ;
+    bs:publishedBy       bt:pub-wrenline ;
+    bs:publicationYear   "2019"^^xsd:gYear ;
+    bs:genre             bt:genre-climate-fiction ;
+    bs:pages             "632"^^xsd:integer ;
+    bs:rrp               "19.73"^^xsd:decimal ;
+    bs:isbn              "9787871505438" ;
+    bs:originalLanguage  "en" .
+
+bt:book-high-water
+    a                    bs:Work ;
+    rdfs:label           "High Water"@en ;
+    dct:title            "High Water"@en ;
+    bs:author            bt:author-magnus-thole ;
+    bs:publishedBy       bt:pub-wrenline ;
+    bs:publicationYear   "2025"^^xsd:gYear ;
+    bs:genre             bt:genre-climate-fiction ;
+    bs:pages             "416"^^xsd:integer ;
+    bs:rrp               "16.19"^^xsd:decimal ;
+    bs:isbn              "9784202751021" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-canal-and-the-mill
+    a                    bs:Work ;
+    rdfs:label           "The Canal and the Mill"@en ;
+    dct:title            "The Canal and the Mill"@en ;
+    bs:author            bt:author-yara-tesfaye ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "2020"^^xsd:gYear ;
+    bs:genre             bt:genre-industrial-history ;
+    bs:pages             "224"^^xsd:integer ;
+    bs:rrp               "11.47"^^xsd:decimal ;
+    bs:isbn              "9783636198884" ;
+    bs:originalLanguage  "en" .
+
+bt:book-machine-time
+    a                    bs:Work ;
+    rdfs:label           "Machine Time"@en ;
+    dct:title            "Machine Time"@en ;
+    bs:author            bt:author-yara-tesfaye ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "2024"^^xsd:gYear ;
+    bs:genre             bt:genre-climate-fiction ;
+    bs:pages             "504"^^xsd:integer ;
+    bs:rrp               "23.77"^^xsd:decimal ;
+    bs:isbn              "9781458481740" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-leat
+    a                    bs:Work ;
+    rdfs:label           "The Leat"@en ;
+    dct:title            "The Leat"@en ;
+    bs:author            bt:author-dilys-tremain ;
+    bs:publishedBy       bt:pub-tide-and-tiller ;
+    bs:publicationYear   "2021"^^xsd:gYear ;
+    bs:genre             bt:genre-folk-fantasy ;
+    bs:pages             "624"^^xsd:integer ;
+    bs:rrp               "9.38"^^xsd:decimal ;
+    bs:isbn              "9788550500119" ;
+    bs:originalLanguage  "en" .
+
+bt:book-granite-and-rain
+    a                    bs:Work ;
+    rdfs:label           "Granite and Rain"@en ;
+    dct:title            "Granite and Rain"@en ;
+    bs:author            bt:author-dilys-tremain ;
+    bs:publishedBy       bt:pub-tide-and-tiller ;
+    bs:publicationYear   "2025"^^xsd:gYear ;
+    bs:genre             bt:genre-nature-writing ;
+    bs:pages             "552"^^xsd:integer ;
+    bs:rrp               "23.63"^^xsd:decimal ;
+    bs:isbn              "9784066901495" ;
+    bs:originalLanguage  "en" .
+
+
+# ------------------------------------------------------------------------
+# Translations -- the base direction on these is what LANGDIR and hasLANGDIR are for
+# ------------------------------------------------------------------------
+bt:book-the-dark-sea-ar
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "البحر المظلم"@ar--rtl ;
+    dct:title            "البحر المظلم"@ar--rtl ;
+    bs:translationOf     bt:book-the-dark-sea ;
+    bs:author            bt:author-elin-morgan ;
+    bs:translatedBy      bt:author-noor-haddad ;
+    bs:publishedBy       bt:pub-thornfield ;
+    bs:publicationYear   "2019"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "168"^^xsd:integer ;
+    bs:rrp               "20.28"^^xsd:decimal ;
+    bs:isbn              "9786429677030" ;
+    bs:originalLanguage  "cy" .
+
+bt:book-the-selkie-ledger-ar
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "سجل السيلكي"@ar--rtl ;
+    dct:title            "سجل السيلكي"@ar--rtl ;
+    bs:translationOf     bt:book-the-selkie-ledger ;
+    bs:author            bt:author-torin-mackay ;
+    bs:translatedBy      bt:author-noor-haddad ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "2001"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "176"^^xsd:integer ;
+    bs:rrp               "12.18"^^xsd:decimal ;
+    bs:isbn              "9780775709865" ;
+    bs:originalLanguage  "gd" .
+
+bt:book-cold-harbour-he
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "מעגן קר"@he--rtl ;
+    dct:title            "מעגן קר"@he--rtl ;
+    bs:translationOf     bt:book-cold-harbour ;
+    bs:author            bt:author-rhona-blackwood ;
+    bs:publishedBy       bt:pub-lodestone-group ;
+    bs:publicationYear   "1972"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "456"^^xsd:integer ;
+    bs:rrp               "17.90"^^xsd:decimal ;
+    bs:isbn              "9780636464650" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-book-town-cy
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "Y Dref Lyfrau"@cy ;
+    dct:title            "Y Dref Lyfrau"@cy ;
+    bs:translationOf     bt:book-the-book-town ;
+    bs:author            bt:author-rab-fingal ;
+    bs:translatedBy      bt:author-cerys-lloyd ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "2009"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "584"^^xsd:integer ;
+    bs:rrp               "19.19"^^xsd:decimal ;
+    bs:isbn              "9786905105859" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-tarn-gd
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "An Lochan"@gd ;
+    dct:title            "An Lochan"@gd ;
+    bs:translationOf     bt:book-the-tarn ;
+    bs:author            bt:author-bram-tillotson ;
+    bs:translatedBy      bt:author-torin-mackay ;
+    bs:publishedBy       bt:pub-cairn ;
+    bs:publicationYear   "2020"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "544"^^xsd:integer ;
+    bs:rrp               "19.92"^^xsd:decimal ;
+    bs:isbn              "9780247592414" ;
+    bs:originalLanguage  "en" .
+
+bt:book-the-long-station-cy
+    a                    bs:Translation, bs:Work ;
+    rdfs:label           "Yr Orsaf Hir"@cy ;
+    dct:title            "Yr Orsaf Hir"@cy ;
+    bs:translationOf     bt:book-the-long-station ;
+    bs:author            bt:author-marek-oyelaran ;
+    bs:translatedBy      bt:author-elin-morgan ;
+    bs:publishedBy       bt:pub-cwm-press ;
+    bs:publicationYear   "2017"^^xsd:gYear ;
+    bs:genre             bt:genre-translated-fiction ;
+    bs:pages             "376"^^xsd:integer ;
+    bs:rrp               "18.71"^^xsd:decimal ;
+    bs:isbn              "9782022877495" ;
+    bs:originalLanguage  "en" .
+
+
+# ------------------------------------------------------------------------
+# Series
+# ------------------------------------------------------------------------
+bt:series-mackenzie-files
+    a           bs:Series ;
+    rdfs:label  "The Mackenzie Files"@en .
+
+bt:book-the-clyde-tapes
+    bs:inSeries        bt:series-mackenzie-files ;
+    bs:seriesPosition  "1"^^xsd:integer .
+
+bt:book-dead-reckoning
+    bs:inSeries        bt:series-mackenzie-files ;
+    bs:seriesPosition  "2"^^xsd:integer .
+
+bt:book-the-govan-inheritance
+    bs:inSeries        bt:series-mackenzie-files ;
+    bs:seriesPosition  "3"^^xsd:integer .
+
+bt:series-minster-mysteries
+    a           bs:Series ;
+    rdfs:label  "The Minster Mysteries"@en .
+
+bt:book-minster-yard
+    bs:inSeries        bt:series-minster-mysteries ;
+    bs:seriesPosition  "1"^^xsd:integer .
+
+bt:book-the-chapter-house
+    bs:inSeries        bt:series-minster-mysteries ;
+    bs:seriesPosition  "2"^^xsd:integer .
+
+bt:book-a-cold-coming
+    bs:inSeries        bt:series-minster-mysteries ;
+    bs:seriesPosition  "3"^^xsd:integer .
+
+bt:series-wigtown-cases
+    a           bs:Series ;
+    rdfs:label  "The Wigtown Cases"@en .
+
+bt:book-the-book-town
+    bs:inSeries        bt:series-wigtown-cases ;
+    bs:seriesPosition  "1"^^xsd:integer .
+
+bt:book-a-margin-of-error
+    bs:inSeries        bt:series-wigtown-cases ;
+    bs:seriesPosition  "2"^^xsd:integer .
+
+bt:series-tide-trilogy
+    a           bs:Series ;
+    rdfs:label  "The Tide Trilogy"@en .
+
+bt:book-the-tin-coast
+    bs:inSeries        bt:series-tide-trilogy ;
+    bs:seriesPosition  "1"^^xsd:integer .
+
+bt:book-wrecking
+    bs:inSeries        bt:series-tide-trilogy ;
+    bs:seriesPosition  "2"^^xsd:integer .
+
+bt:book-the-leat
+    bs:inSeries        bt:series-tide-trilogy ;
+    bs:seriesPosition  "3"^^xsd:integer .
+
+
+# ------------------------------------------------------------------------
+# bs:wrote -- asserted so that beginners have an easy forward path before they meet ^bs:author
+# ------------------------------------------------------------------------
+bt:author-rhona-blackwood
+    bs:wrote  bt:book-cold-harbour, bt:book-the-lamp-room .
+
+bt:author-iolo-vaughan
+    bs:wrote  bt:book-afon-hir, bt:book-the-long-river .
+
+bt:author-gerard-tyne
+    bs:wrote  bt:book-north-of-the-tweed, bt:book-herring-and-hemp .
+
+bt:author-maud-ellery
+    bs:wrote  bt:book-the-quarry-glass, bt:book-evensong-for-a-thief .
+
+bt:author-callum-strachan
+    bs:wrote  bt:book-the-shieling, bt:book-nine-winters .
+
+bt:author-perrin-oakes
+    bs:wrote  bt:book-hedgerow-alphabet, bt:book-the-marches .
+
+bt:author-nesta-hywel
+    bs:wrote  bt:book-llyfr-y-mynydd, bt:book-the-mountain-book .
+
+bt:author-dermot-lisle
+    bs:wrote  bt:book-dockhead, bt:book-the-pilot-boat .
+
+bt:author-agnes-varden
+    bs:wrote  bt:book-minster-yard, bt:book-the-chapter-house, bt:book-a-cold-coming .
+
+bt:author-torin-mackay
+    bs:wrote  bt:book-sgeulachdan-mara, bt:book-the-selkie-ledger .
+
+bt:author-bryn-caradoc
+    bs:wrote  bt:book-coal-and-chapel, bt:book-the-tramroad .
+
+bt:author-selina-frayne
+    bs:wrote  bt:book-the-orrery, bt:book-pump-room-winter .
+
+bt:author-hal-morrow
+    bs:wrote  bt:book-the-cotton-line, bt:book-smokestack .
+
+bt:author-ines-calloway
+    bs:wrote  bt:book-the-glasshouse, bt:book-river-terminus, bt:book-the-quiet-service .
+
+bt:author-fenella-drew
+    bs:wrote  bt:book-fell-and-force, bt:book-the-limestone-year .
+
+bt:author-owain-preece
+    bs:wrote  bt:book-cerrig-a-chysgod, bt:book-stones-and-shadow .
+
+bt:author-kirsty-lammond
+    bs:wrote  bt:book-the-clyde-tapes, bt:book-dead-reckoning, bt:book-the-govan-inheritance .
+
+bt:author-marek-oyelaran
+    bs:wrote  bt:book-the-third-map, bt:book-orbital-decay, bt:book-the-long-station .
+
+bt:author-delia-stannard
+    bs:wrote  bt:book-the-fen-tiger, bt:book-drainage .
+
+bt:author-rab-fingal
+    bs:wrote  bt:book-the-book-town, bt:book-a-margin-of-error .
+
+bt:author-juno-verrall
+    bs:wrote  bt:book-whalebone-street, bt:book-the-jet-workers .
+
+bt:author-elin-morgan
+    bs:wrote  bt:book-y-mor-tywyll, bt:book-the-dark-sea .
+
+bt:author-sandy-cleghorn
+    bs:wrote  bt:book-links-and-lies, bt:book-west-sands .
+
+bt:author-priya-nandakumar
+    bs:wrote  bt:book-the-broad-and-the-cut, bt:book-saltmarsh-year .
+
+bt:author-tam-brodie
+    bs:wrote  bt:book-the-tenement-key, bt:book-closes-and-wynds .
+
+bt:author-cerys-lloyd
+    bs:wrote  bt:book-gwreiddiau, bt:book-rootstock .
+
+bt:author-noor-haddad
+    bs:wrote  bt:book-the-crossing-season, bt:book-a-second-country .
+
+bt:author-bram-tillotson
+    bs:wrote  bt:book-the-tarn, bt:book-scree .
+
+bt:author-orla-finnerty
+    bs:wrote  bt:book-the-tin-coast, bt:book-wrecking .
+
+bt:author-magnus-thole
+    bs:wrote  bt:book-the-flood-meadow, bt:book-high-water .
+
+bt:author-yara-tesfaye
+    bs:wrote  bt:book-the-canal-and-the-mill, bt:book-machine-time .
+
+bt:author-dilys-tremain
+    bs:wrote  bt:book-the-leat, bt:book-granite-and-rain .
+

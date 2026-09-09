@@ -1,0 +1,68 @@
+# ==========================================================================
+#  Q77  One boolean per row, not one per query
+# ==========================================================================
+#
+#  ASKS
+#    For every shop, does it stock any translated fiction?
+#
+#  HOW IT WORKS
+#    ASK answers once for the whole query, which is no use when the
+#    question is really about each row. EXISTS is the row-wise form of the
+#    same test: it evaluates a pattern against the current bindings and
+#    yields a boolean you can bind, filter or select.
+#
+#  DIAGRAM
+#        ASK { ... }              one boolean, for the whole query
+#        EXISTS { ... }           one boolean, for the current row
+#
+#        BIND( EXISTS { ?shop bs:stocks/bs:genre bt:genre-translated-fiction }
+#              AS ?stocksTranslated )
+#              ──┬───                            ▲
+#                │                               └── ?shop is bound from
+#                └── evaluated once per row          the surrounding row
+#
+#        ┌──────────────────────┬───────────────────┐
+#        │ Verso and Recto      │ true              │
+#        │ Turn the Page        │ true              │
+#        │ The Inkwell          │ false             │
+#        └──────────────────────┴───────────────────┘
+#
+#        FILTER EXISTS is the same test used to drop rows.  BIND EXISTS
+#        keeps every row and records the answer, which is usually what a
+#        report wants.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - EXISTS is the per-row version of ASK, and it can be bound to a
+#      variable rather than only used to filter.
+#    - BIND(EXISTS{...} AS ?flag) keeps every row and labels it. FILTER
+#      EXISTS removes rows. Choose by whether the absence is worth
+#      reporting.
+#    - The inner pattern sees the outer bindings, which is what makes it
+#      a test about this row rather than about the dataset.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  33 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?name ?stocksTranslated
+WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name .
+  BIND( EXISTS { ?shop bs:stocks/bs:genre bt:genre-translated-fiction }
+        AS ?stocksTranslated )
+}
+ORDER BY DESC(?stocksTranslated) ?name

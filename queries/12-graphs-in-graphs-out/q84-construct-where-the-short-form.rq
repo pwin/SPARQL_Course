@@ -1,0 +1,65 @@
+# ==========================================================================
+#  Q84  CONSTRUCT WHERE, the short form
+# ==========================================================================
+#
+#  ASKS
+#    Extract the shops with their names and founding years, unchanged.
+#
+#  HOW IT WORKS
+#    When the template you want is exactly the pattern you matched, the
+#    template can be omitted. `CONSTRUCT WHERE { ... }` uses the pattern as
+#    its own template. It's the standard way to cut a subgraph out of a
+#    larger one without retyping it.
+#
+#  DIAGRAM
+#        the long way:
+#
+#          CONSTRUCT { ?shop a bs:Bookshop ; rdfs:label ?n ; bs:founded ?y }
+#          WHERE     { ?shop a bs:Bookshop ; rdfs:label ?n ; bs:founded ?y }
+#                      ─────────────── identical ───────────────
+#
+#        the short way:
+#
+#          CONSTRUCT WHERE { ?shop a bs:Bookshop ; rdfs:label ?n ; bs:founded ?y }
+#
+#        99 triples out: three per shop.
+#
+#        Restrictions, and the reason they exist -- the pattern IS the
+#        template, so it must be something a template could contain:
+#
+#          no FILTER, no OPTIONAL, no UNION, no sub-query
+#          just a basic graph pattern
+#
+#        Need any of those?  Write the template out.  That is q85.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - CONSTRUCT WHERE { ... } reuses the pattern as the template, and is
+#      the idiomatic way to extract a subgraph unchanged.
+#    - It accepts only a basic graph pattern: no FILTER, OPTIONAL, UNION
+#      or sub-query.
+#    - The moment you need to reshape anything, write the template out in
+#      full.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  99 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+CONSTRUCT WHERE {
+  ?shop a          bs:Bookshop ;
+        rdfs:label ?name ;
+        bs:founded ?year .
+}

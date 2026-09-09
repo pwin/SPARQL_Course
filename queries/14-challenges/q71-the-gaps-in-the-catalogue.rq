@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q71  The gaps in the catalogue
+# ==========================================================================
+#
+#  ASKS
+#    Which genres does the trail specialise in but barely stock, and which
+#    does it stock without anyone specialising?
+#
+#  HOW IT WORKS
+#    Two sets, compared. One sub-query counts the shops that name each
+#    genre as their specialism; another counts the works filed under it or
+#    anything narrower. A full outer comparison isn't available in SPARQL,
+#    so a UNION of the genres from both sides gives the key set, and
+#    OPTIONAL fills in whichever side is missing.
+#
+#  DIAGRAM
+#        SPARQL has no FULL OUTER JOIN.  Build one:
+#
+#        step 1 -- every genre that appears on either side
+#            { ?g ^bs:specialises ?anyShop }      shops' specialisms
+#            UNION
+#            { ?w bs:genre/skos:broader* ?g }     genres of works
+#
+#        step 2 -- OPTIONAL sub-query for each count
+#
+#            ?g ──┬── OPTIONAL { shops specialising  } ──▶ ?shops
+#                 └── OPTIONAL { works in this genre } ──▶ ?works
+#
+#        step 3 -- COALESCE turns "no match" into zero
+#
+#            COALESCE(?shops, 0)
+#
+#        ┌───────────────────┬───────┬───────┐
+#        │ genre             │ shops │ works │
+#        ├───────────────────┼───────┼───────┤
+#        │ mountaineering    │   1   │   2   │   thin
+#        │ climate-fiction   │   0   │   3   │   stocked, nobody's speciality
+#        │ classics          │   1   │   0   │   claimed, nothing filed
+#        └───────────────────┴───────┴───────┘
+#
+#        COALESCE is the tool for turning absence into a usable value.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - SPARQL has no full outer join; UNION for the keys plus OPTIONAL
+#      for the values is how you build one.
+#    - COALESCE(?x, 0) converts an unbound value into something
+#      arithmetic and ORDER BY can use.
+#    - skos:broader* on the works side means a book filed under Tartan
+#      Noir counts towards Crime Fiction too.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  107 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?genreName (COALESCE(?shops, 0) AS ?specialists)
+       (COALESCE(?works, 0) AS ?titles)
+WHERE {
+  { ?g ^bs:specialises ?someShop . }
+  UNION
+  { ?someWork bs:genre ?g . }
+  ?g skos:prefLabel ?genreName .
+  FILTER( LANG(?genreName) = "en" )
+
+  OPTIONAL {
+    SELECT ?g (COUNT(DISTINCT ?shop) AS ?shops)
+    WHERE { ?shop bs:specialises ?g . }
+    GROUP BY ?g
+  }
+  OPTIONAL {
+    SELECT ?g (COUNT(DISTINCT ?work) AS ?works)
+    WHERE { ?work bs:genre/skos:broader* ?g . }
+    GROUP BY ?g
+  }
+}
+ORDER BY ?specialists DESC(?titles) ?genreName

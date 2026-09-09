@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q37  Books priced above average
+# ==========================================================================
+#
+#  ASKS
+#    Which books cost more than the average book?
+#
+#  HOW IT WORKS
+#    A single query can't compare a row against a summary of all rows,
+#    because by the time the aggregate exists the rows are gone. The sub-
+#    query computes the average first and yields one row with one column;
+#    the outer query then joins every book against that single row and
+#    filters.
+#
+#  DIAGRAM
+#        ┌─ inner query ────────────────────────────┐
+#        │  SELECT (AVG(?p) AS ?avgPrice)           │
+#        │  WHERE { ?b bs:rrp ?p }                  │
+#        │                                          │
+#        │  result:  ┌──────────┐                   │
+#        │           │ 15.87    │   ONE row         │
+#        │           └──────────┘                   │
+#        └───────────────────┬──────────────────────┘
+#                            │ joined to every outer row
+#                            ▼
+#        ┌─ outer query ────────────────────────────┐
+#        │  ?book bs:rrp ?price                     │
+#        │  FILTER( ?price > ?avgPrice )            │
+#        └──────────────────────────────────────────┘
+#
+#        Inner runs FIRST.  It cannot see ?book, ?price or anything else
+#        from the outer query -- only what it computes itself.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A sub-query runs first and independently; the outer query joins
+#      against its result.
+#    - This is the only way to compare a value with an aggregate over the
+#      same data.
+#    - Variables don't leak inwards. A sub-query can't see the outer
+#      query's bindings, which is exactly why it can be evaluated once.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?title ?price ?avgPrice
+WHERE {
+  ?book a          bs:Work ;
+        rdfs:label ?title ;
+        bs:rrp     ?price .
+  {
+    SELECT (ROUND(AVG(?p) * 100) / 100 AS ?avgPrice)
+    WHERE { ?b a bs:Work ; bs:rrp ?p . }
+  }
+  FILTER( ?price > ?avgPrice )
+}
+ORDER BY DESC(?price)
+LIMIT 15

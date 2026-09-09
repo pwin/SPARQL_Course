@@ -1,0 +1,86 @@
+# ==========================================================================
+#  Q92  The join that inflates an aggregate
+# ==========================================================================
+#
+#  ASKS
+#    Why does counting shops per council area give the wrong number when
+#    events are in the same query?
+#
+#  HOW IT WORKS
+#    Joining shops to events multiplies the shop rows: a shop with six
+#    events appears six times. COUNT(?shop) then counts appearances rather
+#    than shops. COUNT(DISTINCT ?shop) repairs the symptom; two sub-queries
+#    repair the cause.
+#
+#  DIAGRAM
+#        one pattern, two things being counted:
+#
+#          ?shop bs:locatedIn/bs:within+ ?council .
+#          OPTIONAL { ?event bs:heldAt ?shop }
+#
+#        North Yorkshire, 3 shops, 6 events:
+#
+#          Endpapers     x 3 events  ─┐
+#          The Bookwyrm  x 2 events  ─┼─  6 rows, not 3
+#          The Harbour Page x 1      ─┘
+#
+#          COUNT(?shop)           =  6    wrong
+#          COUNT(DISTINCT ?shop)  =  3    right
+#          COUNT(DISTINCT ?event) =  6    right
+#
+#        Greater London is starker still: 2 shops, 6 events, and
+#        COUNT(?shop) reports 6 -- three times the true figure.
+#
+#        DISTINCT rescues COUNT.  It does not rescue SUM or AVG:
+#        summing floor area over those 6 rows counts Endpapers three
+#        times, and no SUM(DISTINCT ...) means what you want, because
+#        two shops may legitimately share a floor area.
+#
+#        The real fix is q70's: count each thing in its own sub-query,
+#        and join the two summaries.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A join that multiplies rows corrupts every aggregate over them.
+#    - COUNT(DISTINCT ?x) survives it. SUM and AVG don't, and can't be
+#      made to.
+#    - If a query counts two unrelated things per group, it needs two
+#      aggregations -- not one join and some hope.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  15 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?councilName ?rows ?inflated ?correct ?events
+WHERE {
+  ?council a          bs:CouncilArea ;
+           rdfs:label ?councilName .
+  {
+    SELECT ?council
+           (COUNT(*)               AS ?rows)
+           (COUNT(?shop)           AS ?inflated)
+           (COUNT(DISTINCT ?shop)  AS ?correct)
+           (COUNT(DISTINCT ?event) AS ?events)
+    WHERE {
+      ?shop a bs:Bookshop ; bs:locatedIn/bs:within+ ?council .
+      ?council a bs:CouncilArea .
+      OPTIONAL { ?event bs:heldAt ?shop . }
+    }
+    GROUP BY ?council
+  }
+  FILTER( ?inflated != ?correct )
+}
+ORDER BY DESC(?inflated) ?councilName

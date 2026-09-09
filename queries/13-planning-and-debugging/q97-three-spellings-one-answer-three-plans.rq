@@ -1,0 +1,89 @@
+# ==========================================================================
+#  Q97  Three spellings, one answer, three plans
+# ==========================================================================
+#
+#  ASKS
+#    Do these three ways of asking 'which shops are in Scotland' give the
+#    same result?
+#
+#  HOW IT WORKS
+#    They do, and the engines build visibly different algebra for each.
+#    That's the point: a query is a description of what you want, not
+#    instructions for getting it, and the shape you write isn't necessarily
+#    the shape that runs. Run this, then read the plans in the module
+#    README.
+#
+#  DIAGRAM
+#        A  two patterns, path in the second
+#
+#             ?shop bs:locatedIn ?town .
+#             ?town bs:within+ bt:place-scotland .
+#
+#        B  one pattern, path chained on
+#
+#             ?shop bs:locatedIn/bs:within+ bt:place-scotland .
+#
+#        C  the same journey, walked backwards
+#
+#             bt:place-scotland ^bs:within+/^bs:locatedIn ?shop .
+#
+#        all three ──▶ 9 shops
+#
+#        but the algebra differs.  Jena, for A:
+#
+#          (sequence (bgp (triple ?shop bs:locatedIn ?town))
+#                    (path ?town (path+ bs:within) bt:place-scotland))
+#
+#        and for B it folds the join away entirely:
+#
+#          (path ?shop (seq bs:locatedIn (path+ bs:within)) bt:place-scotland)
+#
+#        Which is faster depends on the store, the data and the
+#        direction the index favours.  Measure; do not assume.  What is
+#        reliable is that all three mean the same thing -- so write the
+#        one that reads best, and only reach for another when a
+#        measurement tells you to.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Several spellings of one question are common, and they are
+#      genuinely equivalent.
+#    - The engine rewrites what you wrote. Reading the plan is how you
+#      find out into what.
+#    - Write for the reader first. Rewrite for the optimiser only when
+#      you have measured a reason to.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  3 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt:    <https://example.org/bookshop-trail/>
+PREFIX bs:    <https://example.org/bookshop-trail/schema#>
+PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
+PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
+PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
+PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX dct:   <http://purl.org/dc/terms/>
+
+SELECT ?spelling ?shops
+WHERE {
+  { { SELECT (COUNT(DISTINCT ?shop) AS ?shops) WHERE {
+        ?shop a bs:Bookshop ; bs:locatedIn ?town .
+        ?town bs:within+ bt:place-scotland . } }
+    BIND( "A  two patterns, path in the second" AS ?spelling ) }
+  UNION
+  { { SELECT (COUNT(DISTINCT ?shop) AS ?shops) WHERE {
+        ?shop a bs:Bookshop ; bs:locatedIn/bs:within+ bt:place-scotland . } }
+    BIND( "B  one pattern, path chained on"     AS ?spelling ) }
+  UNION
+  { { SELECT (COUNT(DISTINCT ?shop) AS ?shops) WHERE {
+        bt:place-scotland ^bs:within+/^bs:locatedIn ?shop .
+        ?shop a bs:Bookshop . } }
+    BIND( "C  the same journey, backwards"      AS ?spelling ) }
+}
+ORDER BY ?spelling

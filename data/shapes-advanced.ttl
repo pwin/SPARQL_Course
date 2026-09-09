@@ -1,0 +1,64 @@
+@prefix bt:   <https://example.org/bookshop-trail/> .
+@prefix bs:   <https://example.org/bookshop-trail/schema#> .
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+############################################################################
+#  CONSTRAINTS THAT NEED SPARQL
+############################################################################
+#  Some things cannot be said with property shapes alone. "Nothing may
+#  contain itself" is one: it needs a property path, and only a SPARQL
+#  constraint can express one.
+#
+#  These live apart from shapes.ttl because sh:sparql is optional in
+#  practice. HOLOS's incremental evaluator refuses them outright -- and
+#  reports that it is refusing, rather than passing them silently, which is
+#  the behaviour you want from a validator.
+#
+#    shacl validate --shapes data/shapes-advanced.ttl --data data/bookshop-trail-1.1.ttl
+############################################################################
+
+bt:PlaceHierarchyShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Place ;
+    rdfs:label      "Containment must not be circular." ;
+    sh:sparql [
+        sh:message "This place contains itself, directly or through a chain of bs:within links." ;
+        sh:select  """
+            SELECT $this WHERE {
+              $this <https://example.org/bookshop-trail/schema#within>+ $this .
+            }
+        """ ;
+    ] .
+
+bt:TrailSegmentLoopShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:TrailSegment ;
+    rdfs:label      "A segment must not start and end at the same shop." ;
+    sh:sparql [
+        sh:message "A trail segment must not start and end at the same shop." ;
+        sh:select  """
+            SELECT $this WHERE {
+              $this <https://example.org/bookshop-trail/schema#segmentFrom> ?a ;
+                    <https://example.org/bookshop-trail/schema#segmentTo>   ?a .
+            }
+        """ ;
+    ] .
+
+bt:UnreachableShopShape
+    a               sh:NodeShape ;
+    sh:targetClass  bs:Bookshop ;
+    rdfs:label      "Warn about shops that cannot be walked to from the start of the trail." ;
+    sh:sparql [
+        sh:severity sh:Warning ;
+        sh:message  "This shop is not reachable on foot from The Inkwell. Two are, by design; a third would be a mistake." ;
+        sh:select   """
+            SELECT $this WHERE {
+              FILTER NOT EXISTS {
+                <https://example.org/bookshop-trail/shop-inkwell>
+                  (<https://example.org/bookshop-trail/schema#connectsTo>
+                  |^<https://example.org/bookshop-trail/schema#connectsTo>)+ $this .
+              }
+            }
+        """ ;
+    ] .
