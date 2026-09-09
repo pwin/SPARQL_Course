@@ -33,7 +33,7 @@ Try, in the Graph pane:
 | **Engine**: `dot` → `neato` → `circo` | `dot` ranks the hierarchy; `neato` shows clusters; `circo` shows the ring structure. Same graph, three different questions answered. |
 | **Hide Types** | Removes the `rdf:type` edges. The shape of the *data* appears once the class edges stop dominating. |
 | **Hide Annotations** | Removes labels and comments. What is left is the skeleton the property-path module walks. |
-| **Get All** | Draws the first ten subjects of the whole file. |
+| **Get All** | Re-reads the editor pane and rebuilds the graph from *everything* in it. This is the one to remember: it also **reloads the internal triplestore the SPARQL panel queries**. Edit the Turtle, press Get All, and only then will your query see the change. |
 
 > **Do this one properly.** Load `data/03-places.ttl`, hide types and
 > annotations, and choose the `dot` engine. You are looking at the containment
@@ -61,7 +61,13 @@ WHERE {
 ORDER BY ?name
 ```
 
-Thirty-three rows. That is **q01**, and module 01 starts there.
+Thirty-three rows. That's **q01**, and module 01 starts there.
+
+> **If you edit the data, press Get All first.** The SPARQL panel runs against
+> a store built from the parsed editor content, not against the text in front
+> of you. Changing a triple and re-running the query without pressing Get All
+> gives you the old answer, and it looks exactly like the query being wrong.
+> It's the first thing to check when an edit appears to have had no effect.
 
 The panel runs `SELECT`, `ASK`, `CONSTRUCT` and `DESCRIBE`. A `CONSTRUCT`
 returns Turtle — copy it back into the editor pane and the graph view will

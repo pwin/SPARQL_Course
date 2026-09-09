@@ -57,16 +57,9 @@
 #  RETURNS  380 rows, on every engine that runs it
 # ==========================================================================
 
-PREFIX bt:    <https://example.org/bookshop-trail/>
-PREFIX bs:    <https://example.org/bookshop-trail/schema#>
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
-PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
-PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
-PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
-PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct:   <http://purl.org/dc/terms/>
+PREFIX bt:  <https://example.org/bookshop-trail/>
+PREFIX bs:  <https://example.org/bookshop-trail/schema#>
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
 
 CONSTRUCT {
   ?shop    bs:stocks     ?work .

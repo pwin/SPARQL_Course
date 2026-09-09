@@ -16,6 +16,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 import build_dataset as B
+import logo
 import trail_map
 from build_docs import SCHEMA_SVG, highlight
 
@@ -53,11 +54,12 @@ def ascii_box(text: str) -> str:
 # Part 1 -- the data
 # ===========================================================================
 slide("title", f"""
+{logo.img_tag("titlemark")}
 <p class="eyebrow">SPARQL 1.1 and 1.2 &middot; a course in {len(RESULTS) or 97} queries</p>
 <h1>The <em>Bookshop</em> Trail</h1>
 <p class="lede">Thirty-three invented bookshops in real British towns, and
   everything you can ask about them.</p>
-<p class="foot">Use the arrow keys, or just scroll.</p>
+<p class="foot">Use the arrow keys, or just scroll. &nbsp;&middot;&nbsp; Semantechs</p>
 """)
 
 slide("plain", f"""
@@ -618,6 +620,7 @@ ORDER BY ?name""") + """
 
 # ===========================================================================
 TEMPLATE = """<title>Bookshop Trail Slides</title>
+{favicon}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap">
@@ -749,6 +752,7 @@ table.matrix th{{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;
 .schema .caption{{fill:var(--ink-3);font-family:var(--sans);font-size:12px;
   text-anchor:middle}}
 .aside p{{font-size:.95rem;color:var(--ink-2)}}
+.titlemark{{width:88px;height:88px;margin:0 0 18px;display:block}}
 .slide.title,.slide.divider{{background:var(--paper-2)}}
 .slide.divider h1{{font-size:clamp(2rem,4.4vw,3.2rem)}}
 .num{{position:absolute;right:22px;bottom:16px;font-family:var(--mono);
@@ -832,11 +836,14 @@ def main() -> None:
             body = (body[:title_end] + '\n<div class="figure-wrap">'
                     + body[title_end:] + "</div>")
             html = body
-        parts.append(f'<section class="slide {kind}">{html}'
+        corner = ""
+        parts.append(f'<section class="slide {kind}">{html}{corner}'
                      f'<span class="num">{i} / {len(SLIDES)}</span></section>')
 
     out = DOCS / "slides.html"
-    out.write_text(TEMPLATE.format(slides="\n".join(parts)), encoding="utf-8")
+    logo.write_favicon(DOCS / "favicon.png")
+    out.write_text(TEMPLATE.format(slides="\n".join(parts),
+                                   favicon=logo.favicon_link()), encoding="utf-8")
     print(f"  wrote docs/slides.html  {out.stat().st_size / 1024:.0f} KB, "
           f"{len(SLIDES)} slides")
 

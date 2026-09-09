@@ -10,6 +10,7 @@ the explanation and the query drifting apart.
 """
 from __future__ import annotations
 
+import re
 import textwrap
 from dataclasses import dataclass, field
 from urllib.parse import quote
@@ -37,17 +38,51 @@ HOLOS = "holos"      # HOLOS / new_triplestore_sparql_engine
 FUSEKI = "fuseki"    # Apache Jena Fuseki 6.2.0 / ARQ
 ALL = (EDITOR, HOLOS, FUSEKI)
 
-PROLOGUE = """PREFIX bt:    <https://example.org/bookshop-trail/>
-PREFIX bs:    <https://example.org/bookshop-trail/schema#>
-PREFIX rdfs:  <http://www.w3.org/2000/01/rdf-schema#>
-PREFIX skos:  <http://www.w3.org/2004/02/skos/core#>
-PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
-PREFIX geo:   <http://www.opengis.net/ont/geosparql#>
-PREFIX geof:  <http://www.opengis.net/def/function/geosparql/>
-PREFIX wgs84: <http://www.w3.org/2003/01/geo/wgs84_pos#>
-PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX dct:   <http://purl.org/dc/terms/>
-"""
+# Every prefix the course knows about.  A query declares only the ones it
+# actually uses: ten PREFIX lines above a two-line query is noise, and the
+# reader has to check each one before trusting that it matters.
+KNOWN_PREFIXES = [
+    ("bt",     "https://example.org/bookshop-trail/"),
+    ("bs",     "https://example.org/bookshop-trail/schema#"),
+    ("rdf",    "http://www.w3.org/1999/02/22-rdf-syntax-ns#"),
+    ("rdfs",   "http://www.w3.org/2000/01/rdf-schema#"),
+    ("owl",    "http://www.w3.org/2002/07/owl#"),
+    ("xsd",    "http://www.w3.org/2001/XMLSchema#"),
+    ("skos",   "http://www.w3.org/2004/02/skos/core#"),
+    ("dct",    "http://purl.org/dc/terms/"),
+    ("geo",    "http://www.opengis.net/ont/geosparql#"),
+    ("geof",   "http://www.opengis.net/def/function/geosparql/"),
+    ("sf",     "http://www.opengis.net/ont/sf#"),
+    ("wgs84",  "http://www.w3.org/2003/01/geo/wgs84_pos#"),
+    ("prov",   "http://www.w3.org/ns/prov#"),
+    ("schema", "https://schema.org/"),
+]
+PREFIX_URI = dict(KNOWN_PREFIXES)
+
+# Angle-bracket IRIs and quoted strings can both contain a colon, so they are
+# removed before looking for prefixed names -- otherwise every
+# <http://...> in a query declares a prefix called "http".
+_IRI = re.compile(r"<[^>\s]*>")
+_STR = re.compile(r"\"\"\".*?\"\"\"|\"(?:[^\"\\]|\\.)*\"|'(?:[^'\\]|\\.)*'", re.S)
+_COMMENT = re.compile("#[^" + chr(10) + "]*")
+_PNAME = re.compile(r"(?<![A-Za-z0-9_-])([A-Za-z][A-Za-z0-9._-]*):")
+
+
+def prefixes_used(text: str) -> set:
+    """Which known prefixes a query actually mentions."""
+    stripped = _COMMENT.sub(" ", _STR.sub(" ", _IRI.sub(" ", text)))
+    return {m.group(1) for m in _PNAME.finditer(stripped)} & set(PREFIX_URI)
+
+
+def prologue_for(names) -> str:
+    """A PREFIX block in the canonical order, aligned."""
+    names = set(names)
+    rows = [(p, u) for p, u in KNOWN_PREFIXES if p in names]
+    if not rows:
+        return ""
+    width = max(len(p) for p, _ in rows) + 1
+    return chr(10).join(f"PREFIX {(p + ':').ljust(width)} <{u}>" for p, u in rows)
+
 
 
 @dataclass
@@ -63,7 +98,9 @@ class Query:
     data: str = D11
     engines: tuple = ALL
     notes: str = ""             # engine caveats, gotchas
-    prefixes: str = PROLOGUE
+    # Prefixes a query needs but does not mention, if any. Nothing needs this
+    # except a CONSTRUCT whose output vocabulary is wider than its template.
+    extra_prefixes: tuple = ()
     expect: str = ""            # filled in by check_queries.py
     order: int = 0
 
@@ -79,6 +116,28 @@ class Query:
     @property
     def path(self) -> Path:
         return QUERIES / self.module / self.filename
+
+    @property
+    def prologue(self) -> str:
+        """Only the prefixes this query actually needs.
+
+        A SELECT needs whatever its text mentions: prefixes play no part in
+        how results come back. A CONSTRUCT or DESCRIBE returns RDF, and the
+        engine serialises that graph using the query's prefixes, so those two
+        also need whatever the *output* will mention. For a CONSTRUCT that is
+        the template plus bt:, because the subjects are nearly always
+        instances. For a DESCRIBE the output cannot be known in advance, so it
+        keeps the full set and is the one query form that still carries
+        prefixes it may not use.
+        """
+        names = prefixes_used(self.body) | set(self.extra_prefixes)
+        head = self.body.lstrip().upper()
+        if head.startswith("DESCRIBE"):
+            names |= {"bt", "bs", "rdfs", "skos", "geo", "sf", "dct", "wgs84",
+                      "xsd", "rdf"}
+        elif head.startswith("CONSTRUCT"):
+            names |= {"bt"}
+        return prologue_for(names)
 
     @property
     def data_url(self) -> str:
@@ -107,7 +166,7 @@ class Query:
             "# The Bookshop Trail -- " + REPO,
         ]
         return (nl.join(head) + nl * 2
-                + self.prefixes.rstrip() + nl * 2
+                + self.prologue + nl * 2
                 + self.body.strip() + nl)
 
 
@@ -147,7 +206,7 @@ class Query:
             out.append(f"#  RETURNS  {self.expect}")
         out.append(rule)
         out.append("")
-        out.append(self.prefixes.rstrip())
+        out.append(self.prologue)
         out.append("")
         out.append(self.body.strip())
         out.append("")

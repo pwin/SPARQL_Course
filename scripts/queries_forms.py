@@ -5,11 +5,10 @@ Module 07 introduces the three non-SELECT forms.  This module uses them as
 what they actually are: a test, a lookup, and a transformation.
 """
 
-from querycat import q, D11, D12, DTRIG, DFULL, PROLOGUE, ALL, EDITOR, HOLOS, FUSEKI
+from querycat import q, D11, D12, DTRIG, DFULL, ALL, EDITOR, HOLOS, FUSEKI
 
 MOD = "12-graphs-in-graphs-out"
 
-SCHEMA_PROLOGUE = PROLOGUE + "PREFIX schema: <https://schema.org/>\n"
 
 # ===========================================================================
 # ASK -- a question with two possible answers
@@ -558,7 +557,7 @@ WHERE {
   ?place rdfs:label  ?town .
   FILTER( LANG(?town) = "en" )
 }""",
-    prefixes=SCHEMA_PROLOGUE,
+    extra_prefixes=("schema",),
 )
 
 q(

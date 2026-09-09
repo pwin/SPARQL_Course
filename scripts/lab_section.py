@@ -42,6 +42,10 @@ LAB_SECTION = """
             structure.</li>
           <li><b>Hide Types</b> and <b>Hide Annotations</b> strip the class and
             label edges, leaving the skeleton that module 05 walks.</li>
+          <li><b>Get All</b> re-reads the pane and redraws from everything in
+            it &mdash; and, importantly, <b>reloads the internal triplestore
+            the SPARQL panel queries</b>. Edit the Turtle, press Get All, and
+            only then does your query see the change.</li>
         </ul>
       </div>
       <figure class="diagram"><pre>Do this one properly:
@@ -115,8 +119,12 @@ takes the second, because it travels.</pre></figure>
         <h4>What to take away</h4>
         <ul class="learn">
           <li><b>Add Prefixes</b> reads the prefixes out of the loaded data and
-            prepends them to your query. Use it every time; the alternative is
-            typing ten PREFIX lines.</li>
+            prepends them to your query. The course's queries already carry
+            the few they need, so this is for when you write your own.</li>
+          <li><b>Get All, again.</b> Worth saying twice: an edit you have not
+            pressed Get All after is invisible to the SPARQL panel, and the
+            stale answer looks exactly like a wrong query. First thing to
+            check when a change appears to do nothing.</li>
           <li><b>To JSON-LD / To Turtle</b> round-trip the data. Worth doing
             once with <code>data/10-annotations-1.2.ttl</code> open: RDF 1.2
             triple terms have no settled JSON-LD form, so the conversion is

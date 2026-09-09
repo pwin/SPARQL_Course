@@ -62,7 +62,8 @@ def main() -> int:
         if not engines:
             continue
         qfile = BUILD / f"{item.qid}.rq"
-        qfile.write_text(item.prefixes + "\n" + item.body + "\n", encoding="utf-8")
+        qfile.write_text(item.prologue + chr(10) * 2 + item.body + chr(10),
+                         encoding="utf-8")
         got = run_all([DATA / item.data], qfile, engines=tuple(engines))
 
         row, cells, sigs = {}, [], {}

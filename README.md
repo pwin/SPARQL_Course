@@ -1,4 +1,10 @@
+<img src="assets/semantechs-logo.png" alt="Semantechs" width="72" align="left" hspace="12">
+
 # The Bookshop Trail — a SPARQL course
+
+*A Semantechs teaching resource.*
+
+<br clear="left">
 
 A teaching dataset in RDF, and 97 worked queries that take a beginner from
 `SELECT ?s ?p ?o` to property paths, nested aggregation, geospatial work and
@@ -474,6 +480,10 @@ explanation cannot drift apart. Edit the catalogue, not the `.rq`.
 ## Licence
 
 MIT — see [LICENSE](LICENSE). Copyright © 2026 Peter Winstanley.
+
+The **Semantechs name and mark** in `assets/` are excluded from that grant, as
+trademarks normally are: the MIT licence covers the course, not the branding.
+Fork and reuse the material freely; replace the mark with your own.
 
 [NOTICE.md](NOTICE.md) covers what is and isn't in this repository: the
 fiction disclaimer, the vocabularies referenced by IRI, and the third-party

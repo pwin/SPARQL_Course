@@ -21,9 +21,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from collections import Counter
 from urllib.parse import quote
 
-from querycat import (CATALOGUE, MODULE_INFO, PROLOGUE, EDITOR_BASE,
-                      RAW_BASE, REPO)
+from querycat import (CATALOGUE, MODULE_INFO, EDITOR_BASE, RAW_BASE,
+                      REPO)
 from lab_section import LAB_SECTION
+import logo
 from plans_section import PLANS_PREAMBLE
 
 import queries_core          # noqa: F401
@@ -257,21 +258,6 @@ def engine_strip(item) -> str:
            f'<span class="datafile">{esc(item.data)}</span></div>'
 
 
-def extra_prefixes(item) -> str:
-    """Show any PREFIX line this query needs beyond the shared prologue.
-
-    The prologue itself isn't repeated 97 times; a query that needs more than
-    it must say so, or the code block on the page won't run as printed.
-    """
-    if item.prefixes == PROLOGUE:
-        return ""
-    base = set(PROLOGUE.splitlines())
-    added = [l for l in item.prefixes.splitlines() if l.strip() and l not in base]
-    if not added:
-        return ""
-    return highlight(chr(10).join(added)) + chr(10) * 2
-
-
 def query_section(item) -> str:
     learn = "".join(f"<li>{esc(x)}</li>" for x in item.learn)
     note = ""
@@ -302,7 +288,9 @@ def query_section(item) -> str:
   </div>
   <pre class="copysrc" hidden>{esc(item.copy_text)}</pre>
 
-  <div class="code-wrap"><pre class="code"><code>{extra_prefixes(item)}{highlight(item.body)}</code></pre></div>
+  <div class="code-wrap"><pre class="code"><code>{highlight(item.prologue)}
+
+{highlight(item.body)}</code></pre></div>
 
   <div class="mech">
     <div class="mech-prose">
@@ -371,6 +359,8 @@ def build() -> str:
         total=total,
         checked=checked,
         modules=len(by_module),
+        logo=logo.img_tag("logo"),
+        favicon=logo.favicon_link(),
         triples=stat("triples_1_1"),
         shops=stat("shops"),
         towns=stat("towns_with_shops"),
@@ -380,6 +370,7 @@ def build() -> str:
 
 
 TEMPLATE = """<title>The Bookshop Trail</title>
+{favicon}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;700&display=swap">
@@ -528,7 +519,8 @@ main {{ padding: 0 0 100px; min-width: 0; }}
 .wrap {{ padding: 0 40px; }}
 
 /* ------------------------------------------------------------------ hero */
-.hero {{ padding: 56px 40px 34px; border-bottom: 1px solid var(--rule); }}
+.hero {{ padding: 44px 40px 34px; border-bottom: 1px solid var(--rule); }}
+.hero .logo {{ width: 64px; height: 64px; display: block; margin: 0 0 18px; }}
 .eyebrow {{
   font-family: var(--mono); font-size: .7rem; letter-spacing: .14em;
   text-transform: uppercase; color: var(--route); margin: 0 0 14px;
@@ -724,6 +716,7 @@ footer p {{ max-width: var(--maxw); }}
 
   <main>
     <div class="hero">
+      {logo}
       <p class="eyebrow">SPARQL 1.1 &amp; 1.2 · {total} queries · {modules} modules</p>
       <h1>Learn SPARQL on a trail of imaginary bookshops</h1>
       <p class="standfirst">Thirty-three invented bookshops in <strong>real
@@ -870,6 +863,7 @@ footer p {{ max-width: var(--maxw); }}
 
 
 def main() -> None:
+    logo.write_favicon(DOCS / "favicon.png")
     out = DOCS / "index.html"
     out.write_text(build(), encoding="utf-8")
     size = out.stat().st_size

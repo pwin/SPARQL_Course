@@ -96,6 +96,15 @@ coordinate reference systems such as EPSG:27700 in module 10. Module 09
 answers the same geographic questions with arithmetic alone, on every engine,
 and needs nothing beyond the data in this repository.
 
+## The Semantechs mark
+
+`assets/semantechs-logo.png` is the Semantechs mark. It appears at the head of
+the course document, on the first slide, and as the favicon of both pages.
+
+Trademarks sit outside a copyright licence, so the MIT grant in
+[LICENSE](LICENSE) does not extend to it. Everything else here is covered.
+If you fork this course, swap the mark for your own.
+
 ## Fonts
 
 The course document and slides load Newsreader, Atkinson Hyperlegible and
