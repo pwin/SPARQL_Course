@@ -241,6 +241,7 @@ slide("plain", """
   <div><b>15</b> Beyond the standard &mdash; afn:, spif:, fn:, math:</div>
   <div class="hi"><b>16</b> Blank nodes &mdash; the nodes with no name</div>
   <div class="hi"><b>17</b> Updating &mdash; INSERT, DELETE, and no undo</div>
+  <div><b>18</b> Inference &mdash; and how much of it you can write yourself</div>
 </div>
 """)
 
@@ -744,6 +745,49 @@ three habits that prevent it:
     <p class="take"><b>The browser editor cannot run these.</b> Comunica the
       library can; the editor's SPARQL panel has no way to display a result
       that is empty by definition. Use Fuseki or HOLOS.</p>
+  </div>
+</div>
+""")
+
+slide("plain", """
+<h2>Reasoning, and the cheaper thing that beats it</h2>
+<div class="cols">
+  <div>
+    <p><code>bs:within</code> is declared <b>transitive</b>, so a reasoner may
+      derive York-in-England from York-in-Yorkshire. All three engines can
+      reason. No two of them do the same thing.</p>
+""" + ascii_box("""
+4,826 asserted triples in:
+
+                          usefully  bs:within
+                               new
+  asserted                        —        63
+
+  Jena  infer --rdfs              0        63
+  HOLOS holos entail              0        63
+  HyLAR OWL 2 RL              3,952       186
+  Jena  OWLMicro              (n/a)       186
+
+  ?s bs:within+ ?o                0       186
+                                          ---
+                            no reasoner, same answer
+""") + """
+  </div>
+  <div>
+    <p>Neither RDFS reasoner derives a usable new fact here &mdash; the
+      hierarchy is six subclass pairs deep and every instance is already
+      typed. RDFS has no transitivity rule at all, so both leave the closure
+      at 63.</p>
+    <p>The two OWL reasoners close it to 186. So does one property path, on
+      every engine, with nothing switched on and nothing stored:</p>
+""" + code("""SELECT (COUNT(*) AS ?pairs) WHERE {
+  SELECT DISTINCT ?place ?container
+  WHERE { ?place bs:within+ ?container }
+}""") + """
+    <p class="take"><b>Take away.</b> A reasoner writes 186 pairs down and
+      they go stale the moment a place moves. A path recomputes them and is
+      never wrong. Ask who re-runs the reasoner before deciding it is
+      cheaper.</p>
   </div>
 </div>
 """)

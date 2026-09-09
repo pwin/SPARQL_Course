@@ -409,6 +409,16 @@ MODULE_INFO = {
         "the sequence because it needs property paths and sub-queries, but the "
         "hazards in it turn up from module 01 onwards.",
     ),
+    "18-inference": (
+        "Inference",
+        "A reasoner derives new triples from the ones you have plus the rules "
+        "in the vocabulary. For the commonest cases -- transitivity, inverse "
+        "properties, class hierarchies -- SPARQL does the same job at query "
+        "time, on every engine, with nothing stored and nothing to keep up to "
+        "date. This module writes those inferences as queries; the reference "
+        "section on reasoning measures what happens when you switch a real "
+        "reasoner on instead, and no two of the three engines agree.",
+    ),
     "14-challenges": (
         "Putting it together",
         "Questions with no single obvious shape, each needing two or three "

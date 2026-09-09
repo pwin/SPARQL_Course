@@ -1,0 +1,82 @@
+# ==========================================================================
+#  Q142  What RDFS would actually add here
+# ==========================================================================
+#
+#  ASKS
+#    How deep is the class hierarchy a reasoner would have to walk?
+#
+#  HOW IT WORKS
+#    RDFS's most useful rule says that something in a class is also in
+#    every superclass of it. How much that gives you depends entirely on
+#    how deep the hierarchy is and how completely the data is typed. Here:
+#    six subclass pairs, and every instance already carries its types.
+#    Which is why switching RDFS on adds so little.
+#
+#  DIAGRAM
+#        the whole class hierarchy of this vocabulary:
+#
+#          bs:Settlement    rdfs:subClassOf  bs:Place
+#          bs:CouncilArea   rdfs:subClassOf  bs:Place
+#          bs:Region        rdfs:subClassOf  bs:Place
+#          bs:Country       rdfs:subClassOf  bs:Place
+#          bs:Author        rdfs:subClassOf  bs:Person
+#          bs:Translation   rdfs:subClassOf  bs:Work
+#
+#          6 pairs. Nothing is more than one hop deep.
+#
+#        and so, measured:
+#
+#          +--------------------------------+---------+----------+
+#          |                                | triples | usefully |
+#          |                                |         |      new |
+#          +--------------------------------+---------+----------+
+#          | asserted                       |   4,826 |        — |
+#          | Jena riotcmd.infer --rdfs      |   4,826 |        0 |
+#          | HOLOS holos entail             |   5,051 |        0 |
+#          | HyLAR OWL 2 RL                 |   8,777 |    3,952 |
+#          +--------------------------------+---------+----------+
+#
+#        Neither RDFS reasoner derives a usable new fact here. HOLOS
+#        writes 225 triples, of which 133 are reflexive -- X is a
+#        subclass of X -- and 92 type things as a class with no name
+#        (q143). Jena writes none at all.
+#
+#        That is not a failing of either. It is what RDFS is for
+#        meeting a dataset that has no deep hierarchy and is already
+#        fully typed. On data where instances carry only their most
+#        specific type and the hierarchy is eight deep, the same
+#        reasoner earns its keep.
+#
+#        rdfs:subClassOf+ walks it without one, and gives the six pairs
+#        directly -- which is also how you check a hierarchy for the
+#        cycle that would make a reasoner loop.
+#
+#        +----------------------------------------------------------+
+#        |  Measure the hierarchy before you switch a reasoner on.   |
+#        |  This query is that measurement, it takes a second, and   |
+#        |  it will sometimes tell you not to bother.                |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - RDFS earns its keep on deep hierarchies and partially typed data.
+#      This dataset has neither, so it adds 140 triples.
+#    - rdfs:subClassOf+ walks the hierarchy with no reasoner, and shows
+#      you how much one would have to do.
+#    - The size of an inference closure is a property of your data, not
+#      of the engine. Measure before choosing.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  6 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?subclass ?superclass
+WHERE {
+  ?subclass rdfs:subClassOf+ ?superclass .
+  FILTER( ?subclass != ?superclass )
+}
+ORDER BY ?superclass ?subclass

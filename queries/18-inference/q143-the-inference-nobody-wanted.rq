@@ -1,0 +1,80 @@
+# ==========================================================================
+#  Q143  The inference nobody wanted
+# ==========================================================================
+#
+#  ASKS
+#    Which properties would a reasoner use to type things as a class with
+#    no name?
+#
+#  HOW IT WORKS
+#    rdfs:domain does not constrain anything. It licenses an inference: if
+#    ?s has this property then ?s is in this class. When the domain is an
+#    anonymous union class -- written [ owl:unionOf ( A B ) ] because the
+#    property applies to two kinds of thing -- a reasoner dutifully types
+#    every subject as a blank node. True, and unusable.
+#
+#  DIAGRAM
+#        the vocabulary says:
+#
+#          bs:locatedIn rdfs:domain [ a owl:Class ;
+#                                     owl:unionOf ( bs:Bookshop bs:Publisher ) ] .
+#
+#        RDFS rule rdfs2 therefore derives, for all 46 subjects:
+#
+#          bt:shop-inkwell  rdf:type  _:b0 .
+#                                     ---
+#                           a class with no name. You cannot write a
+#                           query against it, cannot report it, cannot
+#                           link to it. It is 92 of the 225 triples
+#                           HOLOS entails.
+#
+#        +------------------+---------------+
+#        | bs:founded       |            46 |   33 shops + 13 publishers
+#        | bs:locatedIn     |            46 |   the same 46
+#        +------------------+---------------+
+#
+#        Both properties apply to a shop or a publisher, so both
+#        declare the same anonymous union as their domain, and both
+#        make the reasoner type the same 46 things as the same
+#        nameless class.
+#
+#        Two lessons, and the second is the bigger one:
+#
+#          1  rdfs:domain is not a constraint. It never says "this is
+#             wrong"; it says "therefore this is also true". A shop
+#             with a bs:locatedIn is not checked against anything --
+#             it is typed. Use SHACL (module 12) when you want the
+#             checking meaning.
+#
+#          2  A reasoner produces everything its rules permit, not
+#             what you were hoping for. Some of that is noise, and
+#             noise you have to store and search past.
+#
+#        Blank nodes as classes are module 16's subject arriving from
+#        an unexpected direction, and q109's census is what finds them.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - rdfs:domain licenses an inference; it does not constrain. It
+#      cannot make anything invalid, only make more things true.
+#    - An anonymous union class as a domain makes a reasoner type every
+#      subject as a blank node -- correct, and impossible to query.
+#    - A closure contains everything the rules permit. Look at what a
+#      reasoner derived before deciding to keep it.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  2 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?property (COUNT(DISTINCT ?s) AS ?wouldBeTyped)
+WHERE {
+  ?property rdfs:domain ?anonymousClass .
+  FILTER( isBLANK(?anonymousClass) )
+  ?s ?property ?o .
+}
+GROUP BY ?property
+ORDER BY ?property

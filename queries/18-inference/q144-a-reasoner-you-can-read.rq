@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q144  A reasoner you can read
+# ==========================================================================
+#
+#  ASKS
+#    Materialise the containment closure as a graph, with the derived
+#    triples marked as derived.
+#
+#  HOW IT WORKS
+#    A CONSTRUCT is a single inference rule you can read, test and change.
+#    This one does what an OWL reasoner does for transitivity, and adds the
+#    thing a reasoner does not: it says which triples it made up, so they
+#    can be told apart afterwards and dropped when they go stale.
+#
+#  DIAGRAM
+#        the rule, in one query:
+#
+#          ?place bs:within+ ?container            IF
+#            ->  ?place bs:withinTransitive ?container    THEN
+#
+#        186 triples out, on a different predicate from the 63 that
+#        were asserted. That separation is deliberate:
+#
+#          bs:within             asserted, 63.   Untouched.
+#          bs:withinTransitive   derived, 186.   Droppable.
+#
+#        +----------------------------------------------------------+
+#        |  A reasoner that writes into the same predicate leaves    |
+#        |  you unable to answer "who said this?". Load derived      |
+#        |  triples into their own graph, or onto their own          |
+#        |  predicate, or both -- HOLOS uses a graph, this uses a    |
+#        |  predicate, and either beats mixing them.                 |
+#        +----------------------------------------------------------+
+#
+#        What CONSTRUCT gives you that a reasoner does not:
+#
+#          you can read the rule            it is one query
+#          you can test it                  q140 counts what it makes
+#          you can change it                without changing the data
+#          it stops where you say           no unwanted closure (q143)
+#          it runs on every engine          no profile to negotiate
+#
+#        What a reasoner gives you that this does not: all the other
+#        rules at once, and consistency you did not have to think
+#        about. Module 17 q120 is this pattern written as an INSERT,
+#        which is materialisation proper.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - A CONSTRUCT is one inference rule, written where you can read it.
+#      That is most of what a reasoner does, minus the surprises.
+#    - Put derived triples on their own predicate or in their own graph.
+#      Mixing them with asserted ones destroys provenance and cannot be
+#      undone.
+#    - q120 turns this into an INSERT. The difference between deriving
+#      and storing is who has to remember to re-run it.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  186 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX bt: <https://example.org/bookshop-trail/>
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+CONSTRUCT {
+  ?place bs:withinTransitive ?container .
+}
+WHERE {
+  ?place bs:within+ ?container .
+}

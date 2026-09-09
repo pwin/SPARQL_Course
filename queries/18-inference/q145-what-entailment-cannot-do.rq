@@ -1,0 +1,83 @@
+# ==========================================================================
+#  Q145  What entailment cannot do
+# ==========================================================================
+#
+#  ASKS
+#    The vocabulary says a Place and a Bookshop can never be the same
+#    thing. What happens if one is?
+#
+#  HOW IT WORKS
+#    Nothing, as far as any query is concerned. Entailment only ever adds
+#    triples; it has no way to remove one or to answer no. A disjointness
+#    axiom makes an ontology inconsistent rather than making a query empty,
+#    and a rule reasoner will usually carry on regardless. Checking is a
+#    separate job with separate tools.
+#
+#  DIAGRAM
+#        the vocabulary asserts:
+#
+#          [] a owl:AllDisjointClasses ;
+#             owl:members ( bs:Place bs:Bookshop bs:Person ... ) .
+#
+#        if something were both a Place and a Bookshop:
+#
+#          OWL DL      the ontology is INCONSISTENT. Everything
+#                      follows from it, so every answer is
+#                      meaningless -- which a DL reasoner reports
+#                      and a rule reasoner mostly does not.
+#
+#          OWL 2 RL    derives owl:Nothing or a clash flag, or
+#                      simply carries on. Rule reasoners are built
+#                      to add, not to object.
+#
+#          your query  returns the row. Nothing checked anything.
+#
+#        +----------------------------------------------------------+
+#        |  Entailment is monotonic: adding data never withdraws a   |
+#        |  conclusion. So it can never say "this is wrong", only    |
+#        |  "and therefore this as well". Every validation question  |
+#        |  you have is outside it.                                  |
+#        +----------------------------------------------------------+
+#
+#        Which is what SHACL is for, and module 12 uses it in earnest.
+#        This query is the SPARQL version of the same check: find
+#        anything that is in two classes declared disjoint. It returns
+#        nothing on this dataset, and returning nothing is the answer
+#        you want.
+#
+#          disjointness declared, in pairs      15 classes, 2 axioms
+#          things violating it                   0
+#
+#        A test that passes silently is worth writing down: q76 is the
+#        ASK form of the same idea, and the reason to prefer it is
+#        that a boolean false is harder to overlook than an empty
+#        table.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - Entailment is monotonic. It adds; it cannot retract, contradict or
+#      report. No amount of reasoning will tell you your data is wrong.
+#    - A disjointness axiom makes the ontology inconsistent, not the
+#      query empty. Most rule reasoners will not even mention it.
+#    - Validation is a separate tool: SHACL, or a query like this one run
+#      as a test. Module 12 does both.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  0 rows, on every engine that runs it
+# ==========================================================================
+
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX owl: <http://www.w3.org/2002/07/owl#>
+
+SELECT ?thing ?classA ?classB
+WHERE {
+  ?axiom a           owl:AllDisjointClasses ;
+         owl:members/rdf:rest*/rdf:first ?classA ,
+                                         ?classB .
+  FILTER( STR(?classA) < STR(?classB) )
+
+  ?thing a ?classA , ?classB .
+}
+ORDER BY ?thing ?classA ?classB

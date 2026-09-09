@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------------------
+#  A Jena assembler description that puts an OWL reasoner in front of the
+#  dataset.  This is the route to anything past RDFS on Jena: riotcmd.infer
+#  does RDFS only, and everything else is configured rather than flagged.
+#
+#      java -cp "$JENA/lib/*" arq.sparql \
+#           --desc=scripts/owl-micro.ttl \
+#           --query=queries/18-inference/q140-*.rq
+#
+#  It is what produced the 186 in the reasoning table: bs:within is declared
+#  owl:TransitiveProperty, and OWLMicro is the cheapest Jena reasoner that
+#  closes a transitive property.
+#
+#  EDIT THE FILE PATH BELOW.  ja:externalContent takes an absolute file: URL,
+#  so this cannot be shipped working; point it at your own checkout.
+#
+#  The four Jena reasoners, in increasing order of what they derive and
+#  decreasing order of how fast they do it:
+#
+#      RDFSRuleReasoner        subclass, subproperty, domain, range
+#      OWLMicroFBRuleReasoner  + transitivity, inverses, sameAs      <- here
+#      OWLMiniFBRuleReasoner   + most cardinality and restrictions
+#      OWLFBRuleReasoner       + the rest, and much slower
+#
+#  Reasoning applies to the model, so EVERY query against this dataset sees
+#  the derived triples without asking for them.  That is convenient and it is
+#  easy to forget you switched it on -- there is no marker on a derived
+#  triple saying where it came from.
+# ---------------------------------------------------------------------------
+
+@prefix ja:   <http://jena.hpl.hp.com/2005/11/Assembler#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+<#dataset>
+    a               ja:RDFDataset ;
+    ja:defaultGraph <#model> .
+
+<#model>
+    a            ja:InfModel ;
+    ja:baseModel <#base> ;
+    ja:reasoner  [ ja:reasonerURL
+        <http://jena.hpl.hp.com/2003/OWLMicroFBRuleReasoner> ] .
+
+<#base>
+    a          ja:MemoryModel ;
+    ja:content [ ja:externalContent
+        <file:///C:/repos/SPARQL_Course/data/bookshop-trail-1.1.ttl> ] .

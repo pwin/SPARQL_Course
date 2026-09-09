@@ -1,0 +1,72 @@
+# ==========================================================================
+#  Q141  Filling in the other direction
+# ==========================================================================
+#
+#  ASKS
+#    Every work has an author; how many author-to-work links are there if
+#    you count both properties?
+#
+#  HOW IT WORKS
+#    bs:wrote is declared owl:inverseOf bs:author, so a reasoner would make
+#    each complete from the other. The data does not have them complete: 74
+#    works name an author, and only 68 authors name a work. Reading the
+#    property backwards with ^ recovers all 74 without deriving anything.
+#
+#  DIAGRAM
+#        bs:wrote  owl:inverseOf  bs:author .
+#
+#        asserted                     what a reasoner would add
+#
+#          ?a bs:wrote  ?w    68        6 more bs:wrote
+#          ?w bs:author ?a    74        6 more... no: none. 74 already.
+#
+#        +----------------------------+-------+
+#        | ?a bs:wrote ?w             |    68 |
+#        | ?w bs:author ?a  (flipped) |    74 |
+#        | either of the two          |    74 |   <- this query
+#        +----------------------------+-------+
+#
+#        So bs:wrote is missing six links that bs:author has. A
+#        reasoner would fix that by deriving them. So does this:
+#
+#          { ?author bs:wrote ?work } UNION { ?work bs:author ?author }
+#
+#        and so does the shorter form, which is the one to remember:
+#
+#          ?work ^bs:wrote|bs:author ?author
+#
+#        ^ reads a predicate backwards (module 05, q32). An inverse
+#        declaration in the vocabulary is a promise about what a
+#        reasoner may do; ^ is the same journey with no promise
+#        required.
+#
+#        Worth noticing which way round the gap is. Nothing warns you
+#        that one direction of an inverse pair is less complete than
+#        the other -- the data simply answers differently depending on
+#        which way you ask, and that is a thing to check for rather
+#        than to discover.
+#
+#
+#  WHAT TO TAKE AWAY
+#    - owl:inverseOf lets a reasoner complete each direction from the
+#      other. ^ reads a predicate backwards and needs no reasoner.
+#    - Data with an inverse pair is rarely complete in both directions.
+#      Ask both ways and compare before trusting either.
+#    - UNION of the two directions and ^p|q are the same query. The
+#      second is shorter and the engine can plan it as one path.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+SELECT (COUNT(*) AS ?links)
+WHERE {
+  SELECT DISTINCT ?author ?work
+  WHERE {
+    ?work ^bs:wrote|bs:author ?author .
+  }
+}

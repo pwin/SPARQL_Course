@@ -294,7 +294,7 @@ def main() -> None:
     import queries_core          # noqa: F401
     for mod in ("queries_paths", "queries_geo", "queries_rdf12", "queries_forms",
                 "queries_debug", "queries_extensions", "queries_federation",
-                "queries_blanknodes", "queries_update", "queries_toolkit"):
+                "queries_blanknodes", "queries_update", "queries_toolkit", "queries_inference"):
         try:
             __import__(mod)
         except ModuleNotFoundError:

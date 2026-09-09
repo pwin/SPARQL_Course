@@ -57,6 +57,10 @@ try:
     import queries_toolkit  # noqa: F401
 except ModuleNotFoundError:
     pass
+try:
+    import queries_inference  # noqa: F401
+except ModuleNotFoundError:
+    pass
 
 
 def load_measured_counts() -> None:

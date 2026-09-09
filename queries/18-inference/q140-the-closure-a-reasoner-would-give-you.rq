@@ -1,0 +1,74 @@
+# ==========================================================================
+#  Q140  The closure a reasoner would give you
+# ==========================================================================
+#
+#  ASKS
+#    How many containment facts are there once you follow the chain?
+#
+#  HOW IT WORKS
+#    bs:within is declared owl:TransitiveProperty, which tells a reasoner
+#    it may derive York-in-England from York-in-Yorkshire and Yorkshire-in-
+#    England. A property path computes the same set at query time. The two
+#    answers are identical, and one of them needs no reasoner, no extra
+#    storage and nothing to re-run after a write.
+#
+#  DIAGRAM
+#        asserted                        after transitivity
+#
+#          York    -> Yorkshire            York -> Yorkshire
+#          Yorkshire -> England            York -> England       <- derived
+#          England -> GB                   York -> GB            <- derived
+#                                          Yorkshire -> England
+#          63 triples                      Yorkshire -> GB       <- derived
+#                                          England -> GB
+#                                          ...
+#                                          186 pairs
+#
+#        measured, all four routes:
+#
+#          +--------------------------------+-----------+
+#          | asserted                       |    63     |
+#          | Jena riotcmd.infer --rdfs      |    63     |  RDFS has no
+#          | HOLOS holos entail             |    63     |  transitivity rule
+#          | HyLAR OWL 2 RL (the editor)    |   186     |
+#          | Jena OWLMicro via assembler    |   186     |  two OWL reasoners,
+#          | ?s bs:within+ ?o               |   186     |  one path, one answer
+#          +--------------------------------+-----------+
+#
+#        The two OWL reasoners and the property path agree exactly.
+#        The two RDFS reasoners cannot do it, because transitivity is
+#        an OWL notion and RDFS has no rule for it.
+#
+#        +----------------------------------------------------------+
+#        |  A reasoner writes 186 pairs down and they go stale the   |
+#        |  moment a place moves. A path recomputes them every time  |
+#        |  and is never wrong. The reasoner wins when the same      |
+#        |  closure is queried constantly and the data barely        |
+#        |  changes; the path wins the rest of the time.             |
+#        +----------------------------------------------------------+
+#
+#
+#  WHAT TO TAKE AWAY
+#    - owl:TransitiveProperty tells a reasoner it may close a chain. p+
+#      computes the same set at query time on any SPARQL 1.1 engine.
+#    - RDFS has no transitivity rule, so an RDFS reasoner leaves a
+#      transitive property exactly as asserted. Check which profile you
+#      have before assuming.
+#    - Materialised inference is a cache. Ask who invalidates it before
+#      you decide it is cheaper than a path.
+#
+#  DATA     bookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  RUNS ON  editor, holos, fuseki
+#  RETURNS  1 row, on every engine that runs it
+# ==========================================================================
+
+PREFIX bs: <https://example.org/bookshop-trail/schema#>
+
+SELECT (COUNT(*) AS ?pairs)
+WHERE {
+  SELECT DISTINCT ?place ?container
+  WHERE {
+    ?place bs:within+ ?container .
+  }
+}

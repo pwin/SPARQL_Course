@@ -27,6 +27,7 @@ from lab_section import LAB_SECTION
 import logo
 from plans_section import PLANS_PREAMBLE
 from protocol_section import PROTOCOL_SECTION
+from reasoning_section import REASONING_SECTION
 import features
 import specs
 
@@ -57,6 +58,10 @@ except ModuleNotFoundError:
     pass
 try:
     import queries_toolkit  # noqa: F401
+except ModuleNotFoundError:
+    pass
+try:
+    import queries_inference  # noqa: F401
 except ModuleNotFoundError:
     pass
 
@@ -427,6 +432,10 @@ def build() -> str:
     nav.append(f'<li><a href="#features"><span class="n">A-Z</span>'
                f'Find a feature<span class="c">{covered}</span></a></li>')
     body.append(features.html(found))
+
+    nav.append('<li><a href="#reasoning"><span class="n">&#8756;</span>'
+               'Reasoning in the three engines</a></li>')
+    body.append(REASONING_SECTION)
 
     nav.append('<li><a href="#protocol"><span class="n">http</span>'
                'Talking to an endpoint</a></li>')
