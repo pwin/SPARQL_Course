@@ -129,16 +129,31 @@ to discover that here than in a pipeline.
 
 ## 5 · Validate the data
 
-The editor bundles `rdf-validate-shacl`. The course ships shapes:
+The panel at the bottom right of the editor validates as well as queries.
+Open the shapes in a second tab — the **+** on the tab strip, then **Load
+URL** — choose that tab in the **Shapes** dropdown, switch back to the data
+tab and press **Validate**. Or let the link do it:
+
+```
+https://semantechs.co.uk/turtle-editor-viewer/?dot=<data url>&shapes=<shapes url>
+```
+
+On the untouched data `shapes.ttl` reports **eight violations**, all from one
+shape: `sh:lessThan bs:died` on `bs:born`, where both values are `xsd:gYear`.
+SPARQL's `<` is not defined for gYear, and the editor's engine treats a
+comparison it cannot make as a failure. The HOLOS command line compares the
+years anyway and reports clean:
 
 ```powershell
 holos validate --data data/bookshop-trail-1.1.ttl --shapes data/shapes.ttl
 ```
 
-Reports `conforms true`.
+Two engines, the same shape, two verdicts, and both defensible — q07 is the
+same gYear fact seen from a query. Anything else the editor reports is real.
 
 Now break it on purpose. In the editor, change a shop's `bs:staffCount` to
-`0`, or delete an author's `bs:born`, and validate again. The shape files are
+`0`, or delete an author's `bs:born`, and validate again: one more violation,
+pointing at that shop. The shape files are
 commented with what each constraint is for, and two of them carry notes about
 mistakes that were made writing them — `sh:lessThan` is easy to point the
 wrong way, and `sh:datatype xsd:string` quietly rejects every
@@ -156,9 +171,13 @@ header the editor needs:
 https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2F04-bookshops.ttl
 ```
 
-`./scripts/open-editor.ps1 04-bookshops` builds that and opens it; `-List`
-shows every file it can open. Every query in the course document has its own
-link, so you never have to assemble one by hand.
+Add `&shapes=<url>` and a shapes file opens in its own tab, already selected
+for validation, with the data tab left in front.
+
+`./scripts/open-editor.ps1 04-bookshops` builds that and opens it;
+`-Shapes shapes` adds the shapes; `-List` shows every file it can open. Every
+query in the course document has its own link, so you never have to assemble
+one by hand.
 
 Useful for setting an exercise: send the link, and the other person lands in
 the editor with the data already there.

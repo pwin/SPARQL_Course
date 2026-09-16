@@ -417,4 +417,5 @@ ORDER BY ?thing ?classA ?classB""",
     data=D11,
     extra_prefixes=("owl", "rdf"),
     expect="no rows, which is the answer you want",
+    shapes="shapes.ttl",
 )

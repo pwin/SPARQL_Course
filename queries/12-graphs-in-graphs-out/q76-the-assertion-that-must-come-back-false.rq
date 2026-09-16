@@ -42,7 +42,7 @@
 #      the healthy answer constant as the dataset grows.
 #
 #  DATA     bookshop-trail-1.1.ttl
-#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
+#  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl&shapes=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fshapes.ttl
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query §16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct

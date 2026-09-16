@@ -326,7 +326,7 @@ def query_section(item) -> str:
 
   <div class="actions">
     <a class="btn btn-open" href="{item.editor_url}" target="_blank"
-       rel="noopener">Open the data in the editor</a>
+       rel="noopener">Open the data{" and shapes" if item.shapes else ""} in the editor</a>
     <button class="btn btn-copy" type="button">Copy query</button>
     <span class="hint">{esc(item.data)}</span>
   </div>

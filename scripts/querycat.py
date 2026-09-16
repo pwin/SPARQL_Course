@@ -131,6 +131,10 @@ class Query:
     # the number its position deserves. This overrides the reading order
     # without touching the id: 51.5 sits between q51 and q52.
     place: float = 0.0
+    # A SHACL shapes file to open alongside the data. The editor accepts
+    # &shapes=<url> and puts it in its own tab, already selected for
+    # validation, so a query about validation can hand the reader both files.
+    shapes: str = ""
     expect: str = ""            # filled in by check_queries.py
     order: int = 0
 
@@ -189,8 +193,12 @@ class Query:
 
     @property
     def editor_url(self) -> str:
-        """A link that opens the Turtle Editor Viewer with the data loaded."""
-        return EDITOR_BASE + "?dot=" + quote(self.data_url, safe="")
+        """A link that opens the Turtle Editor Viewer with the data loaded,
+        and the shapes too when the query has some."""
+        url = EDITOR_BASE + "?dot=" + quote(self.data_url, safe="")
+        if self.shapes:
+            url += "&shapes=" + quote(RAW_BASE + self.shapes, safe="")
+        return url
 
     @property
     def copy_text(self) -> str:

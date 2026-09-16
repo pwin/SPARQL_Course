@@ -133,13 +133,23 @@ takes the second, because it travels.</pre></figure>
             triple terms have no settled JSON-LD form, so the conversion is
             where you discover what your toolchain actually supports. Better
             here than in a pipeline.</li>
-          <li><b>SHACL.</b> The editor bundles rdf-validate-shacl, and the
-            course ships <code>data/shapes.ttl</code>. It reports clean. Break
-            something on purpose &mdash; set a staff count to zero &mdash; and
-            run it again.</li>
+          <li><b>SHACL.</b> The panel at the bottom right validates as well as
+            queries. Open the shapes in a second tab (the <b>+</b> on the tab
+            strip, then Load URL), pick that tab in the <b>Shapes</b> dropdown,
+            switch back to the data and press <b>Validate</b>. On the untouched
+            data <code>shapes.ttl</code> reports <b>eight violations</b>, all
+            from one shape: <code>sh:lessThan</code> between two
+            <code>xsd:gYear</code> values. SPARQL's <code>&lt;</code> is not
+            defined for gYear, and the editor's engine treats a comparison it
+            cannot make as a failure, where the HOLOS command line compares the
+            years and reports clean. q07 is the same fact seen from a query.
+            Anything else it reports is real: set a staff count to zero and
+            validate again.</li>
           <li><b>Load by URL.</b> The toolbar takes a URL, and the app accepts
-            <code>?dot=&lt;url&gt;</code>, so a link can carry a dataset with
-            it. The easy way to hand someone an exercise.</li>
+            <code>?dot=&lt;url&gt;</code> for data and
+            <code>&amp;shapes=&lt;url&gt;</code> for a shapes file, which opens
+            in its own tab already selected for validation. A link can carry a
+            whole exercise.</li>
         </ul>
       </div>
       <figure class="diagram"><pre>A CONSTRUCT is the loop back to the picture:

@@ -100,6 +100,7 @@ q(
   ?shop a bs:Bookshop .
   FILTER NOT EXISTS { ?shop rdfs:label ?label }
 }""",
+    shapes="shapes.ttl",
 )
 
 q(
@@ -768,6 +769,7 @@ WHERE {
     BIND( "Shop is not reachable on foot from the start of the trail." AS ?message )
   }
 }""",
+    shapes="shapes.ttl",
 )
 
 q(

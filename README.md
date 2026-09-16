@@ -103,9 +103,10 @@ that answers `geof:distance` in metres.
 ## One click into the editor
 
 The Turtle Editor Viewer accepts `?dot=<url>` and loads that URL straight into
-the editor pane, so a link can carry a dataset with it. Every query in the
-course document has an **Open the data in the editor** button that does exactly
-that, and every module has one for its own file.
+the editor pane, so a link can carry a dataset with it. Add `&shapes=<url>`
+and a SHACL shapes file opens in its own tab, already selected for validation.
+Every query in the course document has an **Open the data in the editor**
+button that does exactly that, and every module has one for its own file.
 
 The pattern, if you want to build your own:
 
@@ -217,7 +218,7 @@ data/
 
   bookshop-trail-owl-dl.ttl  the same data inside OWL 2 DL (see below)
 
-  shapes.ttl                 SHACL constraints; the dataset conforms
+  shapes.ttl                 SHACL constraints; conforms on HOLOS, eight gYear findings in the editor (see SHACL below)
   shapes-advanced.ttl        the constraints that need sh:sparql
 ```
 
@@ -582,8 +583,15 @@ returns **zero rows** on two of the three engines and no error anywhere. Go via
 holos validate --data data/bookshop-trail-1.1.ttl --shapes data/shapes.ttl
 ```
 
-Reports `conforms true`. Break something in the data and run it again — that is
-the fastest way to learn what a shape means.
+Reports `conforms true`. The editor validates too — open the shapes in a
+second tab, pick it in the **Shapes** dropdown, press **Validate** — and on the
+same files reports **eight violations**, all from one shape: `sh:lessThan`
+between two `xsd:gYear` values. SPARQL's `<` is not defined for gYear, and the
+editor's engine treats a comparison it cannot make as a failure, where HOLOS
+compares the years anyway. Two engines, one shape, two defensible verdicts;
+q07 is the same fact seen from a query. Anything else the editor reports is
+real. Break something in the data and run it again — that is the fastest way
+to learn what a shape means.
 
 ---
 

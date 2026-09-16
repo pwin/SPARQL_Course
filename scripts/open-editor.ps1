@@ -7,10 +7,11 @@
     There is nothing to install and nothing to run locally: it is a browser
     application, and the course is built around that.
 
-    It accepts ?dot=<url> and loads that URL into the editor pane, so this
-    script simply assembles the link and opens it. The data comes from the
-    course's own raw URLs on GitHub, which send the CORS header the editor
-    needs.
+    It accepts ?dot=<url> and loads that URL into the editor pane, and
+    &shapes=<url> to open a SHACL shapes file in a second tab already selected
+    for validation, so this script simply assembles the link and opens it.
+    The files come from the course's own raw URLs on GitHub, which send the
+    CORS header the editor needs.
 
     With no arguments it lists the files and opens the shops, which is the one
     to start with: small enough for the graph view to draw whole.
@@ -18,6 +19,10 @@
 .PARAMETER File
     A file from data/, with or without the .ttl extension. Tab-completion of
     the folder is easier than remembering them.
+
+.PARAMETER Shapes
+    A shapes file from data/, opened alongside the data for validation.
+    Usually shapes or shapes-advanced.
 
 .PARAMETER List
     Print the files and their links without opening anything.
@@ -29,6 +34,7 @@
     ./scripts/open-editor.ps1
     ./scripts/open-editor.ps1 04-bookshops
     ./scripts/open-editor.ps1 bookshop-trail-1.2.ttl
+    ./scripts/open-editor.ps1 bookshop-trail-1.1 -Shapes shapes
     ./scripts/open-editor.ps1 -List
 #>
 param(
@@ -36,6 +42,7 @@ param(
     [string]$Editor = "https://semantechs.co.uk/turtle-editor-viewer/",
     [string]$Repo = "https://raw.githubusercontent.com/pwin/SPARQL_Course",
     [string]$Branch = "main",
+    [string]$Shapes,
     [switch]$List
 )
 
@@ -43,9 +50,12 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 $dataDir = Join-Path $root "data"
 
-function Link([string]$name) {
-    $raw = "$Repo/$Branch/data/$name"
-    return $Editor + "?dot=" + [uri]::EscapeDataString($raw)
+function Raw([string]$name) { return "$Repo/$Branch/data/$name" }
+
+function Link([string]$name, [string]$shapesName) {
+    $url = $Editor + "?dot=" + [uri]::EscapeDataString((Raw $name))
+    if ($shapesName) { $url += "&shapes=" + [uri]::EscapeDataString((Raw $shapesName)) }
+    return $url
 }
 
 $files = Get-ChildItem -Path $dataDir -Filter "*.ttl" -ErrorAction SilentlyContinue |
@@ -82,10 +92,23 @@ if (-not $match) {
     return
 }
 
-$url = Link $match.Name
+$shapesMatch = $null
+if ($Shapes) {
+    if (-not $Shapes.EndsWith(".ttl")) { $Shapes = "$Shapes.ttl" }
+    $shapesMatch = $files | Where-Object { $_.Name -eq $Shapes } | Select-Object -First 1
+    if (-not $shapesMatch) {
+        Write-Warning "No shapes file called $Shapes in data/. Try shapes or shapes-advanced."
+        return
+    }
+}
+
+$shapesName = $null
+if ($shapesMatch) { $shapesName = $shapesMatch.Name }
+$url = Link $match.Name $shapesName
 
 Write-Host ""
-Write-Host "Opening the Turtle Editor Viewer with $($match.Name)" -ForegroundColor Cyan
+$with = if ($shapesMatch) { "$($match.Name) and $($shapesMatch.Name)" } else { $match.Name }
+Write-Host "Opening the Turtle Editor Viewer with $with" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "  $url"
 Write-Host ""
@@ -99,6 +122,10 @@ Write-Host "    - Add Prefixes fills in the PREFIX block for your own queries"  
 Write-Host "    - Get All reloads the internal triplestore the SPARQL panel"     -ForegroundColor Gray
 Write-Host "      queries: press it after editing, or your query sees the old"   -ForegroundColor Gray
 Write-Host "      data and looks wrong"                                          -ForegroundColor Gray
+if ($shapesMatch) {
+Write-Host "    - the shapes are in their own tab, already chosen in the Shapes" -ForegroundColor Gray
+Write-Host "      dropdown: stay on the data tab and press Validate"             -ForegroundColor Gray
+}
 Write-Host ""
 
 Start-Process $url
