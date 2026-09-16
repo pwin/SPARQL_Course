@@ -10,6 +10,11 @@ A teaching dataset in RDF, and 145 worked queries that take a beginner from
 `SELECT ?s ?p ?o` to property paths, nested aggregation, geospatial work and
 RDF 1.2 statement annotation — quickly, and without toy data.
 
+It has a companion: **[The Bookshop Trail — a SHACL course](https://github.com/pwin/SHACL_Course)**,
+seventy shapes graphs on the same data in the same editor. Where a query here
+asks a question, a shape there says what the answer should be, and the two
+courses cite each other by number.
+
 Everything here runs in three environments:
 
 | Environment | What it is | Where it comes from | Script |
@@ -592,6 +597,13 @@ compares the years anyway. Two engines, one shape, two defensible verdicts;
 q07 is the same fact seen from a query. Anything else the editor reports is
 real. Break something in the data and run it again — that is the fastest way
 to learn what a shape means.
+
+That is as far as this course takes SHACL. The
+[SHACL course](https://github.com/pwin/SHACL_Course) takes it the rest of the
+way: all of SHACL Core, SPARQL constraints and constraint components,
+SHACL-AF rules with the editor's Inference dropdown, the parts of SHACL 1.2
+that run today, and a faulty edition of this dataset with thirty-six numbered
+mistakes for the shapes to find.
 
 ---
 
