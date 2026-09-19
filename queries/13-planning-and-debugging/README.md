@@ -8,10 +8,10 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §18 Definition of SPARQL](https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql)
-- [SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax](https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax)
-- [SPARQL 1.2 Query §18.6.2 Evaluation Semantics](https://www.w3.org/TR/sparql12-query/#x18-6-2-evaluation-semantics)
-- [SPARQL 1.2 Query §17.2.2 Evaluation errors](https://www.w3.org/TR/sparql12-query/#x17-2-2-evaluation-errors)
+- [SPARQL 1.2 Query 18. Definition of SPARQL](https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql)
+- [SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax](https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax)
+- [SPARQL 1.2 Query 18.6.2 Evaluation Semantics](https://www.w3.org/TR/sparql12-query/#x18-6-2-evaluation-semantics)
+- [SPARQL 1.2 Query 17.2.2 Evaluation errors](https://www.w3.org/TR/sparql12-query/#x17-2-2-evaluation-errors)
 
 | Query | Asks |
 |---|---|

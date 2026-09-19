@@ -6,11 +6,11 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §3 RDF Term Constraints](https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative)
-- [SPARQL 1.2 Query §10.1 BIND](https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables)
-- [SPARQL 1.2 Query §17.2.3 Effective Boolean Value](https://www.w3.org/TR/sparql12-query/#x17-2-3-effective-boolean-value-ebv)
-- [SPARQL 1.2 Query §17.4.3 Functions on Strings](https://www.w3.org/TR/sparql12-query/#x17-4-3-functions-on-strings)
-- [SPARQL 1.2 Query §17.4.5 Functions on Dates and Times](https://www.w3.org/TR/sparql12-query/#x17-4-5-functions-on-dates-and-times)
+- [SPARQL 1.2 Query 3. RDF Term Constraints](https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative)
+- [SPARQL 1.2 Query 10.1 BIND](https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables)
+- [SPARQL 1.2 Query 17.2.3 Effective Boolean Value](https://www.w3.org/TR/sparql12-query/#x17-2-3-effective-boolean-value-ebv)
+- [SPARQL 1.2 Query 17.4.3 Functions on Strings](https://www.w3.org/TR/sparql12-query/#x17-4-3-functions-on-strings)
+- [SPARQL 1.2 Query 17.4.5 Functions on Dates and Times](https://www.w3.org/TR/sparql12-query/#x17-4-5-functions-on-dates-and-times)
 
 | Query | Asks |
 |---|---|

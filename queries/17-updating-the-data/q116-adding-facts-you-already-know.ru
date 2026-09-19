@@ -6,7 +6,7 @@
 #    Add a new bookshop to the trail.
 #
 #  HOW IT WORKS
-#    INSERT DATA takes ground triples — no variables, no WHERE — and puts
+#    INSERT DATA takes ground triples -- no variables, no WHERE -- and puts
 #    them in the store. It is the simplest thing in SPARQL Update and the
 #    one you will use least, because most of what you want to add depends
 #    on what is already there.

@@ -171,7 +171,7 @@ q(
       |                                | triples | usefully |
       |                                |         |      new |
       +--------------------------------+---------+----------+
-      | asserted                       |   4,826 |        — |
+      | asserted                       |   4,826 |         - |
       | Jena riotcmd.infer --rdfs      |   4,826 |        0 |
       | HOLOS holos entail             |   5,051 |        0 |
       | HyLAR OWL 2 RL                 |   8,777 |    3,952 |

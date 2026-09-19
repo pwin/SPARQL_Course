@@ -3,12 +3,12 @@
 # ==========================================================================
 #
 #  ASKS
-#    The Inkwell has closed its café. Remove that one fact.
+#    The Inkwell has closed its cafe. Remove that one fact.
 #
 #  HOW IT WORKS
 #    DELETE DATA is the mirror of INSERT DATA: ground triples, removed
 #    exactly. It will not accept a variable, which makes it safe and almost
-#    useless — you have to already know the object you are deleting, down
+#    useless -- you have to already know the object you are deleting, down
 #    to its datatype.
 #
 #  DIAGRAM

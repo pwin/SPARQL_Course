@@ -15,20 +15,20 @@
 #  DIAGRAM
 #        influence points BACKWARDS -- from the later author to the earlier:
 #
-#            dilys-tremain  ──bs:influencedBy──▶  cerys-lloyd
+#            dilys-tremain  --bs:influencedBy-->  cerys-lloyd
 #
 #        so "who did X influence?" reverses it:
 #
 #            ?ancestor  ^bs:influencedBy+  ?descendant
-#                       ─────────┬───────
+#                       ---------+-------
 #                       one or more hops, downstream
 #
-#        ┌────────────────┬─────────────┐
-#        │ rhona-blackwood│ many        │   the roots of the graph
-#        │ maud-ellery    │ many        │   reach almost everyone
-#        │ ...            │             │
-#        │ dilys-tremain  │ 0           │   the leaves reach nobody
-#        └────────────────┴─────────────┘
+#        +----------------+-------------+
+#        | rhona-blackwood| many        |   the roots of the graph
+#        | maud-ellery    | many        |   reach almost everyone
+#        | ...            |             |
+#        | dilys-tremain  | 0           |   the leaves reach nobody
+#        +----------------+-------------+
 #
 #        Watch for the mutual pair: tam-brodie and kirsty-lammond each
 #        influenced the other, so each is among their own descendants.
@@ -48,7 +48,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  15 rows, on every engine that runs it
 # ==========================================================================

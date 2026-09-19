@@ -52,8 +52,8 @@
 #      can construct, you can materialise.
 #    - Materialised triples are stale the moment the facts they came from
 #      change. Decide who re-runs them, and when.
-#    - Keep derived triples separable from asserted ones — a named graph
-#      is the cheapest way — so they can be dropped and rebuilt.
+#    - Keep derived triples separable from asserted ones -- a named graph
+#      is the cheapest way -- so they can be dropped and rebuilt.
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl

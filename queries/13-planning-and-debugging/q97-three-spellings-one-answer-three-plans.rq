@@ -27,7 +27,7 @@
 #
 #             bt:place-scotland ^bs:within+/^bs:locatedIn ?shop .
 #
-#        all three ──▶ 9 shops
+#        all three --> 9 shops
 #
 #        but the algebra differs.  Jena, for A:
 #
@@ -56,9 +56,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  3 rows, on every engine that runs it
 # ==========================================================================

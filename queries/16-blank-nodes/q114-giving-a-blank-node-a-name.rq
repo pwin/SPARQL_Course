@@ -57,7 +57,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     RDF 1.2 Concepts, Appendix B: Replacing Blank Nodes with IRIs
 #           https://www.w3.org/TR/rdf12-concepts/#b-replacing-blank-nodes-with-iris
-#           SPARQL 1.2 Query §17.4.2.14 BNODE
+#           SPARQL 1.2 Query 17.4.2.14 BNODE
 #           https://www.w3.org/TR/sparql12-query/#x17-4-2-14-bnode
 #  RETURNS  2 rows, on every engine that runs it
 # ==========================================================================

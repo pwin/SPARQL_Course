@@ -13,15 +13,15 @@
 #
 #  DIAGRAM
 #        ?shop bs:locatedIn / bs:within+ / ^bs:within* ...
-#              ─────┬─────   ─────┬────
+#              -----+-----   -----+----
 #                one hop      any number
 #
 #        the whole path:
 #
-#          ?shop  ──bs:locatedIn──▶  town
-#                 ──bs:within+────▶  any containing area
-#                                      │
-#                                      └─ FILTER to keep only countries
+#          ?shop  --bs:locatedIn-->  town
+#                 --bs:within+---->  any containing area
+#                                      |
+#                                      +- FILTER to keep only countries
 #
 #        reads as:  "the shop is in a town, somewhere inside a country"
 #
@@ -40,9 +40,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §9 Property Paths
+#  SPEC     SPARQL 1.2 Query 9. Property Paths
 #           https://www.w3.org/TR/sparql12-query/#x9-property-paths
-#           SPARQL 1.2 Query §9.1 Property Path Syntax
+#           SPARQL 1.2 Query 9.1 Property Path Syntax
 #           https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax
 #  RETURNS  33 rows, on every engine that runs it
 # ==========================================================================

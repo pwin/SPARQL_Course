@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-"""Module 17: SPARQL Update — changing the data.
+"""Module 17: SPARQL Update -- changing the data.
 
 Everything up to here reads. This module writes, and writing is a different
 discipline: an update returns nothing at all, so every one of these comes in
-two halves — the update itself, and a query that shows what it did. The
+two halves -- the update itself, and a query that shows what it did. The
 checker applies each update to a throwaway copy of the dataset and then runs
 the second half, which is how the numbers in these headers were arrived at:
 
     python scripts/check_queries.py q116 q117 q118 q119 q120 q121 q122 q123
 
 One thing to know before starting. The Turtle Editor Viewer cannot run these.
-Comunica, the library underneath it, supports SPARQL Update perfectly well —
+Comunica, the library underneath it, supports SPARQL Update perfectly well --
 the editor's SPARQL panel has no way to display the result of an operation
 that returns nothing, so it is not wired up. The engine column in this module
 says "comunica" rather than "editor" for exactly that reason. Use Fuseki or
@@ -25,7 +25,7 @@ q(
     qid="q116", module=MOD,
     title="Adding facts you already know",
     asks="Add a new bookshop to the trail.",
-    how="INSERT DATA takes ground triples — no variables, no WHERE — and puts "
+    how="INSERT DATA takes ground triples -- no variables, no WHERE -- and puts "
         "them in the store. It is the simplest thing in SPARQL Update and the "
         "one you will use least, because most of what you want to add depends "
         "on what is already there.",
@@ -87,10 +87,10 @@ ORDER BY ?name""",
 q(
     qid="q117", module=MOD,
     title="Removing facts you can name",
-    asks="The Inkwell has closed its café. Remove that one fact.",
+    asks="The Inkwell has closed its cafe. Remove that one fact.",
     how="DELETE DATA is the mirror of INSERT DATA: ground triples, removed "
         "exactly. It will not accept a variable, which makes it safe and "
-        "almost useless — you have to already know the object you are "
+        "almost useless -- you have to already know the object you are "
         "deleting, down to its datatype.",
     diagram="""
     DELETE DATA { bt:shop-inkwell bs:hasCafe true . }
@@ -311,8 +311,8 @@ q(
         "can construct, you can materialise.",
         "Materialised triples are stale the moment the facts they came from "
         "change. Decide who re-runs them, and when.",
-        "Keep derived triples separable from asserted ones — a named graph is "
-        "the cheapest way — so they can be dropped and rebuilt.",
+        "Keep derived triples separable from asserted ones -- a named graph is "
+        "the cheapest way -- so they can be dropped and rebuilt.",
     ],
     body="""INSERT { ?shop bs:inCountry ?country }
 WHERE {
@@ -340,7 +340,7 @@ q(
          "the old ones.",
     how="q86 built this graph with CONSTRUCT and left you holding it. Here the "
         "same transformation is applied to the store, and then a second "
-        "operation removes what it replaced — the half CONSTRUCT cannot do. "
+        "operation removes what it replaced -- the half CONSTRUCT cannot do. "
         "Two operations separated by a semicolon, applied in order.",
     diagram="""
     operation 1     read the old shape, write the new one
@@ -486,7 +486,7 @@ q(
     how="Everything. DELETE WHERE with three variables matches every triple "
         "in the default graph and removes all of them. There is no "
         "confirmation, no transaction to roll back on most setups, and no "
-        "undo. It is worth running once, deliberately, on a copy — the point "
+        "undo. It is worth running once, deliberately, on a copy -- the point "
         "lands better than a warning does.",
     diagram="""
     DELETE WHERE { ?s ?p ?o }

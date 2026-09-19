@@ -61,9 +61,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, fuseki
-#  SPEC     SPARQL 1.2 Query §10.2.1 VALUES syntax
+#  SPEC     SPARQL 1.2 Query 10.2.1 VALUES syntax
 #           https://www.w3.org/TR/sparql12-query/#x10-2-1-values-syntax
-#           SPARQL 1.2 Query §13 RDF Dataset
+#           SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

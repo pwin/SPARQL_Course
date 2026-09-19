@@ -47,9 +47,9 @@
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
 #  RUNS ON  holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.3.1 Operator Extensibility
+#  SPEC     SPARQL 1.2 Query 17.3.1 Operator Extensibility
 #           https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility
-#           SPARQL 1.2 Query §17.6 Extensible Value Testing
+#           SPARQL 1.2 Query 17.6 Extensible Value Testing
 #           https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing
 #  RETURNS  8 rows, on every engine that runs it
 # ==========================================================================

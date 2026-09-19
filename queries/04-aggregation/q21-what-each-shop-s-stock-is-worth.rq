@@ -12,15 +12,15 @@
 #    expression got any longer.
 #
 #  DIAGRAM
-#        each bs:StockRecord:   copies × shelfPrice
-#                                  12   ×   9.99   =  119.88
-#                                   8   ×  10.99   =   87.92
-#                                   5   ×   8.99   =   44.95
-#                                                  ─────────
+#        each bs:StockRecord:   copies x shelfPrice
+#                                  12   x   9.99   =  119.88
+#                                   8   x  10.99   =   87.92
+#                                   5   x   8.99   =   44.95
+#                                                  ---------
 #                  SUM per shop, after GROUP BY ?shop   252.75
 #
 #        SELECT ?name (SUM(?copies * ?price) AS ?value)
-#                          ─────────┬───────
+#                          ---------+-------
 #                            expression, evaluated per row,
 #                            THEN summed per group
 #
@@ -36,9 +36,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §11 Aggregates
+#  SPEC     SPARQL 1.2 Query 11. Aggregates
 #           https://www.w3.org/TR/sparql12-query/#x11-aggregates
-#           SPARQL 1.2 Query §11.2 GROUP BY
+#           SPARQL 1.2 Query 11.2 GROUP BY
 #           https://www.w3.org/TR/sparql12-query/#x11-2-group-by
 #  RETURNS  12 rows, on every engine that runs it
 # ==========================================================================

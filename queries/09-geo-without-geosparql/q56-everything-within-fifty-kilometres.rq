@@ -11,21 +11,21 @@
 #    test is d2 < 2,500,000,000 -- and no square root is needed anywhere.
 #
 #  DIAGRAM
-#        want:   sqrt(dx² + dy²)  <  50000
+#        want:   sqrt(dx^2 + dy^2)  <  50000
 #        but no sqrt available, so square both sides:
 #
-#                dx² + dy²        <  50000²
-#                dx² + dy²        <  2 500 000 000
+#                dx^2 + dy^2        <  50000^2
+#                dx^2 + dy^2        <  2 500 000 000
 #
-#        ┌──────────────────────────────────────┐
-#        │              ╭─────────╮             │
-#        │           ╱  ●York      ╲            │
-#        │          │   ● Endpapers │           │
-#        │          │   ● Bookwyrm  │  r = 50km │
-#        │           ╲             ╱            │
-#        │              ╰─────────╯             │
-#        │        ○ Whitby's shop (58 km)       │
-#        └──────────────────────────────────────┘
+#        +--------------------------------------+
+#        |              .---------.             |
+#        |           /  *York      \            |
+#        |          |   * Endpapers |           |
+#        |          |   * Bookwyrm  |  r = 50km |
+#        |           \             /            |
+#        |              '---------'             |
+#        |        o Whitby's shop (58 km)       |
+#        +--------------------------------------+
 #
 #        Squaring the threshold instead of rooting the distance is the
 #        same trick as q53, used the other way round.  It is exact, not
@@ -43,9 +43,9 @@
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.3 Operator Mapping
+#  SPEC     SPARQL 1.2 Query 17.3 Operator Mapping
 #           https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping
-#           SPARQL 1.2 Query §17.4.4 Functions on Numerics
+#           SPARQL 1.2 Query 17.4.4 Functions on Numerics
 #           https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics
 #  RETURNS  2 rows, on every engine that runs it
 # ==========================================================================

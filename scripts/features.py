@@ -231,7 +231,7 @@ def markdown(found: dict) -> str:
         for label, _pattern, url in entries:
             hits = found[label]
             if not hits:
-                out.append(f"| `{label}` | — | [§]({url}) |")
+                out.append(f"| `{label}` | — | [spec]({url}) |")
                 continue
             if len(hits) > 20:
                 # Listing sixty links for SELECT helps nobody.
@@ -239,7 +239,7 @@ def markdown(found: dict) -> str:
             else:
                 links = ", ".join(
                     f"[{i.qid}](queries/{i.module}/{i.filename})" for i in hits)
-            out.append(f"| `{label}` | {links} | [§]({url}) |")
+            out.append(f"| `{label}` | {links} | [spec]({url}) |")
         out.append("")
     missing = gaps(found)
     if missing:

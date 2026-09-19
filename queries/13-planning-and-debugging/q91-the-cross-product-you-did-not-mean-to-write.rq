@@ -16,25 +16,25 @@
 #
 #          ?shop bs:locatedIn ?town .
 #          ?town rdfs:label   ?name .
-#                 ▲       ▲
-#                 └───────┘  the join
-#                              ──▶  63 rows
+#                 ^       ^
+#                 +-------+  the join
+#                              -->  63 rows
 #
 #        crossed -- one letter changed, and nothing is shared:
 #
 #          ?shop bs:locatedIn ?town .
 #          ?other rdfs:label  ?name .
-#           ─┬───
-#            └── a different variable, so no join at all
-#                              ──▶  46 x 434  =  19,964 rows
+#           -+---
+#            +-- a different variable, so no join at all
+#                              -->  46 x 434  =  19,964 rows
 #
-#        ┌──────────────────────────────────────────────┐
-#        │  the symptom:  far too many rows, and every  │
-#        │  COUNT and SUM inflated by the same factor   │
-#        │                                              │
-#        │  the cause:    almost always a typo in a     │
-#        │                variable name                 │
-#        └──────────────────────────────────────────────┘
+#        +----------------------------------------------+
+#        |  the symptom:  far too many rows, and every  |
+#        |  COUNT and SUM inflated by the same factor   |
+#        |                                              |
+#        |  the cause:    almost always a typo in a     |
+#        |                variable name                 |
+#        +----------------------------------------------+
 #
 #        Spotting it: the crossed count is EXACTLY the product of the
 #        two pattern sizes.  Count each pattern alone, as in q90, and
@@ -57,9 +57,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  1 row, on every engine that runs it
 # ==========================================================================

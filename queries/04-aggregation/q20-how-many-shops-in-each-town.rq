@@ -13,14 +13,14 @@
 #
 #  DIAGRAM
 #        rows after matching          after GROUP BY ?townName
-#        ┌──────────┬──────────┐      ┌──────────┬───────┐
-#        │ Wigtown  │ Inkwell  │      │ Wigtown  │   2   │
-#        │ Wigtown  │Marginalia│  ──▶ │ Edinburgh│   2   │
-#        │ Edinburgh│ Colophon │      │ Hay-on-W │   2   │
-#        │ Edinburgh│ Broken S │      │ York     │   2   │
-#        │ York     │ Endpapers│      │ ...      │  ...  │
-#        │ ...      │ ...      │      └──────────┴───────┘
-#        └──────────┴──────────┘        one row per group
+#        +----------+----------+      +----------+-------+
+#        | Wigtown  | Inkwell  |      | Wigtown  |   2   |
+#        | Wigtown  |Marginalia|  --> | Edinburgh|   2   |
+#        | Edinburgh| Colophon |      | Hay-on-W |   2   |
+#        | Edinburgh| Broken S |      | York     |   2   |
+#        | York     | Endpapers|      | ...      |  ...  |
+#        | ...      | ...      |      +----------+-------+
+#        +----------+----------+        one row per group
 #
 #        SELECT may name ?townName (the key) and COUNT(...) (an aggregate).
 #        Naming ?shop would be a syntax error: which of the two?
@@ -35,9 +35,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §11 Aggregates
+#  SPEC     SPARQL 1.2 Query 11. Aggregates
 #           https://www.w3.org/TR/sparql12-query/#x11-aggregates
-#           SPARQL 1.2 Query §11.2 GROUP BY
+#           SPARQL 1.2 Query 11.2 GROUP BY
 #           https://www.w3.org/TR/sparql12-query/#x11-2-group-by
 #  RETURNS  26 rows, on every engine that runs it
 # ==========================================================================

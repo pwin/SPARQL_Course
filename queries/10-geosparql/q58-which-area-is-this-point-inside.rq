@@ -22,8 +22,8 @@
 #
 #          ?s bs:within ?c
 #          FILTER( !geof:sfWithin(?pointOfS, ?polygonOfC) )
-#                   ▲
-#                   └── NOT within -> a contradiction
+#                   ^
+#                   +-- NOT within -> a contradiction
 #
 #        result: 0 rows.  The polygons were computed from the settlements
 #        they contain, so containment is true by construction -- and this
@@ -55,7 +55,7 @@
 #  RUNS ON  holos, fuseki
 #  SPEC     OGC GeoSPARQL 1.1
 #           https://docs.ogc.org/is/22-047r1/22-047r1.html
-#           SPARQL 1.2 Query §17.6 Extensible Value Testing
+#           SPARQL 1.2 Query 17.6 Extensible Value Testing
 #           https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing
 #  RETURNS  0 rows, on every engine that runs it
 # ==========================================================================

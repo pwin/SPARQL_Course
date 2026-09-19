@@ -16,12 +16,12 @@
 #                bs:hasCafe true .
 #        }
 #
-#                  ┌─────────────┐
-#                  │  any match? │
-#                  └──────┬──────┘
-#                         │
-#                ┌────────┴────────┐
-#                ▼                 ▼
+#                  +-------------+
+#                  |  any match? |
+#                  +------+------+
+#                         |
+#                +--------+--------+
+#                v                 v
 #              true              false
 #
 #        One value comes back, not a table.  The engine is allowed to
@@ -41,9 +41,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16 Query Forms
+#  SPEC     SPARQL 1.2 Query 16. Query Forms
 #           https://www.w3.org/TR/sparql12-query/#x16-query-forms
-#           SPARQL 1.2 Query §16.2 CONSTRUCT
+#           SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
 #  RETURNS  1 row, on every engine that runs it
 # ==========================================================================

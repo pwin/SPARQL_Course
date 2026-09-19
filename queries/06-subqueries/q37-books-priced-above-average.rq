@@ -13,20 +13,20 @@
 #    filters.
 #
 #  DIAGRAM
-#        ┌─ inner query ────────────────────────────┐
-#        │  SELECT (AVG(?p) AS ?avgPrice)           │
-#        │  WHERE { ?b bs:rrp ?p }                  │
-#        │                                          │
-#        │  result:  ┌──────────┐                   │
-#        │           │ 15.87    │   ONE row         │
-#        │           └──────────┘                   │
-#        └───────────────────┬──────────────────────┘
-#                            │ joined to every outer row
-#                            ▼
-#        ┌─ outer query ────────────────────────────┐
-#        │  ?book bs:rrp ?price                     │
-#        │  FILTER( ?price > ?avgPrice )            │
-#        └──────────────────────────────────────────┘
+#        +- inner query ----------------------------+
+#        |  SELECT (AVG(?p) AS ?avgPrice)           |
+#        |  WHERE { ?b bs:rrp ?p }                  |
+#        |                                          |
+#        |  result:  +----------+                   |
+#        |           | 15.87    |   ONE row         |
+#        |           +----------+                   |
+#        +-------------------+----------------------+
+#                            | joined to every outer row
+#                            v
+#        +- outer query ----------------------------+
+#        |  ?book bs:rrp ?price                     |
+#        |  FILTER( ?price > ?avgPrice )            |
+#        +------------------------------------------+
 #
 #        Inner runs FIRST.  It cannot see ?book, ?price or anything else
 #        from the outer query -- only what it computes itself.
@@ -43,9 +43,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §12 Subqueries
+#  SPEC     SPARQL 1.2 Query 12. Subqueries
 #           https://www.w3.org/TR/sparql12-query/#x12-subqueries
-#           SPARQL 1.2 Query §15 Solution Sequences and Modifiers
+#           SPARQL 1.2 Query 15. Solution Sequences and Modifiers
 #           https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers
 #  RETURNS  15 rows, on every engine that runs it
 # ==========================================================================

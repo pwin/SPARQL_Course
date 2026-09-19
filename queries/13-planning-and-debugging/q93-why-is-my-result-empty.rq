@@ -13,12 +13,12 @@
 #  DIAGRAM
 #        build the query up one line at a time, and ask EXISTS at each:
 #
-#        ┌───────────────────────────────────────────┬───────┐
-#        │ 1  any bs:Bookshop at all                 │ true  │
-#        │ 2  ...with a bs:founded                   │ true  │
-#        │ 3  ...founded before 1970, cast directly  │  ???  │  ← flips here
-#        │ 4  ...founded before 1970, via STR()      │ true  │
-#        └───────────────────────────────────────────┴───────┘
+#        +-------------------------------------------+-------+
+#        | 1  any bs:Bookshop at all                 | true  |
+#        | 2  ...with a bs:founded                   | true  |
+#        | 3  ...founded before 1970, cast directly  |  ???  |  <- flips here
+#        | 4  ...founded before 1970, via STR()      | true  |
+#        +-------------------------------------------+-------+
 #
 #        Step 3 is the q07 trap: xsd:integer() applied straight to an
 #        xsd:gYear.  On Fuseki it is true; on the browser editor and on
@@ -54,9 +54,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

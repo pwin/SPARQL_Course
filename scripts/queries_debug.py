@@ -22,14 +22,14 @@ q(
     diagram="""
     count each pattern on its own, then read the spread:
 
-    ┌────────────────────────────────────┬────────┐
-    │ ?s bs:hasCafe true                 │     22 │  ← selective
-    │ ?s a bs:Bookshop                   │     33 │
-    │ ?s bs:locatedIn ?o                 │     46 │
-    │ ?s bs:stocks ?o                    │     95 │
-    │ ?s rdfs:label ?o                   │    434 │  ← fans out
-    │ ?s ?p ?o                           │  4,698 │
-    └────────────────────────────────────┴────────┘
+    +------------------------------------+--------+
+    | ?s bs:hasCafe true                 |     22 |  <- selective
+    | ?s a bs:Bookshop                   |     33 |
+    | ?s bs:locatedIn ?o                 |     46 |
+    | ?s bs:stocks ?o                    |     95 |
+    | ?s rdfs:label ?o                   |    434 |  <- fans out
+    | ?s ?p ?o                           |  4,698 |
+    +------------------------------------+--------+
 
     A join costs roughly the product of what it joins, so the order
     matters:
@@ -85,25 +85,25 @@ q(
 
       ?shop bs:locatedIn ?town .
       ?town rdfs:label   ?name .
-             ▲       ▲
-             └───────┘  the join
-                          ──▶  63 rows
+             ^       ^
+             +-------+  the join
+                          -->  63 rows
 
     crossed -- one letter changed, and nothing is shared:
 
       ?shop bs:locatedIn ?town .
       ?other rdfs:label  ?name .
-       ─┬───
-        └── a different variable, so no join at all
-                          ──▶  46 x 434  =  19,964 rows
+       -+---
+        +-- a different variable, so no join at all
+                          -->  46 x 434  =  19,964 rows
 
-    ┌──────────────────────────────────────────────┐
-    │  the symptom:  far too many rows, and every  │
-    │  COUNT and SUM inflated by the same factor   │
-    │                                              │
-    │  the cause:    almost always a typo in a     │
-    │                variable name                 │
-    └──────────────────────────────────────────────┘
+    +----------------------------------------------+
+    |  the symptom:  far too many rows, and every  |
+    |  COUNT and SUM inflated by the same factor   |
+    |                                              |
+    |  the cause:    almost always a typo in a     |
+    |                variable name                 |
+    +----------------------------------------------+
 
     Spotting it: the crossed count is EXACTLY the product of the
     two pattern sizes.  Count each pattern alone, as in q90, and
@@ -157,9 +157,9 @@ q(
 
     North Yorkshire, 3 shops, 6 events:
 
-      Endpapers     x 3 events  ─┐
-      The Bookwyrm  x 2 events  ─┼─  6 rows, not 3
-      The Harbour Page x 1      ─┘
+      Endpapers     x 3 events  -+
+      The Bookwyrm  x 2 events  -+-  6 rows, not 3
+      The Harbour Page x 1      -+
 
       COUNT(?shop)           =  6    wrong
       COUNT(DISTINCT ?shop)  =  3    right
@@ -216,12 +216,12 @@ q(
     diagram="""
     build the query up one line at a time, and ask EXISTS at each:
 
-    ┌───────────────────────────────────────────┬───────┐
-    │ 1  any bs:Bookshop at all                 │ true  │
-    │ 2  ...with a bs:founded                   │ true  │
-    │ 3  ...founded before 1970, cast directly  │  ???  │  ← flips here
-    │ 4  ...founded before 1970, via STR()      │ true  │
-    └───────────────────────────────────────────┴───────┘
+    +-------------------------------------------+-------+
+    | 1  any bs:Bookshop at all                 | true  |
+    | 2  ...with a bs:founded                   | true  |
+    | 3  ...founded before 1970, cast directly  |  ???  |  <- flips here
+    | 4  ...founded before 1970, via STR()      | true  |
+    +-------------------------------------------+-------+
 
     Step 3 is the q07 trap: xsd:integer() applied straight to an
     xsd:gYear.  On Fuseki it is true; on the browser editor and on
@@ -343,15 +343,15 @@ q(
     in the data:      "Cardiff"@en        tagged
     in the query:     "Cardiff"           untagged
 
-                      "Cardiff"@en  =  "Cardiff"   ──▶  false
+                      "Cardiff"@en  =  "Cardiff"   -->  false
 
     three ways to write the comparison:
 
-    ┌──────────────────────────┬──────┬────────────────────────┐
-    │ ?label = "Cardiff"       │  0   │ different terms        │
-    │ ?label = "Cardiff"@en    │  1   │ exact, but brittle     │
-    │ STR(?label) = "Cardiff"  │  1   │ drops the tag: robust  │
-    └──────────────────────────┴──────┴────────────────────────┘
+    +--------------------------+------+------------------------+
+    | ?label = "Cardiff"       |  0   | different terms        |
+    | ?label = "Cardiff"@en    |  1   | exact, but brittle     |
+    | STR(?label) = "Cardiff"  |  1   | drops the tag: robust  |
+    +--------------------------+------+------------------------+
 
     STR() is the general answer, and the same tool that fixes the
     datatype traps in q07 and q62.  It strips a literal to its
@@ -402,18 +402,18 @@ q(
 
       REPLACE( STR(?p), "[^#/]*$", "" )
 
-      <...bookshop-trail/schema#founded>  ──▶  <...schema#>
+      <...bookshop-trail/schema#founded>  -->  <...schema#>
 
-    ┌─────────────────────────────────────────────┬───────┐
-    │ https://example.org/bookshop-trail/schema#  │ 2,248 │
-    │ http://www.w3.org/1999/02/22-rdf-syntax-ns# │ 1,088 │
-    │ http://www.w3.org/2000/01/rdf-schema#       │   620 │
-    │ http://www.opengis.net/ont/geosparql#       │   387 │
-    │ http://www.w3.org/2004/02/skos/core#        │   152 │
-    │ http://www.w3.org/2003/01/geo/wgs84_pos#    │   126 │
-    │ http://purl.org/dc/terms/                   │    74 │
-    │ http://www.w3.org/2002/07/owl#              │     3 │
-    └─────────────────────────────────────────────┴───────┘
+    +---------------------------------------------+-------+
+    | https://example.org/bookshop-trail/schema#  | 2,248 |
+    | http://www.w3.org/1999/02/22-rdf-syntax-ns# | 1,088 |
+    | http://www.w3.org/2000/01/rdf-schema#       |   620 |
+    | http://www.opengis.net/ont/geosparql#       |   387 |
+    | http://www.w3.org/2004/02/skos/core#        |   152 |
+    | http://www.w3.org/2003/01/geo/wgs84_pos#    |   126 |
+    | http://purl.org/dc/terms/                   |    74 |
+    | http://www.w3.org/2002/07/owl#              |     3 |
+    +---------------------------------------------+-------+
 
     Eight namespaces, and the counts are a sanity check in
     themselves: owl# appears three times, because the vocabulary
@@ -473,7 +473,7 @@ q(
 
          bt:place-scotland ^bs:within+/^bs:locatedIn ?shop .
 
-    all three ──▶ 9 shops
+    all three --> 9 shops
 
     but the algebra differs.  Jena, for A:
 

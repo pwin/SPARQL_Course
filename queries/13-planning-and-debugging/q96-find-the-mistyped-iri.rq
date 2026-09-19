@@ -17,18 +17,18 @@
 #
 #          REPLACE( STR(?p), "[^#/]*$", "" )
 #
-#          <...bookshop-trail/schema#founded>  ──▶  <...schema#>
+#          <...bookshop-trail/schema#founded>  -->  <...schema#>
 #
-#        ┌─────────────────────────────────────────────┬───────┐
-#        │ https://example.org/bookshop-trail/schema#  │ 2,248 │
-#        │ http://www.w3.org/1999/02/22-rdf-syntax-ns# │ 1,088 │
-#        │ http://www.w3.org/2000/01/rdf-schema#       │   620 │
-#        │ http://www.opengis.net/ont/geosparql#       │   387 │
-#        │ http://www.w3.org/2004/02/skos/core#        │   152 │
-#        │ http://www.w3.org/2003/01/geo/wgs84_pos#    │   126 │
-#        │ http://purl.org/dc/terms/                   │    74 │
-#        │ http://www.w3.org/2002/07/owl#              │     3 │
-#        └─────────────────────────────────────────────┴───────┘
+#        +---------------------------------------------+-------+
+#        | https://example.org/bookshop-trail/schema#  | 2,248 |
+#        | http://www.w3.org/1999/02/22-rdf-syntax-ns# | 1,088 |
+#        | http://www.w3.org/2000/01/rdf-schema#       |   620 |
+#        | http://www.opengis.net/ont/geosparql#       |   387 |
+#        | http://www.w3.org/2004/02/skos/core#        |   152 |
+#        | http://www.w3.org/2003/01/geo/wgs84_pos#    |   126 |
+#        | http://purl.org/dc/terms/                   |    74 |
+#        | http://www.w3.org/2002/07/owl#              |     3 |
+#        +---------------------------------------------+-------+
 #
 #        Eight namespaces, and the counts are a sanity check in
 #        themselves: owl# appears three times, because the vocabulary
@@ -59,9 +59,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  8 rows, on every engine that runs it
 # ==========================================================================

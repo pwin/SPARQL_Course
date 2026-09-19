@@ -12,19 +12,19 @@
 #    four separate queries.
 #
 #  DIAGRAM
-#        ┌────────────────────────────┐
-#        │ ?s a bs:Bookshop  -> "shop"│──┐
-#        ├────────────────────────────┤  │
-#        │ ?s a bs:Work      -> "work"│──┤  UNION
-#        ├────────────────────────────┤  ├──────▶ GROUP BY ?class
-#        │ ?s a bs:Author  -> "author"│──┤             │
-#        ├────────────────────────────┤  │             ▼
-#        │ ?s a bs:Event    -> "event"│──┘      ┌────────┬─────┐
-#        └────────────────────────────┘         │ author │  32 │
-#                                               │ event  │  59 │
-#                                               │ shop   │  33 │
-#                                               │ work   │  74 │
-#                                               └────────┴─────┘
+#        +----------------------------+
+#        | ?s a bs:Bookshop  -> "shop"|--+
+#        +----------------------------+  |
+#        | ?s a bs:Work      -> "work"|--+  UNION
+#        +----------------------------+  +------> GROUP BY ?class
+#        | ?s a bs:Author  -> "author"|--+             |
+#        +----------------------------+  |             v
+#        | ?s a bs:Event    -> "event"|--+      +--------+-----+
+#        +----------------------------+         | author |  32 |
+#                                               | event  |  59 |
+#                                               | shop   |  33 |
+#                                               | work   |  74 |
+#                                               +--------+-----+
 #
 #
 #  WHAT TO TAKE AWAY
@@ -36,9 +36,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §11 Aggregates
+#  SPEC     SPARQL 1.2 Query 11. Aggregates
 #           https://www.w3.org/TR/sparql12-query/#x11-aggregates
-#           SPARQL 1.2 Query §11.2 GROUP BY
+#           SPARQL 1.2 Query 11.2 GROUP BY
 #           https://www.w3.org/TR/sparql12-query/#x11-2-group-by
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

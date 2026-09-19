@@ -12,14 +12,14 @@
 #    be compared.
 #
 #  DIAGRAM
-#        ┌─ count per author ─┐        ┌─ count per author ─┐
-#        │ dilys-tremain   2  │        │ cerys-lloyd     2  │
-#        │ magnus-thole    2  │        │ magnus-thole    2  │
-#        └─────────┬──────────┘        └─────────┬──────────┘
-#                  │                             │
-#                  │   ?author bs:influencedBy ?mentor
-#                  └──────────────┬──────────────┘
-#                                 ▼
+#        +- count per author -+        +- count per author -+
+#        | dilys-tremain   2  |        | cerys-lloyd     2  |
+#        | magnus-thole    2  |        | magnus-thole    2  |
+#        +---------+----------+        +---------+----------+
+#                  |                             |
+#                  |   ?author bs:influencedBy ?mentor
+#                  +--------------+--------------+
+#                                 v
 #                  FILTER( ?ownBooks > ?mentorBooks )
 #
 #        The same sub-query appears twice with different variable names.
@@ -39,9 +39,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §12 Subqueries
+#  SPEC     SPARQL 1.2 Query 12. Subqueries
 #           https://www.w3.org/TR/sparql12-query/#x12-subqueries
-#           SPARQL 1.2 Query §15 Solution Sequences and Modifiers
+#           SPARQL 1.2 Query 15. Solution Sequences and Modifiers
 #           https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers
 #  RETURNS  8 rows, on every engine that runs it
 # ==========================================================================

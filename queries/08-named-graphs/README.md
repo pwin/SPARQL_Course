@@ -6,10 +6,10 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §13 RDF Dataset](https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset)
-- [SPARQL 1.2 Query §13.2 Specifying RDF Datasets](https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets)
-- [SPARQL 1.2 Query §13.3 Querying the Dataset](https://www.w3.org/TR/sparql12-query/#x13-3-querying-the-dataset)
-- [SPARQL 1.2 Query §14 Basic Federated Query](https://www.w3.org/TR/sparql12-query/#x14-basic-federated-query)
+- [SPARQL 1.2 Query 13. RDF Dataset](https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset)
+- [SPARQL 1.2 Query 13.2 Specifying RDF Datasets](https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets)
+- [SPARQL 1.2 Query 13.3 Querying the Dataset](https://www.w3.org/TR/sparql12-query/#x13-3-querying-the-dataset)
+- [SPARQL 1.2 Query 14. Basic Federated Query](https://www.w3.org/TR/sparql12-query/#x14-basic-federated-query)
 - [SPARQL 1.2 Federated Query](https://www.w3.org/TR/sparql12-federated-query/)
 - [SPARQL 1.2 Query, Security Considerations](https://www.w3.org/TR/sparql12-query/#c-security-considerations)
 - [RDF 1.2 TriG](https://www.w3.org/TR/rdf12-trig/)

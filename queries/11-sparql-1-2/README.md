@@ -6,13 +6,13 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §17.4.6 Functions on Triple Terms](https://www.w3.org/TR/sparql12-query/#x17-4-6-functions-on-triple-terms)
-- [SPARQL 1.2 Query §17.4.2.9 LANGDIR](https://www.w3.org/TR/sparql12-query/#x17-4-2-9-langdir)
-- [SPARQL 1.2 Query §17.4.2.17 STRLANGDIR](https://www.w3.org/TR/sparql12-query/#x17-4-2-17-strlangdir)
+- [SPARQL 1.2 Query 17.4.6 Functions on Triple Terms](https://www.w3.org/TR/sparql12-query/#x17-4-6-functions-on-triple-terms)
+- [SPARQL 1.2 Query 17.4.2.9 LANGDIR](https://www.w3.org/TR/sparql12-query/#x17-4-2-9-langdir)
+- [SPARQL 1.2 Query 17.4.2.17 STRLANGDIR](https://www.w3.org/TR/sparql12-query/#x17-4-2-17-strlangdir)
 - [SPARQL 1.2 Query, Appendix A: changes since SPARQL 1.1](https://www.w3.org/TR/sparql12-query/#a-changes-between-sparql-1-1-query-language-and-sparql-1-2-query-language)
-- [RDF 1.2 Concepts §3.6 Triple Terms](https://www.w3.org/TR/rdf12-concepts/#x3-6-triple-terms)
-- [RDF 1.2 Concepts §3.4.3 Initial Text Direction](https://www.w3.org/TR/rdf12-concepts/#x3-4-3-initial-text-direction)
-- [RDF 1.2 Turtle §2.11 Reifying Triples](https://www.w3.org/TR/rdf12-turtle/#x2-11-reifying-triples)
+- [RDF 1.2 Concepts 3.6 Triple Terms](https://www.w3.org/TR/rdf12-concepts/#x3-6-triple-terms)
+- [RDF 1.2 Concepts 3.4.3 Initial Text Direction](https://www.w3.org/TR/rdf12-concepts/#x3-4-3-initial-text-direction)
+- [RDF 1.2 Turtle 2.11 Reifying Triples](https://www.w3.org/TR/rdf12-turtle/#x2-11-reifying-triples)
 
 | Query | Asks |
 |---|---|

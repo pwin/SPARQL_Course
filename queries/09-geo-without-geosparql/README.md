@@ -6,9 +6,9 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §17.3 Operator Mapping](https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping)
-- [SPARQL 1.2 Query §17.4.4 Functions on Numerics](https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics)
-- [SPARQL 1.2 Query §15.1 ORDER BY](https://www.w3.org/TR/sparql12-query/#x15-1-order-by)
+- [SPARQL 1.2 Query 17.3 Operator Mapping](https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping)
+- [SPARQL 1.2 Query 17.4.4 Functions on Numerics](https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics)
+- [SPARQL 1.2 Query 15.1 ORDER BY](https://www.w3.org/TR/sparql12-query/#x15-1-order-by)
 
 | Query | Asks |
 |---|---|

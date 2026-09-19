@@ -7,7 +7,7 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 **In the standards.** The sections this module is defined by:
 
 - [SPARQL 1.2 Query Language](https://www.w3.org/TR/sparql12-query/)
-- [SPARQL 1.2 Query §17.4 Function Definitions](https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions)
+- [SPARQL 1.2 Query 17.4 Function Definitions](https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions)
 
 | Query | Asks |
 |---|---|

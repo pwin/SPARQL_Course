@@ -16,9 +16,9 @@ q(
         "combinations where the same ?shop satisfies both -- that shared "
         "variable is the join, and it's the only join mechanism SPARQL has.",
     diagram="""
-    ?shop  ──── rdf:type ────▶  bs:Bookshop      (which things are shops)
-      │
-      └─────── rdfs:label ───▶  ?name            (what each is called)
+    ?shop  ---- rdf:type ---->  bs:Bookshop      (which things are shops)
+      |
+      +------- rdfs:label --->  ?name            (what each is called)
 
     Both lines constrain the SAME ?shop, so a row survives only if
     both are true of it.  33 shops in, 33 rows out.
@@ -48,7 +48,7 @@ q(
         "find out how a strange dataset is shaped, and worth doing before "
         "writing anything more ambitious.",
     diagram="""
-    bt:shop-inkwell  ──── ?p ────▶  ?o
+    bt:shop-inkwell  ---- ?p ---->  ?o
 
          known                unknown
        (the subject)     (everything else)
@@ -82,9 +82,9 @@ q(
         "evaluate them in any order it likes; what matters to you is only "
         "that the shared variables line up.",
     diagram="""
-    ?shop ──rdfs:label──▶ ?shopName
-      │
-      └──bs:locatedIn──▶ ?town ──rdfs:label──▶ ?townName
+    ?shop --rdfs:label--> ?shopName
+      |
+      +--bs:locatedIn--> ?town --rdfs:label--> ?townName
 
     Two joins:  ?shop  ties lines 1 and 2
                 ?town  ties lines 2 and 3
@@ -118,7 +118,7 @@ q(
         "matching -- so the engine still had to consider all 33 shops to know "
         "which ten come first.",
     diagram="""
-    match  ─▶  33 rows  ─▶  ORDER BY ?founded  ─▶  LIMIT 10  ─▶  10 rows
+    match  ->  33 rows  ->  ORDER BY ?founded  ->  LIMIT 10  ->  10 rows
                               (ascending)
 
     Order of evaluation, which is NOT the order you write them in:
@@ -152,10 +152,10 @@ q(
         "DISTINCT. Anything that survives is a class the data actually uses -- "
         "which isn't always the same as the classes the schema declares.",
     diagram="""
-        ?s ──rdf:type──▶ ?type
+        ?s --rdf:type--> ?type
 
      every typed thing        collapse duplicates
-     (about 1,080 rows)  ──▶  DISTINCT  ──▶  ~20 classes
+     (about 1,080 rows)  -->  DISTINCT  -->  ~20 classes
 
     Ask this first.  Then ask q06 to find out what properties each
     class carries.  Two queries and you have the map.
@@ -182,9 +182,9 @@ q(
         "free. The result is the working vocabulary for that class -- the "
         "list of things it's worth asking a shop about.",
     diagram="""
-    ?shop ──rdf:type──▶ bs:Bookshop      (restrict the subject...)
-      │
-      └───── ?p ──────▶ ?o               (...then free the predicate)
+    ?shop --rdf:type--> bs:Bookshop      (restrict the subject...)
+      |
+      +----- ?p ------> ?o               (...then free the predicate)
 
     Pair this with the schema itself:
 
@@ -225,24 +225,24 @@ q(
         "works on only one.",
     diagram="""
     pattern matches 33 rows
-              │
-              ▼
+              |
+              v
     FILTER( xsd:integer(STR(?founded)) < 1970 )
-              │        ─────┬─────
-              │             └── "1979"  a plain string
-              │
-              ├── true  ──▶ row kept
-              └── false ──▶ row dropped
-                              │
-                              ▼
+              |        -----+-----
+              |             +-- "1979"  a plain string
+              |
+              +-- true  --> row kept
+              +-- false --> row dropped
+                              |
+                              v
                           10 rows out
 
     Measured on this dataset, all three engines, same query:
 
       xsd:integer(?founded)            editor  0   holos  0   fuseki 10
       ?founded < "1970"^^xsd:gYear     editor  0   holos  0   fuseki 10
-      xsd:integer(STR(?founded))       editor 10   holos 10   fuseki 10  ✓
-      STR(?founded) < "1970"           editor 10   holos 10   fuseki 10  ✓
+      xsd:integer(STR(?founded))       editor 10   holos 10   fuseki 10  ok
+      STR(?founded) < "1970"           editor 10   holos 10   fuseki 10  ok
 
     The unportable versions do not error.  They return zero rows and
     look like a fact about the data.
@@ -276,14 +276,14 @@ q(
         "xsd:boolean values, so ?cafe can be tested directly without "
         "comparing it to anything.",
     diagram="""
-    ?shop ──bs:hasCafe───▶ ?cafe        true / false
-      │
-      └────bs:floorArea──▶ ?area        a decimal
+    ?shop --bs:hasCafe---> ?cafe        true / false
+      |
+      +----bs:floorArea--> ?area        a decimal
 
     FILTER( ?cafe && ?area > 150 )
-             ▲        ▲
-             │        └── comparison yields a boolean
-             └── already a boolean; no "= true" needed
+             ^        ^
+             |        +-- comparison yields a boolean
+             +-- already a boolean; no "= true" needed
 
     &&  short-circuits, and an error on the right of a false && is
     swallowed.  That is deliberate, and occasionally useful.
@@ -313,19 +313,19 @@ q(
         "be selected, sorted or grouped like any other. Nested IF builds the "
         "band. Unlike FILTER, BIND adds a column rather than removing rows.",
     diagram="""
-    ?book ──bs:rrp──▶ ?price
+    ?book --bs:rrp--> ?price
 
               BIND( IF(?price < 12, "cheap",
                     IF(?price < 18, "mid", "dear")) AS ?band )
-                                    │
-                                    ▼
-    ┌────────┬───────┬────────┐
-    │ ?book  │ ?price│ ?band  │   <- a new column, computed
-    ├────────┼───────┼────────┤
-    │ ...    │  9.99 │ cheap  │
-    │ ...    │ 15.50 │ mid    │
-    │ ...    │ 21.00 │ dear   │
-    └────────┴───────┴────────┘
+                                    |
+                                    v
+    +--------+-------+--------+
+    | ?book  | ?price| ?band  |   <- a new column, computed
+    +--------+-------+--------+
+    | ...    |  9.99 | cheap  |
+    | ...    | 15.50 | mid    |
+    | ...    | 21.00 | dear   |
+    +--------+-------+--------+
 
     BIND sees only variables bound EARLIER in the group.  Move it to
     the top and ?price is unbound, so ?band comes out unbound too.
@@ -357,15 +357,15 @@ q(
         "inside every title, it can't use an index -- fine on 74 books, "
         "something to think about on 74 million.",
     diagram="""
-    ?work ──rdfs:label──▶ ?title      74 titles
+    ?work --rdfs:label--> ?title      74 titles
 
     FILTER( REGEX(?title, "sea|water", "i") )
-                          ───┬─────  ─┬─
-                             │        └── flags: i = ignore case
-                             └── alternation: either word
+                          ---+-----  -+-
+                             |        +-- flags: i = ignore case
+                             +-- alternation: either word
 
-           "The Dark Sea"   ✓        "High Water"  ✓
-           "Cold Harbour"   ✗        "Scree"       ✗
+           "The Dark Sea"   ok        "High Water"  ok
+           "Cold Harbour"   NO        "Scree"       NO
 
     CONTAINS(?title, "Sea") is cheaper when you do not need a pattern.
     """,
@@ -396,10 +396,10 @@ q(
     diagram="""
     bt:place-cardiff rdfs:label "Cardiff"@en
                      rdfs:label "Caerdydd"@cy
-                                 ───────  ──
+                                 -------  --
                                   value   tag
 
-    LANG(?label)  ──▶  "en"   or  "cy"   or  ""  (no tag at all)
+    LANG(?label)  -->  "en"   or  "cy"   or  ""  (no tag at all)
 
     FILTER( LANG(?label) != "en" && LANG(?label) != "" )
 
@@ -432,13 +432,13 @@ q(
         "can be glued to a plain one without a datatype clash.",
     diagram="""
     "The Inkwell"  +  "Wigtown"  +  1979
-           │              │           │
-           │              │           └─ STR() -> "1979"
-           │              │                (drop the xsd:gYear)
-           ▼              ▼              ▼
+           |              |           |
+           |              |           +- STR() -> "1979"
+           |              |                (drop the xsd:gYear)
+           v              v              v
     CONCAT(?name, " of ", ?town, ", est. ", STR(?founded))
-                             │
-                             ▼
+                             |
+                             v
           "The Inkwell of Wigtown, est. 1979"
 
     Without STR() around the gYear, CONCAT is given a typed literal
@@ -474,15 +474,15 @@ q(
         "calendar does. The result is computed at query time and stored "
         "nowhere.",
     diagram="""
-        NOW()  ──▶  2026-09-09T...  ──YEAR()──▶  2026
-                                                   │
-      bs:founded "1979"^^xsd:gYear                 │
-              │                                    │
-              └─ xsd:integer(STR()) ──▶ 1979       │
-                                     │             │
-                                     └──── - ──────┘
-                                           │
-                                           ▼
+        NOW()  -->  2026-09-09T...  --YEAR()-->  2026
+                                                   |
+      bs:founded "1979"^^xsd:gYear                 |
+              |                                    |
+              +- xsd:integer(STR()) --> 1979       |
+                                     |             |
+                                     +---- - ------+
+                                           |
+                                           v
                                          ?age = 47
 
     Derived, not stored.  Run it next year and every number moves.
@@ -521,17 +521,17 @@ q(
         "not match, keeps the row anyway with ?site left unbound.",
     diagram="""
     required                     optional
-    ┌────────────────────┐      ┌──────────────────────┐
-    │ ?shop a bs:Bookshop│─────▶│ ?shop bs:website ?site│
-    │ ?shop rdfs:label ? │      └──────────────────────┘
-    └────────────────────┘                │
-             33 rows            ┌─────────┴──────────┐
-                                ▼                    ▼
+    +--------------------+      +----------------------+
+    | ?shop a bs:Bookshop|----->| ?shop bs:website ?site|
+    | ?shop rdfs:label ? |      +----------------------+
+    +--------------------+                |
+             33 rows            +---------+----------+
+                                v                    v
                          matched: ?site bound   no match:
                                                 ?site UNBOUND
                                                 row still kept
-                                     │
-                                     ▼
+                                     |
+                                     v
                                   33 rows
 
     Drop the OPTIONAL and you get fewer rows -- and no warning.
@@ -563,17 +563,17 @@ q(
         "still the clearest when you also want a value from the row.",
     diagram="""
     ?work rdfs:label ?title            74 works
-                │
-                ▼
+                |
+                v
     OPTIONAL { ?work bs:isbn ?isbn }
-                │
-        ┌───────┴────────┐
-        ▼                ▼
+                |
+        +-------+--------+
+        v                v
     ?isbn bound      ?isbn UNBOUND
-        │                │
-        │                ▼
-        │       FILTER(!BOUND(?isbn))  ✓ kept
-        ▼
+        |                |
+        |                v
+        |       FILTER(!BOUND(?isbn))  ok kept
+        v
       dropped
 
     Every book published before 1970 lands on the right-hand branch,
@@ -607,13 +607,13 @@ q(
         "?shop inside the braces is invisible outside them.",
     diagram="""
     for each ?town:
-    ┌──────────────────────────────────────────┐
-    │  does ANY ?shop have bs:locatedIn ?town? │
-    └──────────────────────────────────────────┘
-              │                     │
+    +------------------------------------------+
+    |  does ANY ?shop have bs:locatedIn ?town? |
+    +------------------------------------------+
+              |                     |
              yes                    no
-              │                     │
-           dropped              ✓ kept
+              |                     |
+           dropped              ok kept
 
     Durham, Perth, Fort William, Truro
 
@@ -649,20 +649,20 @@ q(
     diagram="""
     NOT EXISTS { ?shop bs:hasCafe true }
         ?shop is BOUND inside -> a real per-row test
-        ──▶ removes the shops that do have a cafe
+        --> removes the shops that do have a cafe
 
     MINUS { ?other bs:hasCafe true }
         no shared variable -> nothing to compare on
-        ──▶ removes NOTHING
+        --> removes NOTHING
 
-    ┌──────────────┬───────────┬────────────┐
-    │              │ shares a  │ removes    │
-    │              │ variable? │            │
-    ├──────────────┼───────────┼────────────┤
-    │ NOT EXISTS   │ n/a       │ correctly  │
-    │ MINUS (same) │ yes       │ correctly  │
-    │ MINUS (diff) │ no        │ nothing    │
-    └──────────────┴───────────┴────────────┘
+    +--------------+-----------+------------+
+    |              | shares a  | removes    |
+    |              | variable? |            |
+    +--------------+-----------+------------+
+    | NOT EXISTS   | n/a       | correctly  |
+    | MINUS (same) | yes       | correctly  |
+    | MINUS (diff) | no        | nothing    |
+    +--------------+-----------+------------+
     """,
     learn=[
         "NOT EXISTS is a test on the current row. MINUS is a set operation on "
@@ -706,14 +706,14 @@ q(
         "they deliberately bind ?role differently so the output says which "
         "branch a row came from.",
     diagram="""
-         ┌──────────────────────────┐
-         │ ?work bs:author ?person  │  ──▶ ?role = "author"
-         │                          │
-         └──────────────────────────┘
+         +--------------------------+
+         | ?work bs:author ?person  |  --> ?role = "author"
+         |                          |
+         +--------------------------+
                      UNION                    both result sets
-         ┌──────────────────────────┐         concatenated
-         │ ?work bs:translatedBy ?p │  ──▶ ?role = "translator"
-         └──────────────────────────┘
+         +--------------------------+         concatenated
+         | ?work bs:translatedBy ?p |  --> ?role = "translator"
+         +--------------------------+
 
     UNION does NOT deduplicate.  Add DISTINCT if you need that.
     A person appearing in both branches gets two rows, which here
@@ -799,14 +799,14 @@ q(
         "aggregate -- there's nowhere else for a value to come from.",
     diagram="""
     rows after matching          after GROUP BY ?townName
-    ┌──────────┬──────────┐      ┌──────────┬───────┐
-    │ Wigtown  │ Inkwell  │      │ Wigtown  │   2   │
-    │ Wigtown  │Marginalia│  ──▶ │ Edinburgh│   2   │
-    │ Edinburgh│ Colophon │      │ Hay-on-W │   2   │
-    │ Edinburgh│ Broken S │      │ York     │   2   │
-    │ York     │ Endpapers│      │ ...      │  ...  │
-    │ ...      │ ...      │      └──────────┴───────┘
-    └──────────┴──────────┘        one row per group
+    +----------+----------+      +----------+-------+
+    | Wigtown  | Inkwell  |      | Wigtown  |   2   |
+    | Wigtown  |Marginalia|  --> | Edinburgh|   2   |
+    | Edinburgh| Colophon |      | Hay-on-W |   2   |
+    | Edinburgh| Broken S |      | York     |   2   |
+    | York     | Endpapers|      | ...      |  ...  |
+    | ...      | ...      |      +----------+-------+
+    +----------+----------+        one row per group
 
     SELECT may name ?townName (the key) and COUNT(...) (an aggregate).
     Naming ?shop would be a syntax error: which of the two?
@@ -837,15 +837,15 @@ q(
         "a variable, which saves a BIND -- though a BIND would be clearer if "
         "the expression got any longer.",
     diagram="""
-    each bs:StockRecord:   copies × shelfPrice
-                              12   ×   9.99   =  119.88
-                               8   ×  10.99   =   87.92
-                               5   ×   8.99   =   44.95
-                                              ─────────
+    each bs:StockRecord:   copies x shelfPrice
+                              12   x   9.99   =  119.88
+                               8   x  10.99   =   87.92
+                               5   x   8.99   =   44.95
+                                              ---------
               SUM per shop, after GROUP BY ?shop   252.75
 
     SELECT ?name (SUM(?copies * ?price) AS ?value)
-                      ─────────┬───────
+                      ---------+-------
                         expression, evaluated per row,
                         THEN summed per group
     """,
@@ -880,17 +880,17 @@ q(
         "events means much less than one over twenty.",
     diagram="""
     59 events
-       │
-       ├─ Launch    ──┐
-       ├─ Reading   ──┤   GROUP BY ?kind
-       ├─ Panel     ──┤        │
-       ├─ Workshop  ──┤        ▼
-       └─ ...       ──┘   ┌─────────┬─────┬─────┬─────┬─────┐
-                          │ kind    │  n  │ avg │ min │ max │
-                          ├─────────┼─────┼─────┼─────┼─────┤
-                          │ Launch  │  8  │ 190 │ 102 │ 320 │
-                          │ Workshop│  8  │  21 │  14 │  28 │
-                          └─────────┴─────┴─────┴─────┴─────┘
+       |
+       +- Launch    --+
+       +- Reading   --+   GROUP BY ?kind
+       +- Panel     --+        |
+       +- Workshop  --+        v
+       +- ...       --+   +---------+-----+-----+-----+-----+
+                          | kind    |  n  | avg | min | max |
+                          +---------+-----+-----+-----+-----+
+                          | Launch  |  8  | 190 | 102 | 320 |
+                          | Workshop|  8  |  21 |  14 |  28 |
+                          +---------+-----+-----+-----+-----+
 
     Several aggregates over the same grouping cost one pass.
     """,
@@ -924,19 +924,19 @@ q(
         "The two aren't interchangeable and the error message when you "
         "confuse them is rarely helpful.",
     diagram="""
-    WHERE   ─▶  filter individual rows      (FILTER lives here)
-       │
-       ▼
-    GROUP BY ─▶ collapse into groups
-       │
-       ▼
-    HAVING  ─▶  filter whole groups         (HAVING lives here)
-       │
-       ▼
-    ORDER BY ─▶ sort what survived
+    WHERE   ->  filter individual rows      (FILTER lives here)
+       |
+       v
+    GROUP BY -> collapse into groups
+       |
+       v
+    HAVING  ->  filter whole groups         (HAVING lives here)
+       |
+       v
+    ORDER BY -> sort what survived
 
     HAVING( COUNT(?event) >= 3 )
-              ────────┬──────
+              --------+------
               an aggregate -- only legal after grouping
     """,
     learn=[
@@ -965,13 +965,13 @@ q(
         "separator. It's the aggregate you reach for when the consumer of "
         "the result wants a summary rather than a row per item.",
     diagram="""
-    Agnes Varden ─┬─ "Minster Yard"
-                  ├─ "The Chapter House"
-                  └─ "A Cold Coming"
-                        │
+    Agnes Varden -+- "Minster Yard"
+                  +- "The Chapter House"
+                  +- "A Cold Coming"
+                        |
        GROUP_CONCAT(?title; SEPARATOR=" / ")
-                        │
-                        ▼
+                        |
+                        v
     "Minster Yard / The Chapter House / A Cold Coming"
 
     The separator is a keyword argument after a semicolon -- the one
@@ -1017,8 +1017,8 @@ q(
                                    GROUP BY ?shop
 
     shops with 0 events            every shop appears
-    vanish entirely                     │
-                                        ▼
+    vanish entirely                     |
+                                        v
                               COUNT(?event) = 0
                               because COUNT skips unbound
 
@@ -1053,19 +1053,19 @@ q(
         "class, so the answer arrives as a small summary table rather than as "
         "four separate queries.",
     diagram="""
-    ┌────────────────────────────┐
-    │ ?s a bs:Bookshop  -> "shop"│──┐
-    ├────────────────────────────┤  │
-    │ ?s a bs:Work      -> "work"│──┤  UNION
-    ├────────────────────────────┤  ├──────▶ GROUP BY ?class
-    │ ?s a bs:Author  -> "author"│──┤             │
-    ├────────────────────────────┤  │             ▼
-    │ ?s a bs:Event    -> "event"│──┘      ┌────────┬─────┐
-    └────────────────────────────┘         │ author │  32 │
-                                           │ event  │  59 │
-                                           │ shop   │  33 │
-                                           │ work   │  74 │
-                                           └────────┴─────┘
+    +----------------------------+
+    | ?s a bs:Bookshop  -> "shop"|--+
+    +----------------------------+  |
+    | ?s a bs:Work      -> "work"|--+  UNION
+    +----------------------------+  +------> GROUP BY ?class
+    | ?s a bs:Author  -> "author"|--+             |
+    +----------------------------+  |             v
+    | ?s a bs:Event    -> "event"|--+      +--------+-----+
+    +----------------------------+         | author |  32 |
+                                           | event  |  59 |
+                                           | shop   |  33 |
+                                           | work   |  74 |
+                                           +--------+-----+
     """,
     learn=[
         "An aggregate with no GROUP BY produces exactly one row.",

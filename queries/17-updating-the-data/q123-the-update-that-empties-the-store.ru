@@ -9,7 +9,7 @@
 #    Everything. DELETE WHERE with three variables matches every triple in
 #    the default graph and removes all of them. There is no confirmation,
 #    no transaction to roll back on most setups, and no undo. It is worth
-#    running once, deliberately, on a copy — the point lands better than a
+#    running once, deliberately, on a copy -- the point lands better than a
 #    warning does.
 #
 #  DIAGRAM

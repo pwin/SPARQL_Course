@@ -6,8 +6,8 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §17.3.1 Operator Extensibility](https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility)
-- [SPARQL 1.2 Query §17.6 Extensible Value Testing](https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing)
+- [SPARQL 1.2 Query 17.3.1 Operator Extensibility](https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility)
+- [SPARQL 1.2 Query 17.6 Extensible Value Testing](https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing)
 - [SPARQL 1.2 Service Description](https://www.w3.org/TR/sparql12-service-description/)
 - [XPath and XQuery Functions and Operators 3.1](https://www.w3.org/TR/xpath-functions-31/)
 

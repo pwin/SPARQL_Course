@@ -26,13 +26,13 @@
 #        in the query, the same shape:
 #
 #          ?shop bs:founded ?year {| bs:claimedBy ?src ; bs:confidence ?c |} .
-#                ────────┬───────  ─────────────────┬───────────────────
+#                --------+-------  -----------------+-------------------
 #                 the statement        what is said ABOUT the statement
 #
-#        ┌─────────────┬──────┬───────────────────┬──────┐
-#        │ Ex Libris   │ 1919 │ national-register │ 0.99 │
-#        │ Ex Libris   │ 1921 │ local paper       │ 0.40 │
-#        └─────────────┴──────┴───────────────────┴──────┘
+#        +-------------+------+-------------------+------+
+#        | Ex Libris   | 1919 | national-register | 0.99 |
+#        | Ex Libris   | 1921 | local paper       | 0.40 |
+#        +-------------+------+-------------------+------+
 #
 #        Both claims are in the graph.  Neither is privileged.  Deciding
 #        between them is the query's job, not the data's -- see q63.
@@ -49,9 +49,9 @@
 #  DATA     bookshop-trail-1.2.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.2.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.4.6 Functions on Triple Terms
+#  SPEC     SPARQL 1.2 Query 17.4.6 Functions on Triple Terms
 #           https://www.w3.org/TR/sparql12-query/#x17-4-6-functions-on-triple-terms
-#           SPARQL 1.2 Query §17.4.2.9 LANGDIR
+#           SPARQL 1.2 Query 17.4.2.9 LANGDIR
 #           https://www.w3.org/TR/sparql12-query/#x17-4-2-9-langdir
 #  RETURNS  10 rows, on every engine that runs it
 # ==========================================================================

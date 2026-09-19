@@ -11,19 +11,19 @@
 #    band. Unlike FILTER, BIND adds a column rather than removing rows.
 #
 #  DIAGRAM
-#        ?book ──bs:rrp──▶ ?price
+#        ?book --bs:rrp--> ?price
 #
 #                  BIND( IF(?price < 12, "cheap",
 #                        IF(?price < 18, "mid", "dear")) AS ?band )
-#                                        │
-#                                        ▼
-#        ┌────────┬───────┬────────┐
-#        │ ?book  │ ?price│ ?band  │   <- a new column, computed
-#        ├────────┼───────┼────────┤
-#        │ ...    │  9.99 │ cheap  │
-#        │ ...    │ 15.50 │ mid    │
-#        │ ...    │ 21.00 │ dear   │
-#        └────────┴───────┴────────┘
+#                                        |
+#                                        v
+#        +--------+-------+--------+
+#        | ?book  | ?price| ?band  |   <- a new column, computed
+#        +--------+-------+--------+
+#        | ...    |  9.99 | cheap  |
+#        | ...    | 15.50 | mid    |
+#        | ...    | 21.00 | dear   |
+#        +--------+-------+--------+
 #
 #        BIND sees only variables bound EARLIER in the group.  Move it to
 #        the top and ?price is unbound, so ?band comes out unbound too.
@@ -39,9 +39,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §3 RDF Term Constraints
+#  SPEC     SPARQL 1.2 Query 3. RDF Term Constraints
 #           https://www.w3.org/TR/sparql12-query/#x3-rdf-term-constraints-informative
-#           SPARQL 1.2 Query §10.1 BIND
+#           SPARQL 1.2 Query 10.1 BIND
 #           https://www.w3.org/TR/sparql12-query/#x10-1-bind-assigning-to-variables
 #  RETURNS  74 rows, on every engine that runs it
 # ==========================================================================

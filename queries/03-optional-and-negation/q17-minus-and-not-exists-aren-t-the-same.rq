@@ -15,20 +15,20 @@
 #  DIAGRAM
 #        NOT EXISTS { ?shop bs:hasCafe true }
 #            ?shop is BOUND inside -> a real per-row test
-#            ──▶ removes the shops that do have a cafe
+#            --> removes the shops that do have a cafe
 #
 #        MINUS { ?other bs:hasCafe true }
 #            no shared variable -> nothing to compare on
-#            ──▶ removes NOTHING
+#            --> removes NOTHING
 #
-#        ┌──────────────┬───────────┬────────────┐
-#        │              │ shares a  │ removes    │
-#        │              │ variable? │            │
-#        ├──────────────┼───────────┼────────────┤
-#        │ NOT EXISTS   │ n/a       │ correctly  │
-#        │ MINUS (same) │ yes       │ correctly  │
-#        │ MINUS (diff) │ no        │ nothing    │
-#        └──────────────┴───────────┴────────────┘
+#        +--------------+-----------+------------+
+#        |              | shares a  | removes    |
+#        |              | variable? |            |
+#        +--------------+-----------+------------+
+#        | NOT EXISTS   | n/a       | correctly  |
+#        | MINUS (same) | yes       | correctly  |
+#        | MINUS (diff) | no        | nothing    |
+#        +--------------+-----------+------------+
 #
 #
 #  WHAT TO TAKE AWAY
@@ -42,9 +42,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §8.3 NOT EXISTS and MINUS compared
+#  SPEC     SPARQL 1.2 Query 8.3 NOT EXISTS and MINUS compared
 #           https://www.w3.org/TR/sparql12-query/#x8-3-relationship-and-differences-between-not-exists-and-minus
-#           SPARQL 1.2 Query §17.4.1.4 NOT EXISTS and EXISTS
+#           SPARQL 1.2 Query 17.4.1.4 NOT EXISTS and EXISTS
 #           https://www.w3.org/TR/sparql12-query/#x17-4-1-4-not-exists-and-exists
 #  RETURNS  1 row, on every engine that runs it
 # ==========================================================================

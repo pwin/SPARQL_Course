@@ -18,7 +18,7 @@
 #        bs:Bookshop                     schema:BookStore
 #        rdfs:label                      schema:name
 #        bs:founded                      schema:foundingDate
-#        bs:locatedIn ─▶ place ─▶ label  schema:address ─▶ [ a PostalAddress ;
+#        bs:locatedIn -> place -> label  schema:address -> [ a PostalAddress ;
 #                                                            addressLocality ]
 #        wgs84:lat / long                schema:latitude / longitude
 #
@@ -26,8 +26,8 @@
 #
 #          schema:address [ a schema:PostalAddress ;
 #                           schema:addressLocality ?town ]
-#                         ▲
-#                         └── a FRESH blank node per solution, invented
+#                         ^
+#                         +-- a FRESH blank node per solution, invented
 #                             by the template; nothing like it exists in
 #                             the source data
 #
@@ -46,9 +46,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16.2 CONSTRUCT
+#  SPEC     SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#           SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes
+#           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
 #  RETURNS  264 rows, on every engine that runs it
 # ==========================================================================

@@ -17,9 +17,9 @@
 #        ?book bs:author ?author          WHERE {...}
 #        LIMIT 3                          ORDER BY DESC(?n)
 #                                         LIMIT 3 }
-#        ──▶ 3 BOOKS                    ?book bs:author ?author
+#        --> 3 BOOKS                    ?book bs:author ?author
 #
-#                                       ──▶ 3 AUTHORS,
+#                                       --> 3 AUTHORS,
 #                                           all their books
 #
 #        The sub-query is a filter on WHICH authors, evaluated once.
@@ -44,9 +44,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §12 Subqueries
+#  SPEC     SPARQL 1.2 Query 12. Subqueries
 #           https://www.w3.org/TR/sparql12-query/#x12-subqueries
-#           SPARQL 1.2 Query §15 Solution Sequences and Modifiers
+#           SPARQL 1.2 Query 15. Solution Sequences and Modifiers
 #           https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers
 #  RETURNS  10 rows, on every engine that runs it
 # ==========================================================================

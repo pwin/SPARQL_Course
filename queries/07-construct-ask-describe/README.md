@@ -6,11 +6,11 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §16 Query Forms](https://www.w3.org/TR/sparql12-query/#x16-query-forms)
-- [SPARQL 1.2 Query §16.2 CONSTRUCT](https://www.w3.org/TR/sparql12-query/#x16-2-construct)
-- [SPARQL 1.2 Query §16.2.4 CONSTRUCT WHERE](https://www.w3.org/TR/sparql12-query/#x16-2-4-construct-where)
-- [SPARQL 1.2 Query §16.3 ASK](https://www.w3.org/TR/sparql12-query/#x16-3-ask)
-- [SPARQL 1.2 Query §16.4 DESCRIBE](https://www.w3.org/TR/sparql12-query/#x16-4-describe-informative)
+- [SPARQL 1.2 Query 16. Query Forms](https://www.w3.org/TR/sparql12-query/#x16-query-forms)
+- [SPARQL 1.2 Query 16.2 CONSTRUCT](https://www.w3.org/TR/sparql12-query/#x16-2-construct)
+- [SPARQL 1.2 Query 16.2.4 CONSTRUCT WHERE](https://www.w3.org/TR/sparql12-query/#x16-2-4-construct-where)
+- [SPARQL 1.2 Query 16.3 ASK](https://www.w3.org/TR/sparql12-query/#x16-3-ask)
+- [SPARQL 1.2 Query 16.4 DESCRIBE](https://www.w3.org/TR/sparql12-query/#x16-4-describe-informative)
 
 | Query | Asks |
 |---|---|

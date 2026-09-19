@@ -7,7 +7,7 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 | Query | Asks |
 |---|---|
 | [q116 Adding facts you already know](q116-adding-facts-you-already-know.ru) | Add a new bookshop to the trail. |
-| [q117 Removing facts you can name](q117-removing-facts-you-can-name.ru) | The Inkwell has closed its café. Remove that one fact. |
+| [q117 Removing facts you can name](q117-removing-facts-you-can-name.ru) | The Inkwell has closed its cafe. Remove that one fact. |
 | [q118 Removing whatever matches](q118-removing-whatever-matches.ru) | Drop every bs:hasCafe false statement, on the grounds that they say nothing a missing statement would not. |
 | [q119 Correcting a value](q119-correcting-a-value.ru) | Ex Libris was founded in 1921, not 1919. Change it. |
 | [q120 Materialising what a path already knows](q120-materialising-what-a-path-already-knows.ru) | Every shop is in a country by way of two or three bs:within hops. Write that down as one triple per shop. |

@@ -14,7 +14,7 @@
 #
 #  DIAGRAM
 #        degrees                        British National Grid
-#        ───────                        ─────────────────────
+#        -------                        ---------------------
 #        lat/long on a sphere           eastings/northings on a plane
 #        a degree is not a length       the unit IS the metre
 #        scale factor varies with       scale error across Britain
@@ -26,10 +26,10 @@
 #
 #        for each town with no shop:
 #
-#            Durham       ──▶  nearest shop
-#            Perth        ──▶  nearest shop
-#            Fort William ──▶  nearest shop
-#            Truro        ──▶  nearest shop
+#            Durham       -->  nearest shop
+#            Perth        -->  nearest shop
+#            Fort William -->  nearest shop
+#            Truro        -->  nearest shop
 #
 #        The inner query finds the minimum squared distance per town; the
 #        outer one joins back to discover which shop that was -- the same
@@ -47,9 +47,9 @@
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.3 Operator Mapping
+#  SPEC     SPARQL 1.2 Query 17.3 Operator Mapping
 #           https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping
-#           SPARQL 1.2 Query §17.4.4 Functions on Numerics
+#           SPARQL 1.2 Query 17.4.4 Functions on Numerics
 #           https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

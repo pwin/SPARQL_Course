@@ -442,7 +442,7 @@ def build() -> str:
     body.append(PROTOCOL_SECTION)
 
     docs = sum(len(entries) for _g, entries in specs.STANDARDS)
-    nav.append(f'<li><a href="#standards"><span class="n">§</span>'
+    nav.append(f'<li><a href="#standards"><span class="n">&sect;</span>'
                f'The standards<span class="c">{docs}</span></a></li>')
     body.append(standards_section())
 
@@ -470,7 +470,8 @@ def build() -> str:
     )
 
 
-TEMPLATE = """<title>The Bookshop Trail</title>
+TEMPLATE = """<meta charset="utf-8">
+<title>The Bookshop Trail</title>
 {favicon}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

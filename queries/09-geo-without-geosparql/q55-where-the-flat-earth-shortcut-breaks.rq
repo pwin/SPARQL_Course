@@ -26,12 +26,12 @@
 #            true, on the grid   118 km
 #            degree metric       132 km        +11.4%
 #
-#        ┌──────────────┬───────────┬───────────┬───────┐
-#        │ pair         │ grid km   │ degree km │ ratio │
-#        ├──────────────┼───────────┼───────────┼───────┤
-#        │ Inverness -  │    118    │    132    │ 1.114 │
-#        │ Portree      │           │           │       │
-#        └──────────────┴───────────┴───────────┴───────┘
+#        +--------------+-----------+-----------+-------+
+#        | pair         | grid km   | degree km | ratio |
+#        +--------------+-----------+-----------+-------+
+#        | Inverness -  |    118    |    132    | 1.114 |
+#        | Portree      |           |           |       |
+#        +--------------+-----------+-----------+-------+
 #
 #        The lesson is not "never approximate".  It is "know where your
 #        approximation fails, and check whether your data lives there".
@@ -55,9 +55,9 @@
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.3 Operator Mapping
+#  SPEC     SPARQL 1.2 Query 17.3 Operator Mapping
 #           https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping
-#           SPARQL 1.2 Query §17.4.4 Functions on Numerics
+#           SPARQL 1.2 Query 17.4.4 Functions on Numerics
 #           https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics
 #  RETURNS  8 rows, on every engine that runs it
 # ==========================================================================

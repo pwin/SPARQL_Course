@@ -25,19 +25,19 @@ PLANS_PREAMBLE = """
 
   <div class="mech">
     <div class="mech-prose">
-      <h4>Jena — the algebra, before and after</h4>
+      <h4>Jena &mdash; the algebra, before and after</h4>
       <p><code>qparse --print=op</code> shows your query as the algebra the
         specification defines; <code>--print=opt</code> shows what Jena will
         actually run. Neither executes anything, which makes Jena the best of
         the three for learning what a query <em>means</em>.</p>
-      <h4>HOLOS — the physical plan</h4>
+      <h4>HOLOS &mdash; the physical plan</h4>
       <p><code>--explain</code> prints the operator tree with the join
         algorithm and the join keys on every node. Where Jena shows what,
         HOLOS shows how: which side of each join is built into a hash table
         and which side probes it. <code>--reorder</code> builds cardinality
         statistics first and orders each basic graph pattern by estimated
         selectivity.</p>
-      <h4>The browser editor — Comunica</h4>
+      <h4>The browser editor &mdash; Comunica</h4>
       <p><code>engine.explain(query, ctx, 'physical')</code> returns the
         operators it ran and the actor that handled each. Comunica is built
         out of actors that bid for work, so its plan names the implementation
@@ -105,19 +105,19 @@ the right one.</pre></figure>
     <div class="mech-prose">
       <h4>What the operators mean</h4>
       <ul class="learn">
-        <li><b>bgp</b> / <b>QuadPattern</b> — a run of triple patterns. Ask how
+        <li><b>bgp</b> / <b>QuadPattern</b> &mdash; a run of triple patterns. Ask how
           many rows each matches alone (Q90).</li>
-        <li><b>join</b> / <b>sequence</b> — two patterns sharing a variable. A
+        <li><b>join</b> / <b>sequence</b> &mdash; two patterns sharing a variable. A
           join with no key is the cross product of Q91.</li>
-        <li><b>leftjoin</b> / <b>conditional</b> — <code>OPTIONAL</code>. Look
+        <li><b>leftjoin</b> / <b>conditional</b> &mdash; <code>OPTIONAL</code>. Look
           for a filter that ended up inside it (Q19).</li>
-        <li><b>filter</b> — check how far down it was pushed. Further is
+        <li><b>filter</b> &mdash; check how far down it was pushed. Further is
           better.</li>
-        <li><b>path</b> — rarely reordered, so put a selective pattern before
+        <li><b>path</b> &mdash; rarely reordered, so put a selective pattern before
           one.</li>
-        <li><b>group</b> / <b>extend</b> — aggregation happens after the join,
+        <li><b>group</b> / <b>extend</b> &mdash; aggregation happens after the join,
           so a multiplied join is already wrong by the time it runs (Q92).</li>
-        <li><b>slice</b> — <code>LIMIT</code>, applied last, so it seldom saves
+        <li><b>slice</b> &mdash; <code>LIMIT</code>, applied last, so it seldom saves
           work unless the engine can push it.</li>
       </ul>
     </div>

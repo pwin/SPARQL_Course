@@ -15,24 +15,24 @@
 #  DIAGRAM
 #        two sub-queries, one template:
 #
-#          ┌ shops per genre, rolled up the tree ──────┐
-#          │ ?shop bs:specialises/skos:broader* ?genre │
-#          └───────────────────┬───────────────────────┘
-#                              │
-#          ┌ works per genre, rolled up ───────────────┐
-#          │ ?work bs:genre/skos:broader* ?genre       │
-#          └───────────────────┬───────────────────────┘
-#                              ▼
+#          + shops per genre, rolled up the tree ------+
+#          | ?shop bs:specialises/skos:broader* ?genre |
+#          +-------------------+-----------------------+
+#                              |
+#          + works per genre, rolled up ---------------+
+#          | ?work bs:genre/skos:broader* ?genre       |
+#          +-------------------+-----------------------+
+#                              v
 #          CONSTRUCT { ?genre bs:shopCount ?shops ;
 #                             bs:workCount ?works ;
 #                             skos:prefLabel ?label }
 #
 #        the rolling up, in one branch:
 #
-#          Cosy Crime       2 shops    ─┐
-#          Tartan Noir      1 shop     ─┼─▶ Crime Fiction  4 shops
-#          Crime Fiction    1 shop     ─┘        └──────▶ Fiction  17
-#                                                            └──▶ Literature  33
+#          Cosy Crime       2 shops    -+
+#          Tartan Noir      1 shop     -+-> Crime Fiction  4 shops
+#          Crime Fiction    1 shop     -+        +------> Fiction  17
+#                                                            +--> Literature  33
 #
 #        A flat count would put 1 against Crime Fiction and lose the
 #        other three.  The * is what makes the number mean what a reader
@@ -52,9 +52,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16.2 CONSTRUCT
+#  SPEC     SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#           SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes
+#           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
 #  RETURNS  63 rows, on every engine that runs it
 # ==========================================================================

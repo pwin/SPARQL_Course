@@ -14,13 +14,13 @@
 #
 #  DIAGRAM
 #        5,000-triple dataset            ~165-triple summary
-#        ┌────────────────────┐          ┌────────────────────┐
-#        │ shops, towns,      │  ──▶     │ bt:shop-quire      │
-#        │ councils, regions, │          │   rdfs:label ...   │
-#        │ countries, events, │          │   bs:townName ...  │
-#        │ geometry, stock... │          │   bs:countryName ..│
-#        └────────────────────┘          │   bs:eventCount 2  │
-#                                        └────────────────────┘
+#        +--------------------+          +--------------------+
+#        | shops, towns,      |  -->     | bt:shop-quire      |
+#        | councils, regions, |          |   rdfs:label ...   |
+#        | countries, events, |          |   bs:townName ...  |
+#        | geometry, stock... |          |   bs:countryName ..|
+#        +--------------------+          |   bs:eventCount 2  |
+#                                        +--------------------+
 #
 #        This is the query to run before visualising.  The editor's graph
 #        view draws 10 subjects at a time; a summary makes those 10
@@ -37,9 +37,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16 Query Forms
+#  SPEC     SPARQL 1.2 Query 16. Query Forms
 #           https://www.w3.org/TR/sparql12-query/#x16-query-forms
-#           SPARQL 1.2 Query §16.2 CONSTRUCT
+#           SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
 #  RETURNS  165 rows, on every engine that runs it
 # ==========================================================================

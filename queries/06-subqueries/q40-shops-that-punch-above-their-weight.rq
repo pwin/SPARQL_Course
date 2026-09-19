@@ -14,16 +14,16 @@
 #  DIAGRAM
 #        innermost:  total per shop
 #            ex-libris 829, endpapers 520, cotton-quarto 443, ...
-#                              │
-#        middle:  average of those totals   ──▶  231.4   (one row)
-#                              │
+#                              |
+#        middle:  average of those totals   -->  231.4   (one row)
+#                              |
 #        outer:  keep shops whose total exceeds it
-#                              ▼
-#            ┌───────────────┬───────┬────────┐
-#            │ Ex Libris     │  829  │ 231.4  │
-#            │ Endpapers     │  520  │ 231.4  │
-#            │ Cotton Quarto │  443  │ 231.4  │
-#            └───────────────┴───────┴────────┘
+#                              v
+#            +---------------+-------+--------+
+#            | Ex Libris     |  829  | 231.4  |
+#            | Endpapers     |  520  | 231.4  |
+#            | Cotton Quarto |  443  | 231.4  |
+#            +---------------+-------+--------+
 #
 #        Note the middle query aggregates over the INNER query's rows,
 #        not over the events.  Averaging attendance directly would answer
@@ -40,9 +40,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §12 Subqueries
+#  SPEC     SPARQL 1.2 Query 12. Subqueries
 #           https://www.w3.org/TR/sparql12-query/#x12-subqueries
-#           SPARQL 1.2 Query §15 Solution Sequences and Modifiers
+#           SPARQL 1.2 Query 15. Solution Sequences and Modifiers
 #           https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers
 #  RETURNS  11 rows, on every engine that runs it
 # ==========================================================================

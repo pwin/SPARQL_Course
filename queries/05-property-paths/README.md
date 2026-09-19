@@ -6,10 +6,10 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §9 Property Paths](https://www.w3.org/TR/sparql12-query/#x9-property-paths)
-- [SPARQL 1.2 Query §9.1 Property Path Syntax](https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax)
-- [SPARQL 1.2 Query §9.4 Arbitrary Length Path Matching](https://www.w3.org/TR/sparql12-query/#x9-4-arbitrary-length-path-matching)
-- [SPARQL 1.2 Query §18.5 Property Path Patterns](https://www.w3.org/TR/sparql12-query/#x18-5-property-path-patterns)
+- [SPARQL 1.2 Query 9. Property Paths](https://www.w3.org/TR/sparql12-query/#x9-property-paths)
+- [SPARQL 1.2 Query 9.1 Property Path Syntax](https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax)
+- [SPARQL 1.2 Query 9.4 Arbitrary Length Path Matching](https://www.w3.org/TR/sparql12-query/#x9-4-arbitrary-length-path-matching)
+- [SPARQL 1.2 Query 18.5 Property Path Patterns](https://www.w3.org/TR/sparql12-query/#x18-5-property-path-patterns)
 
 | Query | Asks |
 |---|---|

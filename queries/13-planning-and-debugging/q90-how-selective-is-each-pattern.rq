@@ -15,14 +15,14 @@
 #  DIAGRAM
 #        count each pattern on its own, then read the spread:
 #
-#        ┌────────────────────────────────────┬────────┐
-#        │ ?s bs:hasCafe true                 │     22 │  ← selective
-#        │ ?s a bs:Bookshop                   │     33 │
-#        │ ?s bs:locatedIn ?o                 │     46 │
-#        │ ?s bs:stocks ?o                    │     95 │
-#        │ ?s rdfs:label ?o                   │    434 │  ← fans out
-#        │ ?s ?p ?o                           │  4,698 │
-#        └────────────────────────────────────┴────────┘
+#        +------------------------------------+--------+
+#        | ?s bs:hasCafe true                 |     22 |  <- selective
+#        | ?s a bs:Bookshop                   |     33 |
+#        | ?s bs:locatedIn ?o                 |     46 |
+#        | ?s bs:stocks ?o                    |     95 |
+#        | ?s rdfs:label ?o                   |    434 |  <- fans out
+#        | ?s ?p ?o                           |  4,698 |
+#        +------------------------------------+--------+
 #
 #        A join costs roughly the product of what it joins, so the order
 #        matters:
@@ -46,9 +46,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  6 rows, on every engine that runs it
 # ==========================================================================

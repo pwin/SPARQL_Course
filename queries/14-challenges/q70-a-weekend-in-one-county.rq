@@ -21,18 +21,18 @@
 #
 #        so events are counted in their own sub-query, per council:
 #
-#        ┌ outer ────────────────────────────────────┐
-#        │  ?shop bs:locatedIn/bs:within+ ?council   │
-#        │  GROUP BY ?council                        │
-#        │      COUNT(DISTINCT ?shop)                │
-#        │      GROUP_CONCAT(?specialism)            │
-#        │                                           │
-#        │  ┌ inner: events per council ───────────┐ │
-#        │  │ ?e bs:heldAt ?s .                    │ │
-#        │  │ ?s bs:locatedIn/bs:within+ ?council  │ │
-#        │  │ GROUP BY ?council                    │ │
-#        │  └──────────────────────────────────────┘ │
-#        └───────────────────────────────────────────┘
+#        + outer ------------------------------------+
+#        |  ?shop bs:locatedIn/bs:within+ ?council   |
+#        |  GROUP BY ?council                        |
+#        |      COUNT(DISTINCT ?shop)                |
+#        |      GROUP_CONCAT(?specialism)            |
+#        |                                           |
+#        |  + inner: events per council -----------+ |
+#        |  | ?e bs:heldAt ?s .                    | |
+#        |  | ?s bs:locatedIn/bs:within+ ?council  | |
+#        |  | GROUP BY ?council                    | |
+#        |  +--------------------------------------+ |
+#        +-------------------------------------------+
 #
 #        Counting two different things per group almost always means two
 #        sub-queries.  One join cannot serve both.
@@ -56,7 +56,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  21 rows, on every engine that runs it
 # ==========================================================================

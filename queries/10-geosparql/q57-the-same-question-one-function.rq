@@ -29,7 +29,7 @@
 #        The geometry lives on a separate node, which is why the path has
 #        two steps:
 #
-#            ?shop ──geo:hasDefaultGeometry──▶ ?g ──geo:asWKT──▶ "POINT(...)"
+#            ?shop --geo:hasDefaultGeometry--> ?g --geo:asWKT--> "POINT(...)"
 #
 #
 #  WHAT TO TAKE AWAY
@@ -55,7 +55,7 @@
 #  RUNS ON  holos
 #  SPEC     OGC GeoSPARQL 1.1
 #           https://docs.ogc.org/is/22-047r1/22-047r1.html
-#           SPARQL 1.2 Query §17.6 Extensible Value Testing
+#           SPARQL 1.2 Query 17.6 Extensible Value Testing
 #           https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing
 #  RETURNS  12 rows, on every engine that runs it
 # ==========================================================================

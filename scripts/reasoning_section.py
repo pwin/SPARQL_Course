@@ -47,12 +47,12 @@ REASONING_SECTION = f"""
       {_pre('''
                              distinct   usefully   bs:within  a bs:Place
                               triples        new
-  asserted, no reasoning         4,826          —          63          64
+  asserted, no reasoning         4,826          -           63          64
 
   Jena  riotcmd.infer --rdfs     4,826          0          63          64
   HOLOS holos entail             5,051          0          63          64
   HyLAR OWL 2 RL (the editor)    8,777      3,952         186          64
-  Jena  OWLMicro via assembler       —          —         186          64
+  Jena  OWLMicro via assembler       --          --         186          64
 
   SPARQL  ?s bs:within+ ?o       4,826          0         186          64
                                                           ---

@@ -26,13 +26,13 @@ q(
     ASK {
       bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ bt:shop-ex-libris .
     }
-                          │
-                  ┌───────┴────────┐
-                  ▼                ▼
+                          |
+                  +-------+--------+
+                  v                v
                 true             false
              a route exists    no route
 
-    ──▶ true
+    --> true
 
     The same path in a SELECT returns 31 shops and has to find them
     all.  Here the engine may stop at the first success, because one
@@ -72,16 +72,16 @@ q(
       FILTER NOT EXISTS { ?shop rdfs:label ?label }
     }
 
-    ──▶ false          the data is sound
+    --> false          the data is sound
 
     A suite of these is a cheap integrity check, and it needs no
     SHACL processor:
 
-      any shop with no town?           false  ✓
-      any work with no author?         false  ✓
-      any segment joining a shop       false  ✓
+      any shop with no town?           false  ok
+      any work with no author?         false  ok
+      any segment joining a shop       false  ok
         to itself?
-      any place inside itself?         false  ✓
+      any place inside itself?         false  ok
 
     Turn one true and you have found a bug.  data/shapes.ttl says
     the same things in SHACL, which reports WHICH node failed;
@@ -117,15 +117,15 @@ q(
 
     BIND( EXISTS { ?shop bs:stocks/bs:genre bt:genre-translated-fiction }
           AS ?stocksTranslated )
-          ──┬───                            ▲
-            │                               └── ?shop is bound from
-            └── evaluated once per row          the surrounding row
+          --+---                            ^
+            |                               +-- ?shop is bound from
+            +-- evaluated once per row          the surrounding row
 
-    ┌──────────────────────┬───────────────────┐
-    │ Verso and Recto      │ true              │
-    │ Turn the Page        │ true              │
-    │ The Inkwell          │ false             │
-    └──────────────────────┴───────────────────┘
+    +----------------------+-------------------+
+    | Verso and Recto      | true              |
+    | Turn the Page        | true              |
+    | The Inkwell          | false             |
+    +----------------------+-------------------+
 
     FILTER EXISTS is the same test used to drop rows.  BIND EXISTS
     keeps every row and records the answer, which is usually what a
@@ -164,10 +164,10 @@ q(
         GROUP BY ?town
         HAVING ( COUNT(?shop) >= 3 ) }
     }
-                    │
+                    |
       the sub-query yields zero rows
-                    │
-                    ▼
+                    |
+                    v
                   false
 
     Seven towns have two shops -- Wigtown, Edinburgh, Glasgow,
@@ -209,10 +209,10 @@ q(
         "graphs that may not both be loaded.",
     diagram="""
     ASK { GRAPH bt:graph-stock { bt:shop-sea-margin bs:stocks ?anything } }
-                └──────┬──────┘
+                +------+------+
                   only this graph
 
-    ──▶ true
+    --> true
 
     Useful before a bigger query:
 
@@ -261,15 +261,15 @@ q(
     step 2   the engine describes each of them
     step 3   the descriptions are merged into ONE graph
 
-             ┌──────────────┐
-             │ Cliff Road   │──┐
-             ├──────────────┤  │
-             │ Taff Margin  │──┤   one graph,
-             ├──────────────┤  ├─▶ not four
-             │ Castle Steps │──┤
-             ├──────────────┤  │
-             │ Clock Tower  │──┘
-             └──────────────┘
+             +--------------+
+             | Cliff Road   |--+
+             +--------------+  |
+             | Taff Margin  |--+   one graph,
+             +--------------+  +-> not four
+             | Castle Steps |--+
+             +--------------+  |
+             | Clock Tower  |--+
+             +--------------+
 
     The result is a graph, so the shops are not separable in it
     afterwards except by querying it again.
@@ -302,9 +302,9 @@ q(
 
     no WHERE clause: the resources are named directly
 
-        shop-inkwell   ──┐
-        place-wigtown  ──┼──▶  one merged graph
-        author-rab-fingal ┘
+        shop-inkwell   --+
+        place-wigtown  --+-->  one merged graph
+        author-rab-fingal +
 
     Note what is NOT here.  Nothing links the three in the result
     unless the data already linked them -- DESCRIBE does not invent
@@ -469,7 +469,7 @@ q(
 
       CONSTRUCT { ?shop a bs:Bookshop ; rdfs:label ?n ; bs:founded ?y }
       WHERE     { ?shop a bs:Bookshop ; rdfs:label ?n ; bs:founded ?y }
-                  ─────────────── identical ───────────────
+                  --------------- identical ---------------
 
     the short way:
 
@@ -515,7 +515,7 @@ q(
     bs:Bookshop                     schema:BookStore
     rdfs:label                      schema:name
     bs:founded                      schema:foundingDate
-    bs:locatedIn ─▶ place ─▶ label  schema:address ─▶ [ a PostalAddress ;
+    bs:locatedIn -> place -> label  schema:address -> [ a PostalAddress ;
                                                         addressLocality ]
     wgs84:lat / long                schema:latitude / longitude
 
@@ -523,8 +523,8 @@ q(
 
       schema:address [ a schema:PostalAddress ;
                        schema:addressLocality ?town ]
-                     ▲
-                     └── a FRESH blank node per solution, invented
+                     ^
+                     +-- a FRESH blank node per solution, invented
                          by the template; nothing like it exists in
                          the source data
 
@@ -586,12 +586,12 @@ q(
     the two functions that make it work:
 
       BIND( TRIPLE(?shop, bs:stocks, ?work) AS ?statement )
-            ──────┬─────                         builds a triple term
-                  └── SPARQL 1.2
+            ------+-----                         builds a triple term
+                  +-- SPARQL 1.2
 
       BIND( IRI(CONCAT("...reifier-", ?suffix)) AS ?reifier )
-            ─┬─                                    a stable name, so
-             └── re-running gives the same IRIs     the output is idempotent
+            -+-                                    a stable name, so
+             +-- re-running gives the same IRIs     the output is idempotent
 
     A blank node would work too, and would produce a different
     graph every run.  For a migration you want the same one.
@@ -640,24 +640,24 @@ q(
     diagram="""
     two sub-queries, one template:
 
-      ┌ shops per genre, rolled up the tree ──────┐
-      │ ?shop bs:specialises/skos:broader* ?genre │
-      └───────────────────┬───────────────────────┘
-                          │
-      ┌ works per genre, rolled up ───────────────┐
-      │ ?work bs:genre/skos:broader* ?genre       │
-      └───────────────────┬───────────────────────┘
-                          ▼
+      + shops per genre, rolled up the tree ------+
+      | ?shop bs:specialises/skos:broader* ?genre |
+      +-------------------+-----------------------+
+                          |
+      + works per genre, rolled up ---------------+
+      | ?work bs:genre/skos:broader* ?genre       |
+      +-------------------+-----------------------+
+                          v
       CONSTRUCT { ?genre bs:shopCount ?shops ;
                          bs:workCount ?works ;
                          skos:prefLabel ?label }
 
     the rolling up, in one branch:
 
-      Cosy Crime       2 shops    ─┐
-      Tartan Noir      1 shop     ─┼─▶ Crime Fiction  4 shops
-      Crime Fiction    1 shop     ─┘        └──────▶ Fiction  17
-                                                        └──▶ Literature  33
+      Cosy Crime       2 shops    -+
+      Tartan Noir      1 shop     -+-> Crime Fiction  4 shops
+      Crime Fiction    1 shop     -+        +------> Fiction  17
+                                                        +--> Literature  33
 
     A flat count would put 1 against Crime Fiction and lose the
     other three.  The * is what makes the number mean what a reader
@@ -703,26 +703,26 @@ q(
         "query, diff against last week's, or hand to another tool -- which a "
         "printed table isn't.",
     diagram="""
-    ┌ works with no ISBN ───────────┐
-    │ FILTER NOT EXISTS {?w bs:isbn}│─┐
-    ├ shops with no website ────────┤ │
-    │ FILTER NOT EXISTS {?s website}│─┼─ UNION ─▶ CONSTRUCT
-    ├ shops off the trail ──────────┤ │             │
-    │ FILTER NOT EXISTS {path}      │─┘             │
-    └───────────────────────────────┘               ▼
+    + works with no ISBN -----------+
+    | FILTER NOT EXISTS {?w bs:isbn}|-+
+    + shops with no website --------+ |
+    | FILTER NOT EXISTS {?s website}|-+- UNION -> CONSTRUCT
+    + shops off the trail ----------+ |             |
+    | FILTER NOT EXISTS {path}      |-+             |
+    +-------------------------------+               v
 
       []  a          bs:DataIssue ;
           bs:about   ?thing ;
           bs:message ?message .
-      ▲
-      └── a fresh blank node for every finding
+      ^
+      +-- a fresh blank node for every finding
 
-    ┌──────────────────────┬────────────────────────────────┐
-    │ bt:book-cold-harbour │ Work has no ISBN               │
-    │ bt:shop-marginalia   │ Shop publishes no website      │
-    │ bt:shop-west-quay    │ Not reachable on foot from the │
-    │                      │ start of the trail             │
-    └──────────────────────┴────────────────────────────────┘
+    +----------------------+--------------------------------+
+    | bt:book-cold-harbour | Work has no ISBN               |
+    | bt:shop-marginalia   | Shop publishes no website      |
+    | bt:shop-west-quay    | Not reachable on foot from the |
+    |                      | start of the trail             |
+    +----------------------+--------------------------------+
 
     19 findings, 57 triples -- three per finding:
 

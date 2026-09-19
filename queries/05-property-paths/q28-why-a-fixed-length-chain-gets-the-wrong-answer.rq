@@ -18,19 +18,19 @@
 #        ENGLAND (4 levels)            SCOTLAND / WALES (3 levels)
 #
 #        york                          edinburgh
-#          │ within                      │ within
+#          | within                      | within
 #        north-yorkshire               edinburgh-city
-#          │ within                      │ within
+#          | within                      | within
 #        yorkshire                     scotland
-#          │ within                      │ within
+#          | within                      | within
 #        england                       gb
-#          │ within
+#          | within
 #        gb
 #
 #        ?town bs:within/bs:within/bs:within ?country
-#                 ──── exactly 3 hops ────
-#        matches York -> england          ✓
-#        misses Edinburgh -> scotland     ✗   (only 2 hops away)
+#                 ---- exactly 3 hops ----
+#        matches York -> england          ok
+#        misses Edinburgh -> scotland     NO   (only 2 hops away)
 #
 #        ?town bs:within+ ?country        matches both
 #
@@ -47,9 +47,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §9 Property Paths
+#  SPEC     SPARQL 1.2 Query 9. Property Paths
 #           https://www.w3.org/TR/sparql12-query/#x9-property-paths
-#           SPARQL 1.2 Query §9.1 Property Path Syntax
+#           SPARQL 1.2 Query 9.1 Property Path Syntax
 #           https://www.w3.org/TR/sparql12-query/#x9-1-property-path-syntax
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

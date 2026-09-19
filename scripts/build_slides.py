@@ -761,7 +761,7 @@ slide("plain", """
 
                           usefully  bs:within
                                new
-  asserted                        —        63
+  asserted                        -         63
 
   Jena  infer --rdfs              0        63
   HOLOS holos entail              0        63
@@ -824,7 +824,8 @@ ORDER BY ?name""") + """
 
 
 # ===========================================================================
-TEMPLATE = """<title>Bookshop Trail Slides</title>
+TEMPLATE = """<meta charset="utf-8">
+<title>Bookshop Trail Slides</title>
 {favicon}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

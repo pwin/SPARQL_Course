@@ -7,7 +7,7 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 **In the standards.** The sections this module is defined by:
 
 - [OGC GeoSPARQL 1.1](https://docs.ogc.org/is/22-047r1/22-047r1.html)
-- [SPARQL 1.2 Query §17.6 Extensible Value Testing](https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing)
+- [SPARQL 1.2 Query 17.6 Extensible Value Testing](https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing)
 - [SPARQL 1.2 Service Description](https://www.w3.org/TR/sparql12-service-description/)
 
 | Query | Asks |

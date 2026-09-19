@@ -18,12 +18,12 @@ q(
         "know in advance how many levels there are.",
     diagram="""
     bt:shop-endpapers
-          │ bs:locatedIn
-          ▼
-      place-york ──within──▶ north-yorkshire ──within──▶ yorkshire
-                                                              │ within
-                                                              ▼
-                                          place-gb ◀──within── england
+          | bs:locatedIn
+          v
+      place-york --within--> north-yorkshire --within--> yorkshire
+                                                              | within
+                                                              v
+                                          place-gb <--within-- england
 
     bs:within+  collects EVERY place on that road:
 
@@ -63,19 +63,19 @@ q(
     ENGLAND (4 levels)            SCOTLAND / WALES (3 levels)
 
     york                          edinburgh
-      │ within                      │ within
+      | within                      | within
     north-yorkshire               edinburgh-city
-      │ within                      │ within
+      | within                      | within
     yorkshire                     scotland
-      │ within                      │ within
+      | within                      | within
     england                       gb
-      │ within
+      | within
     gb
 
     ?town bs:within/bs:within/bs:within ?country
-             ──── exactly 3 hops ────
-    matches York -> england          ✓
-    misses Edinburgh -> scotland     ✗   (only 2 hops away)
+             ---- exactly 3 hops ----
+    matches York -> england          ok
+    misses Edinburgh -> scotland     NO   (only 2 hops away)
 
     ?town bs:within+ ?country        matches both
 
@@ -128,7 +128,7 @@ q(
     starting from place-york:
 
     bs:within+                    bs:within*
-    ──────────                    ──────────
+    ----------                    ----------
                                   york          <- zero hops: itself
     north-yorkshire               north-yorkshire
     yorkshire                     yorkshire
@@ -174,12 +174,12 @@ q(
     diagram="""
     the data points this way:
 
-        shop ──bs:locatedIn──▶ town ──bs:within──▶ ... ──▶ wales
+        shop --bs:locatedIn--> town --bs:within--> ... --> wales
 
     the question points the other way, so reverse the last two steps:
 
         bt:place-wales  ^bs:within+  ?town   ^bs:locatedIn  ?shop
-                        ─────┬─────         ──────┬───────
+                        -----+-----         ------+-------
                         "everything          "the shops in
                          inside Wales"        that town"
 
@@ -216,12 +216,12 @@ q(
         "(bs:connectsTo|^bs:connectsTo) accepts a step in either direction, "
         "and the + around it repeats that step as often as needed.",
     diagram="""
-    asserted:   inkwell ──connectsTo──▶ marginalia ──▶ broken-spine
+    asserted:   inkwell --connectsTo--> marginalia --> broken-spine
 
     but you can walk it backwards, so the step you want is:
 
         ( bs:connectsTo | ^bs:connectsTo )
-          ────┬───────    ─────┬────────
+          ----+-------    -----+--------
           forwards          backwards
                   either will do
 
@@ -229,7 +229,7 @@ q(
 
         ( bs:connectsTo | ^bs:connectsTo )+
 
-    inkwell ──▶ 31 of the 33 shops
+    inkwell --> 31 of the 33 shops
                 (the two south-western shops are on their own; q32)
 
     Note that inkwell reaches ITSELF: go one hop out and one back,
@@ -262,15 +262,15 @@ q(
     diagram="""
     the main network            the south-west spur
 
-    inkwell ── ... ── ex-libris      west-quay ──▶ penwith
-       │                                 (joined to each other,
-       └── 31 shops reachable             and to nothing else)
+    inkwell -- ... -- ex-libris      west-quay --> penwith
+       |                                 (joined to each other,
+       +-- 31 shops reachable             and to nothing else)
 
     for each ?shop:
       NOT EXISTS { bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ ?shop }
-                                                      │
-                              ┌───────────────────────┘
-                              ▼
+                                                      |
+                              +-----------------------+
+                              v
                    no route found -> keep the row
 
     West Quay Books, Penwith Pages
@@ -309,20 +309,20 @@ q(
         "counts as fiction whichever level it was filed at.",
     diagram="""
     Literature
-      └─ Fiction                       <- the target
-           ├─ Crime Fiction
-           │    ├─ Cosy Crime          <- 3 levels down
-           │    └─ Tartan Noir         <- 3 levels down
-           ├─ Speculative Fiction
-           │    ├─ Science Fiction
-           │    │    ├─ Hard SF        <- 4 levels down
-           │    │    └─ Space Opera
-           │    └─ Fantasy
-           │         └─ Folk Fantasy
-           └─ Classics                 <- 2 levels down
+      +- Fiction                       <- the target
+           +- Crime Fiction
+           |    +- Cosy Crime          <- 3 levels down
+           |    +- Tartan Noir         <- 3 levels down
+           +- Speculative Fiction
+           |    +- Science Fiction
+           |    |    +- Hard SF        <- 4 levels down
+           |    |    +- Space Opera
+           |    +- Fantasy
+           |         +- Folk Fantasy
+           +- Classics                 <- 2 levels down
 
     ?book bs:genre/skos:broader* bt:genre-fiction
-                   ───────┬────
+                   -------+----
              climb zero or more levels, so a book filed
              directly under Fiction still counts
 
@@ -358,16 +358,16 @@ q(
         "not: the engine tracks which nodes it has already visited.",
     diagram="""
     dilys-tremain
-        ├── cerys-lloyd ── elin-morgan ── owain-preece ── bryn-caradoc
-        │                                                     │
-        │                                              nesta-hywel
-        │                                                     │
-        │                                              iolo-vaughan
-        └── magnus-thole ─┬─ bram-tillotson ── juno-verrall ── ...
-                          └─ sandy-cleghorn ── rab-fingal
-                                                   │
+        +-- cerys-lloyd -- elin-morgan -- owain-preece -- bryn-caradoc
+        |                                                     |
+        |                                              nesta-hywel
+        |                                                     |
+        |                                              iolo-vaughan
+        +-- magnus-thole -+- bram-tillotson -- juno-verrall -- ...
+                          +- sandy-cleghorn -- rab-fingal
+                                                   |
                                             kirsty-lammond
-                                                  ↕          <- MUTUAL
+                                                  |          <- MUTUAL
                                             tam-brodie          cycle
 
     bs:influencedBy+ terminates anyway.  The path evaluator keeps a
@@ -403,16 +403,16 @@ q(
         "without dragging in the bulky parts.",
     diagram="""
     !( bs:stocks | geo:hasGeometry | geo:hasDefaultGeometry )
-    ▲  ─────────────────┬──────────────────────────────────
-    │                   └── the predicates to exclude
-    └── "any predicate BUT these"
+    ^  -----------------+----------------------------------
+    |                   +-- the predicates to exclude
+    +-- "any predicate BUT these"
 
     bt:shop-colophon
-        ├─ rdf:type            ✓ kept
-        ├─ rdfs:label          ✓ kept
-        ├─ bs:locatedIn        ✓ kept
-        ├─ bs:stocks           ✗ excluded
-        └─ geo:hasGeometry     ✗ excluded
+        +- rdf:type            ok kept
+        +- rdfs:label          ok kept
+        +- bs:locatedIn        ok kept
+        +- bs:stocks           NO excluded
+        +- geo:hasGeometry     NO excluded
 
     Use ^ inside the set to exclude an incoming link:
         !( ^bs:heldAt )
@@ -442,15 +442,15 @@ q(
         "town, which is inside some area, which is a country.",
     diagram="""
     ?shop bs:locatedIn / bs:within+ / ^bs:within* ...
-          ─────┬─────   ─────┬────
+          -----+-----   -----+----
             one hop      any number
 
     the whole path:
 
-      ?shop  ──bs:locatedIn──▶  town
-             ──bs:within+────▶  any containing area
-                                  │
-                                  └─ FILTER to keep only countries
+      ?shop  --bs:locatedIn-->  town
+             --bs:within+---->  any containing area
+                                  |
+                                  +- FILTER to keep only countries
 
     reads as:  "the shop is in a town, somewhere inside a country"
 
@@ -490,20 +490,20 @@ q(
         "column; the outer query then joins every book against that single "
         "row and filters.",
     diagram="""
-    ┌─ inner query ────────────────────────────┐
-    │  SELECT (AVG(?p) AS ?avgPrice)           │
-    │  WHERE { ?b bs:rrp ?p }                  │
-    │                                          │
-    │  result:  ┌──────────┐                   │
-    │           │ 15.87    │   ONE row         │
-    │           └──────────┘                   │
-    └───────────────────┬──────────────────────┘
-                        │ joined to every outer row
-                        ▼
-    ┌─ outer query ────────────────────────────┐
-    │  ?book bs:rrp ?price                     │
-    │  FILTER( ?price > ?avgPrice )            │
-    └──────────────────────────────────────────┘
+    +- inner query ----------------------------+
+    |  SELECT (AVG(?p) AS ?avgPrice)           |
+    |  WHERE { ?b bs:rrp ?p }                  |
+    |                                          |
+    |  result:  +----------+                   |
+    |           | 15.87    |   ONE row         |
+    |           +----------+                   |
+    +-------------------+----------------------+
+                        | joined to every outer row
+                        v
+    +- outer query ----------------------------+
+    |  ?book bs:rrp ?price                     |
+    |  FILTER( ?price > ?avgPrice )            |
+    +------------------------------------------+
 
     Inner runs FIRST.  It cannot see ?book, ?price or anything else
     from the outer query -- only what it computes itself.
@@ -544,20 +544,20 @@ q(
 
       SELECT ?shop (MAX(?a) AS ?best)
       GROUP BY ?shop
-                    ┌──────────┬─────┐
-                    │ ex-libris│ 320 │
-                    │ endpapers│ 210 │
-                    └──────────┴─────┘
-                          │
+                    +----------+-----+
+                    | ex-libris| 320 |
+                    | endpapers| 210 |
+                    +----------+-----+
+                          |
     step 2: join back to find WHICH event that was
 
       ?event bs:heldAt ?shop ; bs:attendance ?best
-                                             ────┬
-                       the join condition ───────┘
+                                             ----+
+                       the join condition -------+
 
-                    ┌──────────┬─────┬──────────────────┐
-                    │ ex-libris│ 320 │ Launch with Ines │
-                    └──────────┴─────┴──────────────────┘
+                    +----------+-----+------------------+
+                    | ex-libris| 320 | Launch with Ines |
+                    +----------+-----+------------------+
 
     "Group, then join back" is the standard shape for top-N-per-group.
     A tie produces two rows, which is usually what you want.
@@ -598,18 +598,18 @@ q(
     diagram="""
     level 1 -- count books per author per publisher
       GROUP BY ?publisher ?author
-        ┌───────────┬────────────────┬───┐
-        │ northwind │ rhona-blackwood│ 2 │
-        │ northwind │ fenella-drew   │ 2 │
-        │ northwind │ kirsty-lammond │ 2 │
-        └───────────┴────────────────┴───┘
-                          │
+        +-----------+----------------+---+
+        | northwind | rhona-blackwood| 2 |
+        | northwind | fenella-drew   | 2 |
+        | northwind | kirsty-lammond | 2 |
+        +-----------+----------------+---+
+                          |
     level 2 -- average those counts per publisher
       GROUP BY ?publisher
-        ┌───────────┬──────┬─────────┐
-        │ northwind │  4   │  2.0    │
-        │           │auth. │ mean    │
-        └───────────┴──────┴─────────┘
+        +-----------+------+---------+
+        | northwind |  4   |  2.0    |
+        |           |auth. | mean    |
+        +-----------+------+---------+
 
     AVG(COUNT(?x)) is not legal SPARQL.  The nesting has to be
     expressed as a sub-query, which is the whole reason they exist.
@@ -650,16 +650,16 @@ q(
     diagram="""
     innermost:  total per shop
         ex-libris 829, endpapers 520, cotton-quarto 443, ...
-                          │
-    middle:  average of those totals   ──▶  231.4   (one row)
-                          │
+                          |
+    middle:  average of those totals   -->  231.4   (one row)
+                          |
     outer:  keep shops whose total exceeds it
-                          ▼
-        ┌───────────────┬───────┬────────┐
-        │ Ex Libris     │  829  │ 231.4  │
-        │ Endpapers     │  520  │ 231.4  │
-        │ Cotton Quarto │  443  │ 231.4  │
-        └───────────────┴───────┴────────┘
+                          v
+        +---------------+-------+--------+
+        | Ex Libris     |  829  | 231.4  |
+        | Endpapers     |  520  | 231.4  |
+        | Cotton Quarto |  443  | 231.4  |
+        +---------------+-------+--------+
 
     Note the middle query aggregates over the INNER query's rows,
     not over the events.  Averaging attendance directly would answer
@@ -707,9 +707,9 @@ q(
     ?book bs:author ?author          WHERE {...}
     LIMIT 3                          ORDER BY DESC(?n)
                                      LIMIT 3 }
-    ──▶ 3 BOOKS                    ?book bs:author ?author
+    --> 3 BOOKS                    ?book bs:author ?author
 
-                                   ──▶ 3 AUTHORS,
+                                   --> 3 AUTHORS,
                                        all their books
 
     The sub-query is a filter on WHICH authors, evaluated once.
@@ -757,14 +757,14 @@ q(
         "through bs:influencedBy so the two counts land in the same row and "
         "can be compared.",
     diagram="""
-    ┌─ count per author ─┐        ┌─ count per author ─┐
-    │ dilys-tremain   2  │        │ cerys-lloyd     2  │
-    │ magnus-thole    2  │        │ magnus-thole    2  │
-    └─────────┬──────────┘        └─────────┬──────────┘
-              │                             │
-              │   ?author bs:influencedBy ?mentor
-              └──────────────┬──────────────┘
-                             ▼
+    +- count per author -+        +- count per author -+
+    | dilys-tremain   2  |        | cerys-lloyd     2  |
+    | magnus-thole    2  |        | magnus-thole    2  |
+    +---------+----------+        +---------+----------+
+              |                             |
+              |   ?author bs:influencedBy ?mentor
+              +--------------+--------------+
+                             v
               FILTER( ?ownBooks > ?mentorBooks )
 
     The same sub-query appears twice with different variable names.
@@ -816,10 +816,10 @@ q(
     WHERE  finds solutions          CONSTRUCT  builds triples
 
     ?shop = bt:shop-inkwell         bt:shop-inkwell
-    ?name = "The Inkwell"    ──▶        rdfs:label "The Inkwell" ;
+    ?name = "The Inkwell"    -->        rdfs:label "The Inkwell" ;
     ?town = "Wigtown"                   bs:townName "Wigtown" .
 
-    one solution  ─────────────▶  two triples
+    one solution  ------------->  two triples
 
     The template may invent predicates that appear nowhere in the
     source: bs:townName is created here, purely for the output.
@@ -860,14 +860,14 @@ q(
     diagram="""
     in the data:
 
-        pub-saltmarsh ──bs:imprintOf──▶ pub-northwind
+        pub-saltmarsh --bs:imprintOf--> pub-northwind
 
     CONSTRUCT { ?parent bs:hasImprint ?child }
     WHERE     { ?child bs:imprintOf ?parent }
 
     produces:
 
-        pub-northwind ──bs:hasImprint──▶ pub-saltmarsh
+        pub-northwind --bs:hasImprint--> pub-saltmarsh
 
     The vocabulary already declares
         bs:hasImprint owl:inverseOf bs:imprintOf
@@ -919,12 +919,12 @@ q(
             bs:hasCafe true .
     }
 
-              ┌─────────────┐
-              │  any match? │
-              └──────┬──────┘
-                     │
-            ┌────────┴────────┐
-            ▼                 ▼
+              +-------------+
+              |  any match? |
+              +------+------+
+                     |
+            +--------+--------+
+            v                 v
           true              false
 
     One value comes back, not a table.  The engine is allowed to
@@ -997,13 +997,13 @@ q(
         "source data isn't.",
     diagram="""
     5,000-triple dataset            ~165-triple summary
-    ┌────────────────────┐          ┌────────────────────┐
-    │ shops, towns,      │  ──▶     │ bt:shop-quire      │
-    │ councils, regions, │          │   rdfs:label ...   │
-    │ countries, events, │          │   bs:townName ...  │
-    │ geometry, stock... │          │   bs:countryName ..│
-    └────────────────────┘          │   bs:eventCount 2  │
-                                    └────────────────────┘
+    +--------------------+          +--------------------+
+    | shops, towns,      |  -->     | bt:shop-quire      |
+    | councils, regions, |          |   rdfs:label ...   |
+    | countries, events, |          |   bs:townName ...  |
+    | geometry, stock... |          |   bs:countryName ..|
+    +--------------------+          |   bs:eventCount 2  |
+                                    +--------------------+
 
     This is the query to run before visualising.  The editor's graph
     view draws 10 subjects at a time; a summary makes those 10
@@ -1058,17 +1058,17 @@ q(
     diagram="""
     a dataset is a default graph plus zero or more named graphs:
 
-    ┌ default graph ──────────────────────────┐
-    │  bt:dataset rdfs:label "The Bookshop..."│
-    └─────────────────────────────────────────┘
-    ┌ bt:graph-places ─┐ ┌ bt:graph-books ─┐
-    │ 30 settlements   │ │ 74 works        │
-    │ 23 councils ...  │ │ ...             │
-    └──────────────────┘ └─────────────────┘
+    + default graph --------------------------+
+    |  bt:dataset rdfs:label "The Bookshop..."|
+    +-----------------------------------------+
+    + bt:graph-places -+ + bt:graph-books -+
+    | 30 settlements   | | 74 works        |
+    | 23 councils ...  | | ...             |
+    +------------------+ +-----------------+
 
     GRAPH ?g { ?s ?p ?o }
-          │
-          └── binds to the NAME of whichever graph matched
+          |
+          +-- binds to the NAME of whichever graph matched
 
     Triples in the default graph are NOT visible to GRAPH ?g.
     That catches people out: the dataset description in the default
@@ -1111,8 +1111,8 @@ q(
       ?g = bt:graph-shops   ?p = bs:hasCafe    ?o = true
       ?g = bt:graph-stock   ?p = bs:stocks     ?o = bt:book-...
       ?g = bt:graph-trail   ?p = bs:connectsTo ?o = bt:shop-...
-                 │
-                 └── the same subject, facts from three graphs
+                 |
+                 +-- the same subject, facts from three graphs
 
     Named graphs give you per-triple provenance for free, as long as
     "which file it came from" is the granularity you need.  For finer
@@ -1143,12 +1143,12 @@ q(
         "nothing but the dataset description -- so it finds nothing at all. "
         "That surprise is the lesson.",
     diagram="""
-    GRAPH bt:graph-shops { ?s a bs:Bookshop }     ──▶  33
+    GRAPH bt:graph-shops { ?s a bs:Bookshop }     -->  33
 
-    { ?s a bs:Bookshop }        (no GRAPH)        ──▶   0
-                                                       ▲
-        because the default graph of this TriG file    │
-        contains only the dataset description ─────────┘
+    { ?s a bs:Bookshop }        (no GRAPH)        -->   0
+                                                       ^
+        because the default graph of this TriG file    |
+        contains only the dataset description ---------+
 
     Compare with the Turtle files, where everything IS the default
     graph and the second pattern finds all 33.
@@ -1194,12 +1194,12 @@ q(
         "ordinary patterns are. Nothing about the join changes because the "
         "data is filed separately -- which is the point of named graphs.",
     diagram="""
-    ┌ bt:graph-shops ────────────┐
-    │ ?shop bs:locatedIn ?town   │──┐
-    └────────────────────────────┘  │  joined on ?town
-    ┌ bt:graph-places ───────────┐  │
-    │ ?town rdfs:label ?townName │◀─┘
-    └────────────────────────────┘
+    + bt:graph-shops ------------+
+    | ?shop bs:locatedIn ?town   |--+
+    +----------------------------+  |  joined on ?town
+    + bt:graph-places -----------+  |
+    | ?town rdfs:label ?townName |<-+
+    +----------------------------+
 
     The join is the shared variable, as always.  Graph boundaries do
     not obstruct it.

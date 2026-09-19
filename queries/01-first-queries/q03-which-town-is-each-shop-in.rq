@@ -12,9 +12,9 @@
 #    the shared variables line up.
 #
 #  DIAGRAM
-#        ?shop ──rdfs:label──▶ ?shopName
-#          │
-#          └──bs:locatedIn──▶ ?town ──rdfs:label──▶ ?townName
+#        ?shop --rdfs:label--> ?shopName
+#          |
+#          +--bs:locatedIn--> ?town --rdfs:label--> ?townName
 #
 #        Two joins:  ?shop  ties lines 1 and 2
 #                    ?town  ties lines 2 and 3
@@ -33,9 +33,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §2 Making Simple Queries
+#  SPEC     SPARQL 1.2 Query 2. Making Simple Queries
 #           https://www.w3.org/TR/sparql12-query/#x2-making-simple-queries-informative
-#           SPARQL 1.2 Query §4 SPARQL Syntax
+#           SPARQL 1.2 Query 4. SPARQL Syntax
 #           https://www.w3.org/TR/sparql12-query/#x4-sparql-syntax
 #  RETURNS  45 rows, on every engine that runs it
 # ==========================================================================

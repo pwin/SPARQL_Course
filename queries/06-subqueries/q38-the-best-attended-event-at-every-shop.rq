@@ -16,20 +16,20 @@
 #
 #          SELECT ?shop (MAX(?a) AS ?best)
 #          GROUP BY ?shop
-#                        ┌──────────┬─────┐
-#                        │ ex-libris│ 320 │
-#                        │ endpapers│ 210 │
-#                        └──────────┴─────┘
-#                              │
+#                        +----------+-----+
+#                        | ex-libris| 320 |
+#                        | endpapers| 210 |
+#                        +----------+-----+
+#                              |
 #        step 2: join back to find WHICH event that was
 #
 #          ?event bs:heldAt ?shop ; bs:attendance ?best
-#                                                 ────┬
-#                           the join condition ───────┘
+#                                                 ----+
+#                           the join condition -------+
 #
-#                        ┌──────────┬─────┬──────────────────┐
-#                        │ ex-libris│ 320 │ Launch with Ines │
-#                        └──────────┴─────┴──────────────────┘
+#                        +----------+-----+------------------+
+#                        | ex-libris| 320 | Launch with Ines |
+#                        +----------+-----+------------------+
 #
 #        "Group, then join back" is the standard shape for top-N-per-group.
 #        A tie produces two rows, which is usually what you want.
@@ -46,9 +46,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §12 Subqueries
+#  SPEC     SPARQL 1.2 Query 12. Subqueries
 #           https://www.w3.org/TR/sparql12-query/#x12-subqueries
-#           SPARQL 1.2 Query §15 Solution Sequences and Modifiers
+#           SPARQL 1.2 Query 15. Solution Sequences and Modifiers
 #           https://www.w3.org/TR/sparql12-query/#x15-solution-sequences-and-modifiers
 #  RETURNS  15 rows, on every engine that runs it
 # ==========================================================================

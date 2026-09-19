@@ -30,13 +30,13 @@ q(
     in the query, the same shape:
 
       ?shop bs:founded ?year {| bs:claimedBy ?src ; bs:confidence ?c |} .
-            ────────┬───────  ─────────────────┬───────────────────
+            --------+-------  -----------------+-------------------
              the statement        what is said ABOUT the statement
 
-    ┌─────────────┬──────┬───────────────────┬──────┐
-    │ Ex Libris   │ 1919 │ national-register │ 0.99 │
-    │ Ex Libris   │ 1921 │ local paper       │ 0.40 │
-    └─────────────┴──────┴───────────────────┴──────┘
+    +-------------+------+-------------------+------+
+    | Ex Libris   | 1919 | national-register | 0.99 |
+    | Ex Libris   | 1921 | local paper       | 0.40 |
+    +-------------+------+-------------------+------+
 
     Both claims are in the graph.  Neither is privileged.  Deciding
     between them is the query's job, not the data's -- see q63.
@@ -70,8 +70,8 @@ q(
     diagram="""
     ?shop bs:founded ?yearA {| bs:claimedBy ?srcA |} .
     ?shop bs:founded ?yearB {| bs:claimedBy ?srcB |} .
-      ▲                ▲
-      └── same shop ───┘ different years
+      ^                ^
+      +-- same shop ---+ different years
 
     FILTER( STR(?yearA) != STR(?yearB) )   <- a genuine contradiction
     FILTER( STR(?srcA) < STR(?srcB) ) <- report each pair once
@@ -122,18 +122,18 @@ q(
       SELECT ?shop (MAX(?c) AS ?best)
       WHERE { ?shop bs:founded ?y {| bs:confidence ?c |} }
       GROUP BY ?shop
-                        │
+                        |
     step 2 -- which claim had it?
       ?shop bs:founded ?year {| bs:confidence ?best |} .
-                                              ────┬
-                              the join condition ─┘
+                                              ----+
+                              the join condition -+
 
-    ┌──────────────┬──────┬──────┬───────────────────┐
-    │ Ex Libris    │ 1919 │ 0.99 │ national register │
-    │ Endpapers    │ 1949 │ 0.97 │ national register │
-    │ Candlemas  │ 1931 │ 0.98 │ national register │
-    │ Castle Steps │ 1962 │ 0.85 │ trail guide 2024  │
-    └──────────────┴──────┴──────┴───────────────────┘
+    +--------------+------+------+-------------------+
+    | Ex Libris    | 1919 | 0.99 | national register |
+    | Endpapers    | 1949 | 0.97 | national register |
+    | Candlemas  | 1931 | 0.98 | national register |
+    | Castle Steps | 1962 | 0.85 | trail guide 2024  |
+    +--------------+------+------+-------------------+
 
     The graph keeps every claim.  The query chooses.  Change the
     policy -- most recent, most sources, highest confidence -- and
@@ -181,9 +181,9 @@ q(
         bt:shop-ex-libris bs:founded 1919 .          <- the base triple
         _:r rdf:reifies <<( bt:shop-ex-libris bs:founded 1919 )>> .
         _:r bs:confidence 0.99 .
-            ▲                ▲
-            │                └── an ordinary triple about _:r
-            └── _:r is the "reifier": a name for the statement
+            ^                ^
+            |                +-- an ordinary triple about _:r
+            +-- _:r is the "reifier": a name for the statement
 
         <<( s p o )>> is a TRIPLE TERM: a single RDF term whose
         value is a triple.  It may only appear as an object.
@@ -230,12 +230,12 @@ q(
     bt:source-national-register bs:disputes
         <<( bt:shop-ex-libris bs:founded "1921"^^xsd:gYear )>> .
 
-    ┌───────────────────────────────────────────────────┐
-    │  the OBJECT of this triple is itself a triple      │
-    │                                                    │
-    │  and crucially, it is NOT asserted:                │
-    │  saying "X disputes S" does not put S in the graph │
-    └───────────────────────────────────────────────────┘
+    +---------------------------------------------------+
+    |  the OBJECT of this triple is itself a triple      |
+    |                                                    |
+    |  and crucially, it is NOT asserted:                |
+    |  saying "X disputes S" does not put S in the graph |
+    +---------------------------------------------------+
 
     contrast with the annotation syntax, which DOES assert:
 
@@ -278,20 +278,20 @@ q(
     diagram="""
     ?t = <<( bt:shop-ex-libris bs:founded "1921"^^xsd:gYear )>>
 
-        isTRIPLE(?t)     ──▶  true
-        SUBJECT(?t)      ──▶  bt:shop-ex-libris
-        PREDICATE(?t)    ──▶  bs:founded
-        OBJECT(?t)       ──▶  "1921"^^xsd:gYear
+        isTRIPLE(?t)     -->  true
+        SUBJECT(?t)      -->  bt:shop-ex-libris
+        PREDICATE(?t)    -->  bs:founded
+        OBJECT(?t)       -->  "1921"^^xsd:gYear
 
     and in the other direction:
 
-        TRIPLE(?s, ?p, ?o)  ──▶  a new triple term
+        TRIPLE(?s, ?p, ?o)  -->  a new triple term
 
-    ┌──────────────────────────────────────────────┐
-    │ these work on ANY triple term, whatever its  │
-    │ shape -- so a query can inspect statements   │
-    │ whose predicate it does not know             │
-    └──────────────────────────────────────────────┘
+    +----------------------------------------------+
+    | these work on ANY triple term, whatever its  |
+    | shape -- so a query can inspect statements   |
+    | whose predicate it does not know             |
+    +----------------------------------------------+
 
     Verified on all three engines: isTRIPLE, SUBJECT, PREDICATE,
     OBJECT and TRIPLE all evaluate.  VERSION() does not -- Jena has
@@ -328,15 +328,15 @@ q(
         "matter.",
     diagram="""
     "البحر المظلم"@ar--rtl
-     ──────┬─────  ─┬─ ─┬─
-           │        │   └── base direction: rtl
-           │        └────── language: Arabic
-           └─────────────── the text
+     ------+-----  -+- -+-
+           |        |   +-- base direction: rtl
+           |        +------ language: Arabic
+           +--------------- the text
 
-    LANGDIR(?l)      ──▶  "rtl"
-    hasLANGDIR(?l)   ──▶  true   (false for plain @ar)
-    LANG(?l)         ──▶  "ar"   (unchanged from 1.1)
-    STRLANGDIR("hi","en","ltr")  ──▶  "hi"@en--ltr
+    LANGDIR(?l)      -->  "rtl"
+    hasLANGDIR(?l)   -->  true   (false for plain @ar)
+    LANG(?l)         -->  "ar"   (unchanged from 1.1)
+    STRLANGDIR("hi","en","ltr")  -->  "hi"@en--ltr
 
     why it matters:
 
@@ -436,20 +436,20 @@ q(
     diagram="""
     influence points BACKWARDS -- from the later author to the earlier:
 
-        dilys-tremain  ──bs:influencedBy──▶  cerys-lloyd
+        dilys-tremain  --bs:influencedBy-->  cerys-lloyd
 
     so "who did X influence?" reverses it:
 
         ?ancestor  ^bs:influencedBy+  ?descendant
-                   ─────────┬───────
+                   ---------+-------
                    one or more hops, downstream
 
-    ┌────────────────┬─────────────┐
-    │ rhona-blackwood│ many        │   the roots of the graph
-    │ maud-ellery    │ many        │   reach almost everyone
-    │ ...            │             │
-    │ dilys-tremain  │ 0           │   the leaves reach nobody
-    └────────────────┴─────────────┘
+    +----------------+-------------+
+    | rhona-blackwood| many        |   the roots of the graph
+    | maud-ellery    | many        |   reach almost everyone
+    | ...            |             |
+    | dilys-tremain  | 0           |   the leaves reach nobody
+    +----------------+-------------+
 
     Watch for the mutual pair: tam-brodie and kirsty-lammond each
     influenced the other, so each is among their own descendants.
@@ -491,18 +491,18 @@ q(
 
     so events are counted in their own sub-query, per council:
 
-    ┌ outer ────────────────────────────────────┐
-    │  ?shop bs:locatedIn/bs:within+ ?council   │
-    │  GROUP BY ?council                        │
-    │      COUNT(DISTINCT ?shop)                │
-    │      GROUP_CONCAT(?specialism)            │
-    │                                           │
-    │  ┌ inner: events per council ───────────┐ │
-    │  │ ?e bs:heldAt ?s .                    │ │
-    │  │ ?s bs:locatedIn/bs:within+ ?council  │ │
-    │  │ GROUP BY ?council                    │ │
-    │  └──────────────────────────────────────┘ │
-    └───────────────────────────────────────────┘
+    + outer ------------------------------------+
+    |  ?shop bs:locatedIn/bs:within+ ?council   |
+    |  GROUP BY ?council                        |
+    |      COUNT(DISTINCT ?shop)                |
+    |      GROUP_CONCAT(?specialism)            |
+    |                                           |
+    |  + inner: events per council -----------+ |
+    |  | ?e bs:heldAt ?s .                    | |
+    |  | ?s bs:locatedIn/bs:within+ ?council  | |
+    |  | GROUP BY ?council                    | |
+    |  +--------------------------------------+ |
+    +-------------------------------------------+
 
     Counting two different things per group almost always means two
     sub-queries.  One join cannot serve both.
@@ -568,20 +568,20 @@ q(
 
     step 2 -- OPTIONAL sub-query for each count
 
-        ?g ──┬── OPTIONAL { shops specialising  } ──▶ ?shops
-             └── OPTIONAL { works in this genre } ──▶ ?works
+        ?g --+-- OPTIONAL { shops specialising  } --> ?shops
+             +-- OPTIONAL { works in this genre } --> ?works
 
     step 3 -- COALESCE turns "no match" into zero
 
         COALESCE(?shops, 0)
 
-    ┌───────────────────┬───────┬───────┐
-    │ genre             │ shops │ works │
-    ├───────────────────┼───────┼───────┤
-    │ mountaineering    │   1   │   2   │   thin
-    │ climate-fiction   │   0   │   3   │   stocked, nobody's speciality
-    │ classics          │   1   │   0   │   claimed, nothing filed
-    └───────────────────┴───────┴───────┘
+    +-------------------+-------+-------+
+    | genre             | shops | works |
+    +-------------------+-------+-------+
+    | mountaineering    |   1   |   2   |   thin
+    | climate-fiction   |   0   |   3   |   stocked, nobody's speciality
+    | classics          |   1   |   0   |   claimed, nothing filed
+    +-------------------+-------+-------+
 
     COALESCE is the tool for turning absence into a usable value.
     """,
@@ -626,20 +626,20 @@ q(
         "computed score combines the two. Nothing here's new -- it's q16, "
         "q54 and a BIND, assembled.",
     diagram="""
-    ┌ towns with no shop ─────────────┐   q16
-    │  FILTER NOT EXISTS {            │
-    │    ?s bs:locatedIn ?town }      │
-    └────────────┬────────────────────┘
-                 │
-    ┌ nearest shop, squared metres ───┐   q54
-    │  MIN( (dx)² + (dy)² )           │
-    └────────────┬────────────────────┘
-                 │
-    ┌ combine ────────────────────────┐
-    │  score = population × km        │
-    │          ───┬────    ─┬─        │
-    │        demand     distance      │
-    └─────────────────────────────────┘
+    + towns with no shop -------------+   q16
+    |  FILTER NOT EXISTS {            |
+    |    ?s bs:locatedIn ?town }      |
+    +------------+--------------------+
+                 |
+    + nearest shop, squared metres ---+   q54
+    |  MIN( (dx)^2 + (dy)^2 )         |
+    +------------+--------------------+
+                 |
+    + combine ------------------------+
+    |  score = population x km        |
+    |          ---+----    -+-        |
+    |        demand     distance      |
+    +---------------------------------+
 
     A bigger town further from any shop scores higher.  The formula
     is a judgement, not a fact -- which is exactly why it belongs in
@@ -691,27 +691,27 @@ q(
     diagram="""
     branch 1 -- what the shop actually has
 
-      bt:shop-sea-margin ──bs:stocks──▶ ?work
+      bt:shop-sea-margin --bs:stocks--> ?work
 
     branch 2 -- what its authors were reading
 
-      bt:shop-sea-margin ──bs:stocks──▶ ?stocked
-                                          │ bs:author
-                                          ▼
+      bt:shop-sea-margin --bs:stocks--> ?stocked
+                                          | bs:author
+                                          v
                                        ?author
-                                          │ bs:influencedBy+
-                                          ▼
+                                          | bs:influencedBy+
+                                          v
                                        ?ancestor
-                                          │ ^bs:author
-                                          ▼
+                                          | ^bs:author
+                                          v
                                         ?work
 
-    ┌────────────────────┬──────────────────┐
-    │ The Selkie Ledger  │ in stock         │
-    │ An Lochan          │ in stock         │
-    │ The Shieling       │ recommended      │
-    │ Cold Harbour       │ recommended      │
-    └────────────────────┴──────────────────┘
+    +--------------------+------------------+
+    | The Selkie Ledger  | in stock         |
+    | An Lochan          | in stock         |
+    | The Shieling       | recommended      |
+    | Cold Harbour       | recommended      |
+    +--------------------+------------------+
 
     A recommendation engine in fourteen lines, and no machine
     learning anywhere near it.
@@ -757,24 +757,24 @@ q(
     diagram="""
     for every shop with more than one founding claim:
 
-      ┌ all claims ────────────────────────────┐
-      │ ?shop bs:founded ?y {| claimedBy ?s ;  │
-      │                        confidence ?c |}│
-      └────────────┬───────────────────────────┘
-                   │
-      ┌ best per shop ─────────┐  ┌ list them all ──────────┐
-      │ MAX(?c) -> ?best       │  │ GROUP_CONCAT(?y)        │
-      └────────────┬───────────┘  └────────────┬────────────┘
-                   └───────────┬───────────────┘
-                               ▼
-    ┌──────────────┬──────────┬──────────┬───────────────────┐
-    │ shop         │ claims   │ accepted │ on the word of    │
-    ├──────────────┼──────────┼──────────┼───────────────────┤
-    │ Ex Libris    │1919,1921 │   1919   │ national register │
-    │ Endpapers    │1946,1949 │   1949   │ national register │
-    │ Candlemas  │1928,1931 │   1931   │ national register │
-    │ Castle Steps │1962,1965 │   1962   │ trail guide 2024  │
-    └──────────────┴──────────┴──────────┴───────────────────┘
+      + all claims ----------------------------+
+      | ?shop bs:founded ?y {| claimedBy ?s ;  |
+      |                        confidence ?c |}|
+      +------------+---------------------------+
+                   |
+      + best per shop ---------+  + list them all ----------+
+      | MAX(?c) -> ?best       |  | GROUP_CONCAT(?y)        |
+      +------------+-----------+  +------------+------------+
+                   +-----------+---------------+
+                               v
+    +--------------+----------+----------+-------------------+
+    | shop         | claims   | accepted | on the word of    |
+    +--------------+----------+----------+-------------------+
+    | Ex Libris    |1919,1921 |   1919   | national register |
+    | Endpapers    |1946,1949 |   1949   | national register |
+    | Candlemas  |1928,1931 |   1931   | national register |
+    | Castle Steps |1962,1965 |   1962   | trail guide 2024  |
+    +--------------+----------+----------+-------------------+
 
     HAVING(COUNT(DISTINCT ?y) > 1) keeps only the genuine
     disagreements: shops whose sources agree are not news.

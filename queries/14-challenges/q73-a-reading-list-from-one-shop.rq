@@ -17,27 +17,27 @@
 #  DIAGRAM
 #        branch 1 -- what the shop actually has
 #
-#          bt:shop-sea-margin ──bs:stocks──▶ ?work
+#          bt:shop-sea-margin --bs:stocks--> ?work
 #
 #        branch 2 -- what its authors were reading
 #
-#          bt:shop-sea-margin ──bs:stocks──▶ ?stocked
-#                                              │ bs:author
-#                                              ▼
+#          bt:shop-sea-margin --bs:stocks--> ?stocked
+#                                              | bs:author
+#                                              v
 #                                           ?author
-#                                              │ bs:influencedBy+
-#                                              ▼
+#                                              | bs:influencedBy+
+#                                              v
 #                                           ?ancestor
-#                                              │ ^bs:author
-#                                              ▼
+#                                              | ^bs:author
+#                                              v
 #                                            ?work
 #
-#        ┌────────────────────┬──────────────────┐
-#        │ The Selkie Ledger  │ in stock         │
-#        │ An Lochan          │ in stock         │
-#        │ The Shieling       │ recommended      │
-#        │ Cold Harbour       │ recommended      │
-#        └────────────────────┴──────────────────┘
+#        +--------------------+------------------+
+#        | The Selkie Ledger  | in stock         |
+#        | An Lochan          | in stock         |
+#        | The Shieling       | recommended      |
+#        | Cold Harbour       | recommended      |
+#        +--------------------+------------------+
 #
 #        A recommendation engine in fourteen lines, and no machine
 #        learning anywhere near it.
@@ -56,7 +56,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  23 rows, on every engine that runs it
 # ==========================================================================

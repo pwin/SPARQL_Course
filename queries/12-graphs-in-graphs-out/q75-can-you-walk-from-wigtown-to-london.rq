@@ -15,13 +15,13 @@
 #        ASK {
 #          bt:shop-inkwell (bs:connectsTo|^bs:connectsTo)+ bt:shop-ex-libris .
 #        }
-#                              │
-#                      ┌───────┴────────┐
-#                      ▼                ▼
+#                              |
+#                      +-------+--------+
+#                      v                v
 #                    true             false
 #                 a route exists    no route
 #
-#        ──▶ true
+#        --> true
 #
 #        The same path in a SELECT returns 31 shops and has to find them
 #        all.  Here the engine may stop at the first success, because one
@@ -46,9 +46,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16.2 CONSTRUCT
+#  SPEC     SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#           SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes
+#           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
 #  RETURNS  1 row, on every engine that runs it
 # ==========================================================================

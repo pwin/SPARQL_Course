@@ -23,20 +23,20 @@
 #
 #        step 2 -- OPTIONAL sub-query for each count
 #
-#            ?g ──┬── OPTIONAL { shops specialising  } ──▶ ?shops
-#                 └── OPTIONAL { works in this genre } ──▶ ?works
+#            ?g --+-- OPTIONAL { shops specialising  } --> ?shops
+#                 +-- OPTIONAL { works in this genre } --> ?works
 #
 #        step 3 -- COALESCE turns "no match" into zero
 #
 #            COALESCE(?shops, 0)
 #
-#        ┌───────────────────┬───────┬───────┐
-#        │ genre             │ shops │ works │
-#        ├───────────────────┼───────┼───────┤
-#        │ mountaineering    │   1   │   2   │   thin
-#        │ climate-fiction   │   0   │   3   │   stocked, nobody's speciality
-#        │ classics          │   1   │   0   │   claimed, nothing filed
-#        └───────────────────┴───────┴───────┘
+#        +-------------------+-------+-------+
+#        | genre             | shops | works |
+#        +-------------------+-------+-------+
+#        | mountaineering    |   1   |   2   |   thin
+#        | climate-fiction   |   0   |   3   |   stocked, nobody's speciality
+#        | classics          |   1   |   0   |   claimed, nothing filed
+#        +-------------------+-------+-------+
 #
 #        COALESCE is the tool for turning absence into a usable value.
 #
@@ -54,7 +54,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  107 rows, on every engine that runs it
 # ==========================================================================

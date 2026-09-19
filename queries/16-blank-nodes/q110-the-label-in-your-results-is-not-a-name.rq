@@ -60,9 +60,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §2.4 Blank Node Identifiers in Query Results
+#  SPEC     SPARQL 1.2 Query 2.4 Blank Node Identifiers in Query Results
 #           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
-#           SPARQL 1.2 Query §19.6 Blank Nodes and Blank Node Identifiers
+#           SPARQL 1.2 Query 19.6 Blank Nodes and Blank Node Identifiers
 #           https://www.w3.org/TR/sparql12-query/#x19-6-blank-nodes-and-blank-node-identifiers
 #  RETURNS  1 row, on every engine that runs it
 # ==========================================================================

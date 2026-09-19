@@ -6,11 +6,11 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §6 Including Optional Values](https://www.w3.org/TR/sparql12-query/#x6-including-optional-values)
-- [SPARQL 1.2 Query §7 Matching Alternatives](https://www.w3.org/TR/sparql12-query/#x7-matching-alternatives)
-- [SPARQL 1.2 Query §8 Negation](https://www.w3.org/TR/sparql12-query/#x8-negation)
-- [SPARQL 1.2 Query §8.3 NOT EXISTS and MINUS compared](https://www.w3.org/TR/sparql12-query/#x8-3-relationship-and-differences-between-not-exists-and-minus)
-- [SPARQL 1.2 Query §10.2 VALUES](https://www.w3.org/TR/sparql12-query/#x10-2-values-providing-inline-data)
+- [SPARQL 1.2 Query 6. Including Optional Values](https://www.w3.org/TR/sparql12-query/#x6-including-optional-values)
+- [SPARQL 1.2 Query 7. Matching Alternatives](https://www.w3.org/TR/sparql12-query/#x7-matching-alternatives)
+- [SPARQL 1.2 Query 8. Negation](https://www.w3.org/TR/sparql12-query/#x8-negation)
+- [SPARQL 1.2 Query 8.3 NOT EXISTS and MINUS compared](https://www.w3.org/TR/sparql12-query/#x8-3-relationship-and-differences-between-not-exists-and-minus)
+- [SPARQL 1.2 Query 10.2 VALUES](https://www.w3.org/TR/sparql12-query/#x10-2-values-providing-inline-data)
 
 | Query | Asks |
 |---|---|

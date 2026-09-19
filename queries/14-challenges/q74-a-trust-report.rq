@@ -15,24 +15,24 @@
 #  DIAGRAM
 #        for every shop with more than one founding claim:
 #
-#          ┌ all claims ────────────────────────────┐
-#          │ ?shop bs:founded ?y {| claimedBy ?s ;  │
-#          │                        confidence ?c |}│
-#          └────────────┬───────────────────────────┘
-#                       │
-#          ┌ best per shop ─────────┐  ┌ list them all ──────────┐
-#          │ MAX(?c) -> ?best       │  │ GROUP_CONCAT(?y)        │
-#          └────────────┬───────────┘  └────────────┬────────────┘
-#                       └───────────┬───────────────┘
-#                                   ▼
-#        ┌──────────────┬──────────┬──────────┬───────────────────┐
-#        │ shop         │ claims   │ accepted │ on the word of    │
-#        ├──────────────┼──────────┼──────────┼───────────────────┤
-#        │ Ex Libris    │1919,1921 │   1919   │ national register │
-#        │ Endpapers    │1946,1949 │   1949   │ national register │
-#        │ Candlemas  │1928,1931 │   1931   │ national register │
-#        │ Castle Steps │1962,1965 │   1962   │ trail guide 2024  │
-#        └──────────────┴──────────┴──────────┴───────────────────┘
+#          + all claims ----------------------------+
+#          | ?shop bs:founded ?y {| claimedBy ?s ;  |
+#          |                        confidence ?c |}|
+#          +------------+---------------------------+
+#                       |
+#          + best per shop ---------+  + list them all ----------+
+#          | MAX(?c) -> ?best       |  | GROUP_CONCAT(?y)        |
+#          +------------+-----------+  +------------+------------+
+#                       +-----------+---------------+
+#                                   v
+#        +--------------+----------+----------+-------------------+
+#        | shop         | claims   | accepted | on the word of    |
+#        +--------------+----------+----------+-------------------+
+#        | Ex Libris    |1919,1921 |   1919   | national register |
+#        | Endpapers    |1946,1949 |   1949   | national register |
+#        | Candlemas  |1928,1931 |   1931   | national register |
+#        | Castle Steps |1962,1965 |   1962   | trail guide 2024  |
+#        +--------------+----------+----------+-------------------+
 #
 #        HAVING(COUNT(DISTINCT ?y) > 1) keeps only the genuine
 #        disagreements: shops whose sources agree are not news.
@@ -57,7 +57,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

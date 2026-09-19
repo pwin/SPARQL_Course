@@ -22,8 +22,8 @@
 #          ?g = bt:graph-shops   ?p = bs:hasCafe    ?o = true
 #          ?g = bt:graph-stock   ?p = bs:stocks     ?o = bt:book-...
 #          ?g = bt:graph-trail   ?p = bs:connectsTo ?o = bt:shop-...
-#                     │
-#                     └── the same subject, facts from three graphs
+#                     |
+#                     +-- the same subject, facts from three graphs
 #
 #        Named graphs give you per-triple provenance for free, as long as
 #        "which file it came from" is the granularity you need.  For finer
@@ -40,9 +40,9 @@
 #  DATA     bookshop-trail.trig
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §13 RDF Dataset
+#  SPEC     SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
-#           SPARQL 1.2 Query §13.2 Specifying RDF Datasets
+#           SPARQL 1.2 Query 13.2 Specifying RDF Datasets
 #           https://www.w3.org/TR/sparql12-query/#x13-2-specifying-rdf-datasets
 #  RETURNS  23 rows, on every engine that runs it
 # ==========================================================================

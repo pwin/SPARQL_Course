@@ -23,14 +23,14 @@ q(
         "geospatial support at all.",
     diagram="""
         long -6         -2
-          │              │
-     52 ──┼──────────────┼──  lat 52
-          │  ●Aberystwyth│
-          │      ●Bath   │        ● inside the box -> kept
-          │ ●Exeter      │        ○ outside       -> dropped
-          │●Penzance     │
-     50 ──┼──────────────┼──  lat 50
-          │              │
+          |              |
+     52 --+--------------+--  lat 52
+          |  *Aberystwyth|
+          |      *Bath   |        * inside the box -> kept
+          | *Exeter      |        o outside       -> dropped
+          |*Penzance     |
+     50 --+--------------+--  lat 50
+          |              |
 
     FILTER( ?lat > 50 && ?lat < 52 && ?long < -2 )
 
@@ -78,13 +78,13 @@ q(
 
     So a real great-circle distance is out of reach.  But:
 
-        sqrt(x) is monotonic  ⇒  ordering by x
+        sqrt(x) is monotonic  =>  ordering by x
                                  == ordering by sqrt(x)
 
-    ┌── scale degrees to kilometres ─────────────────┐
-    │  1 deg latitude  ≈ 111.19 km      (everywhere) │
-    │  1 deg longitude ≈  66.70 km      (at 53 N)    │
-    └────────────────────────────────────────────────┘
+    +-- scale degrees to kilometres -----------------+
+    |  1 deg latitude  ~ 111.19 km      (everywhere) |
+    |  1 deg longitude ~  66.70 km      (at 53 N)    |
+    +------------------------------------------------+
 
         dy = (?lat  - 52.0760) * 111.19
         dx = (?long + 3.1288 ) * 66.70
@@ -134,7 +134,7 @@ q(
         "publishes both, and this query uses the grid.",
     diagram="""
     degrees                        British National Grid
-    ───────                        ─────────────────────
+    -------                        ---------------------
     lat/long on a sphere           eastings/northings on a plane
     a degree is not a length       the unit IS the metre
     scale factor varies with       scale error across Britain
@@ -146,10 +146,10 @@ q(
 
     for each town with no shop:
 
-        Durham       ──▶  nearest shop
-        Perth        ──▶  nearest shop
-        Fort William ──▶  nearest shop
-        Truro        ──▶  nearest shop
+        Durham       -->  nearest shop
+        Perth        -->  nearest shop
+        Fort William -->  nearest shop
+        Truro        -->  nearest shop
 
     The inner query finds the minimum squared distance per town; the
     outer one joins back to discover which shop that was -- the same
@@ -209,12 +209,12 @@ q(
         true, on the grid   118 km
         degree metric       132 km        +11.4%
 
-    ┌──────────────┬───────────┬───────────┬───────┐
-    │ pair         │ grid km   │ degree km │ ratio │
-    ├──────────────┼───────────┼───────────┼───────┤
-    │ Inverness -  │    118    │    132    │ 1.114 │
-    │ Portree      │           │           │       │
-    └──────────────┴───────────┴───────────┴───────┘
+    +--------------+-----------+-----------+-------+
+    | pair         | grid km   | degree km | ratio |
+    +--------------+-----------+-----------+-------+
+    | Inverness -  |    118    |    132    | 1.114 |
+    | Portree      |           |           |       |
+    +--------------+-----------+-----------+-------+
 
     The lesson is not "never approximate".  It is "know where your
     approximation fails, and check whether your data lives there".
@@ -271,21 +271,21 @@ q(
         "so the test is d2 < 2,500,000,000 -- and no square root is needed "
         "anywhere.",
     diagram="""
-    want:   sqrt(dx² + dy²)  <  50000
+    want:   sqrt(dx^2 + dy^2)  <  50000
     but no sqrt available, so square both sides:
 
-            dx² + dy²        <  50000²
-            dx² + dy²        <  2 500 000 000
+            dx^2 + dy^2        <  50000^2
+            dx^2 + dy^2        <  2 500 000 000
 
-    ┌──────────────────────────────────────┐
-    │              ╭─────────╮             │
-    │           ╱  ●York      ╲            │
-    │          │   ● Endpapers │           │
-    │          │   ● Bookwyrm  │  r = 50km │
-    │           ╲             ╱            │
-    │              ╰─────────╯             │
-    │        ○ Whitby's shop (58 km)       │
-    └──────────────────────────────────────┘
+    +--------------------------------------+
+    |              .---------.             |
+    |           /  *York      \\            |
+    |          |   * Endpapers |           |
+    |          |   * Bookwyrm  |  r = 50km |
+    |           \\             /            |
+    |              '---------'             |
+    |        o Whitby's shop (58 km)       |
+    +--------------------------------------+
 
     Squaring the threshold instead of rooting the distance is the
     same trick as q53, used the other way round.  It is exact, not
@@ -343,7 +343,7 @@ q(
     The geometry lives on a separate node, which is why the path has
     two steps:
 
-        ?shop ──geo:hasDefaultGeometry──▶ ?g ──geo:asWKT──▶ "POINT(...)"
+        ?shop --geo:hasDefaultGeometry--> ?g --geo:asWKT--> "POINT(...)"
     """,
     learn=[
         "geof:distance replaces a page of arithmetic, and is exact.",
@@ -395,8 +395,8 @@ q(
 
       ?s bs:within ?c
       FILTER( !geof:sfWithin(?pointOfS, ?polygonOfC) )
-               ▲
-               └── NOT within -> a contradiction
+               ^
+               +-- NOT within -> a contradiction
 
     result: 0 rows.  The polygons were computed from the settlements
     they contain, so containment is true by construction -- and this
@@ -448,10 +448,10 @@ q(
     diagram="""
     the geometry is a three-point line, deliberately bent:
 
-        shop A ●─────────╮
-                          ●  midpoint, nudged sideways
-                 ╭────────╯
-        shop B ●─╯
+        shop A *---------.
+                          *  midpoint, nudged sideways
+                 .--------'
+        shop B *-'
 
     bs:distanceKm   = straight line A to B      (stored)
     geof:length     = along the bent line       (measured)
@@ -502,16 +502,16 @@ q(
     the CRS is part of the literal, not metadata about it:
 
     "<...CRS84> POINT(-1.0873 53.96)"^^geo:wktLiteral
-     ─────┬────       ──┬───  ──┬──
-          │             │       └── latitude, degrees
-          │             └────────── longitude, degrees
-          └── the reference system
+     -----+----       --+---  --+--
+          |             |       +-- latitude, degrees
+          |             +---------- longitude, degrees
+          +-- the reference system
 
     "<...EPSG/0/27700> POINT(460000.0 452000.0)"^^geo:wktLiteral
-     ────────┬───────         ───┬───  ───┬───
-             │                   │        └── northing, metres
-             │                   └─────────── easting, metres
-             └── a different system entirely
+     --------+-------         ---+---  ---+---
+             |                   |        +-- northing, metres
+             |                   +----------- easting, metres
+             +-- a different system entirely
 
     geof:distance between them, correctly handled:  ~0 metres
     the same, if 460000 is read as a longitude:     nonsense

@@ -16,10 +16,10 @@
 #  DIAGRAM
 #        the geometry is a three-point line, deliberately bent:
 #
-#            shop A ●─────────╮
-#                              ●  midpoint, nudged sideways
-#                     ╭────────╯
-#            shop B ●─╯
+#            shop A *---------.
+#                              *  midpoint, nudged sideways
+#                     .--------'
+#            shop B *-'
 #
 #        bs:distanceKm   = straight line A to B      (stored)
 #        geof:length     = along the bent line       (measured)
@@ -49,7 +49,7 @@
 #  RUNS ON  holos
 #  SPEC     OGC GeoSPARQL 1.1
 #           https://docs.ogc.org/is/22-047r1/22-047r1.html
-#           SPARQL 1.2 Query §17.6 Extensible Value Testing
+#           SPARQL 1.2 Query 17.6 Extensible Value Testing
 #           https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing
 #  RETURNS  10 rows, on every engine that runs it
 # ==========================================================================

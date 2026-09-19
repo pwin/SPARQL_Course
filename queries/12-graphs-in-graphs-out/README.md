@@ -6,9 +6,9 @@ Each `.rq` file carries its own explanation: what it asks, how it works, a diagr
 
 **In the standards.** The sections this module is defined by:
 
-- [SPARQL 1.2 Query §16.2 CONSTRUCT](https://www.w3.org/TR/sparql12-query/#x16-2-construct)
-- [SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes](https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes)
-- [SPARQL 1.2 Query §16.4 DESCRIBE](https://www.w3.org/TR/sparql12-query/#x16-4-describe-informative)
+- [SPARQL 1.2 Query 16.2 CONSTRUCT](https://www.w3.org/TR/sparql12-query/#x16-2-construct)
+- [SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes](https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes)
+- [SPARQL 1.2 Query 16.4 DESCRIBE](https://www.w3.org/TR/sparql12-query/#x16-4-describe-informative)
 - [SPARQL 1.2 Update](https://www.w3.org/TR/sparql12-update/)
 - [SHACL](https://www.w3.org/TR/shacl/)
 

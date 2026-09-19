@@ -14,14 +14,14 @@
 #
 #  DIAGRAM
 #            long -6         -2
-#              │              │
-#         52 ──┼──────────────┼──  lat 52
-#              │  ●Aberystwyth│
-#              │      ●Bath   │        ● inside the box -> kept
-#              │ ●Exeter      │        ○ outside       -> dropped
-#              │●Penzance     │
-#         50 ──┼──────────────┼──  lat 50
-#              │              │
+#              |              |
+#         52 --+--------------+--  lat 52
+#              |  *Aberystwyth|
+#              |      *Bath   |        * inside the box -> kept
+#              | *Exeter      |        o outside       -> dropped
+#              |*Penzance     |
+#         50 --+--------------+--  lat 50
+#              |              |
 #
 #        FILTER( ?lat > 50 && ?lat < 52 && ?long < -2 )
 #
@@ -46,9 +46,9 @@
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §17.3 Operator Mapping
+#  SPEC     SPARQL 1.2 Query 17.3 Operator Mapping
 #           https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping
-#           SPARQL 1.2 Query §17.4.4 Functions on Numerics
+#           SPARQL 1.2 Query 17.4.4 Functions on Numerics
 #           https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

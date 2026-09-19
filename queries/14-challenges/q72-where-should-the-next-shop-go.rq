@@ -13,20 +13,20 @@
 #    BIND, assembled.
 #
 #  DIAGRAM
-#        ┌ towns with no shop ─────────────┐   q16
-#        │  FILTER NOT EXISTS {            │
-#        │    ?s bs:locatedIn ?town }      │
-#        └────────────┬────────────────────┘
-#                     │
-#        ┌ nearest shop, squared metres ───┐   q54
-#        │  MIN( (dx)² + (dy)² )           │
-#        └────────────┬────────────────────┘
-#                     │
-#        ┌ combine ────────────────────────┐
-#        │  score = population × km        │
-#        │          ───┬────    ─┬─        │
-#        │        demand     distance      │
-#        └─────────────────────────────────┘
+#        + towns with no shop -------------+   q16
+#        |  FILTER NOT EXISTS {            |
+#        |    ?s bs:locatedIn ?town }      |
+#        +------------+--------------------+
+#                     |
+#        + nearest shop, squared metres ---+   q54
+#        |  MIN( (dx)^2 + (dy)^2 )         |
+#        +------------+--------------------+
+#                     |
+#        + combine ------------------------+
+#        |  score = population x km        |
+#        |          ---+----    -+-        |
+#        |        demand     distance      |
+#        +---------------------------------+
 #
 #        A bigger town further from any shop scores higher.  The formula
 #        is a judgement, not a fact -- which is exactly why it belongs in
@@ -47,7 +47,7 @@
 #  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query Language
 #           https://www.w3.org/TR/sparql12-query/
-#           SPARQL 1.2 Query §17.4 Function Definitions
+#           SPARQL 1.2 Query 17.4 Function Definitions
 #           https://www.w3.org/TR/sparql12-query/#x17-4-function-definitions
 #  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================

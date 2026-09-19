@@ -67,7 +67,7 @@
 #  RUNS ON  fuseki
 #  SPEC     SPARQL 1.2 Query, Security Considerations
 #           https://www.w3.org/TR/sparql12-query/#c-security-considerations
-#           SPARQL 1.2 Query §13 RDF Dataset
+#           SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
 #  RETURNS  5 rows, on every engine that runs it
 # ==========================================================================

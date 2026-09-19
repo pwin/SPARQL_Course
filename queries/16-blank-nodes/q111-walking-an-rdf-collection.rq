@@ -64,9 +64,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §4.2.3 RDF Collections
+#  SPEC     SPARQL 1.2 Query 4.2.3 RDF Collections
 #           https://www.w3.org/TR/sparql12-query/#x4-2-3-rdf-collections
-#           RDF 1.2 Turtle §2.9 Collections
+#           RDF 1.2 Turtle 2.9 Collections
 #           https://www.w3.org/TR/rdf12-turtle/#x2-9-collections
 #  RETURNS  15 rows, on every engine that runs it
 # ==========================================================================

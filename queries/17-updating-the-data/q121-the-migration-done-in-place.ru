@@ -9,8 +9,8 @@
 #  HOW IT WORKS
 #    q86 built this graph with CONSTRUCT and left you holding it. Here the
 #    same transformation is applied to the store, and then a second
-#    operation removes what it replaced — the half CONSTRUCT cannot do. Two
-#    operations separated by a semicolon, applied in order.
+#    operation removes what it replaced -- the half CONSTRUCT cannot do.
+#    Two operations separated by a semicolon, applied in order.
 #
 #  DIAGRAM
 #        operation 1     read the old shape, write the new one

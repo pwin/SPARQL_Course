@@ -15,15 +15,15 @@
 #        in the data:      "Cardiff"@en        tagged
 #        in the query:     "Cardiff"           untagged
 #
-#                          "Cardiff"@en  =  "Cardiff"   ──▶  false
+#                          "Cardiff"@en  =  "Cardiff"   -->  false
 #
 #        three ways to write the comparison:
 #
-#        ┌──────────────────────────┬──────┬────────────────────────┐
-#        │ ?label = "Cardiff"       │  0   │ different terms        │
-#        │ ?label = "Cardiff"@en    │  1   │ exact, but brittle     │
-#        │ STR(?label) = "Cardiff"  │  1   │ drops the tag: robust  │
-#        └──────────────────────────┴──────┴────────────────────────┘
+#        +--------------------------+------+------------------------+
+#        | ?label = "Cardiff"       |  0   | different terms        |
+#        | ?label = "Cardiff"@en    |  1   | exact, but brittle     |
+#        | STR(?label) = "Cardiff"  |  1   | drops the tag: robust  |
+#        +--------------------------+------+------------------------+
 #
 #        STR() is the general answer, and the same tool that fixes the
 #        datatype traps in q07 and q62.  It strips a literal to its
@@ -45,9 +45,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §18 Definition of SPARQL
+#  SPEC     SPARQL 1.2 Query 18. Definition of SPARQL
 #           https://www.w3.org/TR/sparql12-query/#x18-definition-of-sparql
-#           SPARQL 1.2 Query §18.3 Translation to the Algebraic Syntax
+#           SPARQL 1.2 Query 18.3 Translation to the Algebraic Syntax
 #           https://www.w3.org/TR/sparql12-query/#x18-3-translation-to-the-algebraic-syntax
 #  RETURNS  3 rows, on every engine that runs it
 # ==========================================================================

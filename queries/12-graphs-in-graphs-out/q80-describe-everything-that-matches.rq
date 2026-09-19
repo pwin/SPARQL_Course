@@ -22,15 +22,15 @@
 #        step 2   the engine describes each of them
 #        step 3   the descriptions are merged into ONE graph
 #
-#                 ┌──────────────┐
-#                 │ Cliff Road   │──┐
-#                 ├──────────────┤  │
-#                 │ Taff Margin  │──┤   one graph,
-#                 ├──────────────┤  ├─▶ not four
-#                 │ Castle Steps │──┤
-#                 ├──────────────┤  │
-#                 │ Clock Tower  │──┘
-#                 └──────────────┘
+#                 +--------------+
+#                 | Cliff Road   |--+
+#                 +--------------+  |
+#                 | Taff Margin  |--+   one graph,
+#                 +--------------+  +-> not four
+#                 | Castle Steps |--+
+#                 +--------------+  |
+#                 | Clock Tower  |--+
+#                 +--------------+
 #
 #        The result is a graph, so the shops are not separable in it
 #        afterwards except by querying it again.
@@ -47,9 +47,9 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  SPEC     SPARQL 1.2 Query §16.2 CONSTRUCT
+#  SPEC     SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#           SPARQL 1.2 Query §16.2.1 Templates with Blank Nodes
+#           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
 #  RETURNS  74 rows, on every engine that runs it
 # ==========================================================================
