@@ -29,6 +29,7 @@ Try, in the Graph pane:
 
 | Control | What to notice |
 |---|---|
+| **Show labels**, **Node Labels**, **Property Labels** | All three are ticked when the editor opens, and they put each resource's `rdfs:label` or `skos:prefLabel` where its IRI would be: in the subject list, on the diagram's boxes and on its arrows. Untick them to see the IRIs, which is what a query has to use. With **Show labels** on, the shop below is listed as *The Inkwell*. |
 | **Subjects** dropdown | Pick `bt:shop-inkwell` alone. That single node with its dozen edges is exactly what query **q02** returns as a table. |
 | **Engine**: `dot` → `neato` → `circo` | `dot` ranks the hierarchy; `neato` shows clusters; `circo` shows the ring structure. Same graph, three different questions answered. |
 | **Hide Types** | Removes the `rdf:type` edges. The shape of the *data* appears once the class edges stop dominating. |

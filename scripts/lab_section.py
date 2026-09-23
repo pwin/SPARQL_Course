@@ -37,6 +37,10 @@ LAB_SECTION = """
           useless to <em>look at</em>.</p>
         <h4>What to take away</h4>
         <ul class="learn">
+          <li><b>Show labels</b>, <b>Node Labels</b> and <b>Property Labels</b>
+            are ticked when the editor opens and show labels where the IRIs
+            would be. Untick them to see the IRIs a query has to use; with
+            Show labels on, the shop below is listed as <i>The Inkwell</i>.</li>
           <li><b>Subjects</b> dropdown &mdash; pick <code>bt:shop-inkwell</code>
             on its own. That node and its dozen edges are precisely what Q02
             returns as a table.</li>
