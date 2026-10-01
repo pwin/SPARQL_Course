@@ -10,14 +10,14 @@ the second half, which is how the numbers in these headers were arrived at:
     python scripts/check_queries.py q116 q117 q118 q119 q120 q121 q122 q123
 
 One thing to know before starting. The Turtle Editor Viewer cannot run these.
-Comunica, the library underneath it, supports SPARQL Update perfectly well --
+holos-wasm, the engine underneath it, supports SPARQL Update perfectly well --
 the editor's SPARQL panel has no way to display the result of an operation
 that returns nothing, so it is not wired up. The engine column in this module
-says "comunica" rather than "editor" for exactly that reason. Use Fuseki or
+says "holos-wasm" rather than "editor" for exactly that reason. Use Fuseki or
 HOLOS to follow along.
 """
 
-from querycat import q, D11, DTRIG, COMUNICA, HOLOS, FUSEKI, ALL_UPDATE
+from querycat import q, D11, DTRIG, HOLOS_WASM, HOLOS, FUSEKI, ALL_UPDATE
 
 MOD = "17-updating-the-data"
 

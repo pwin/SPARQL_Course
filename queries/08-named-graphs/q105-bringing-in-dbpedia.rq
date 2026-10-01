@@ -61,7 +61,7 @@
 #
 #    Why none: ?dbp is bound out here, but the editor sends the SERVICE
 #    pattern to DBpedia as it stands --
-#      SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
+#    SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
 #    -- which asks for every population in DBpedia. DBpedia caps the answer
 #    at ten thousand rows, the three book towns are not among them, and the
 #    join finds nothing. Comunica pushes the three values into the request
@@ -79,7 +79,7 @@
 #           https://www.w3.org/TR/sparql12-federated-query/
 #           SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
-#  RETURNS  1 row, on every engine that runs it
+#  RETURNS  editor 0, fuseki 1  (see the note above)
 # ==========================================================================
 
 PREFIX bs:   <https://example.org/bookshop-trail/schema#>

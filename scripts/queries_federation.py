@@ -77,9 +77,27 @@ ORDER BY ?name""",
     extra_prefixes=("owl", "dbo"),
     engines=(EDITOR, FUSEKI),
     network=True,
-    notes="HOLOS refuses remote SERVICE outright -- see q108, which is about "
-          "why. On the other two this returns one row, because DBpedia holds "
-          "a population for Sedbergh and not for the other two book towns.",
+    notes="On Fuseki and Comunica this returns one row, because DBpedia "
+          "holds a population for Sedbergh and not for the other two book "
+          "towns." + chr(10) * 2 +
+          "HOLOS refuses remote SERVICE outright -- see q108, which is about "
+          "why. The browser editor runs HOLOS and *does* federate, because a "
+          "browser is not a server: the request is the reader's own, from "
+          "their own machine, and the editor keeps an allow-list of endpoints "
+          "a shared query file may reach. It returns **no rows**, and that is "
+          "this query's lesson rather than a defect in it." + chr(10) * 2 +
+          "Why none: ?dbp is bound out here, but the editor sends the SERVICE "
+          "pattern to DBpedia as it stands --" + chr(10) +
+          "  SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }"
+          + chr(10) +
+          "-- which asks for every population in DBpedia. DBpedia caps the "
+          "answer at ten thousand rows, the three book towns are not among "
+          "them, and the join finds nothing. Comunica pushes the three values "
+          "into the request instead, which is called a bound join, and gets "
+          "its one row." + chr(10) * 2 +
+          "So this is the shape of federation that depends on an optimisation "
+          "rather than on the specification. q107 asks the same question "
+          "without needing it, and that is the version to copy.",
 )
 
 q(
@@ -89,9 +107,11 @@ q(
          "one.",
     how="The obvious fix for q105 dropping rows is to wrap the SERVICE in an "
         "OPTIONAL, and on Jena that is exactly right. In the browser editor it "
-        "returns all three rows and no populations at all: Comunica does not "
-        "push the outer binding into a SERVICE nested inside an OPTIONAL. Same "
-        "query, same endpoint, different answer.",
+        "returns all three rows and no populations at all -- the OPTIONAL does "
+        "its job on the rows and changes nothing about the column, because "
+        "the reason the column is empty is the same one q105 has: the SERVICE "
+        "pattern goes to DBpedia unbound. Same query, same endpoint, "
+        "different answer.",
     diagram="""
     OPTIONAL {
       SERVICE <https://dbpedia.org/sparql> {
@@ -107,12 +127,14 @@ q(
       | HOLOS   |   --  | refuses remote SERVICE entirely       |
       +---------+-------+---------------------------------------+
 
-    Comunica gets the row count right and the data wrong, which is
-    the hardest kind of difference to notice.
+    The editor gets the row count right and the data wrong, which is
+    the hardest kind of difference to notice: nothing looks missing.
 
-    Without the OPTIONAL (q105) both engines agree, because then the
-    binding goes in as part of an ordinary join. The disagreement is
-    specifically about OPTIONAL wrapping SERVICE.
+    The OPTIONAL is not what the engines disagree about. Take it away
+    and you have q105, where the editor returns no rows at all and
+    Fuseki returns one -- same cause, one layer down. What the
+    OPTIONAL decides is whether a row survives an empty answer, and
+    it decides that correctly on every engine here.
 
     q107 is the shape that works on both.
     """,
@@ -143,8 +165,16 @@ ORDER BY ?name""",
     network=True,
     notes="engines-differ: and the difference is the lesson. Fuseki fills in "
           "Sedbergh's population; the browser editor returns the same three "
-          "rows with the column empty, because Comunica does not carry the "
-          "outer binding into a SERVICE inside an OPTIONAL.",
+          "rows with the column empty. Both answers conform -- OPTIONAL is "
+          "what makes the rows survive either way, which is the point of "
+          "wrapping it." + chr(10) * 2 +
+          "The reason the column is empty has changed and the result has not. "
+          "It used to be that Comunica did not carry the outer binding into a "
+          "SERVICE inside an OPTIONAL. The editor now runs HOLOS, which "
+          "federates -- see q105 -- but sends the SERVICE pattern unbound, so "
+          "DBpedia is asked a question too broad to answer usefully and the "
+          "OPTIONAL keeps the rows with nothing in the column. Same three "
+          "rows, same empty column, a different engine behind it.",
 )
 
 q(
@@ -199,6 +229,12 @@ q(
         "A self-contained SERVICE block can be tested directly against the "
         "remote endpoint, which is how you tell whose fault an empty result "
         "is.",
+        "And it is the version that runs everywhere. q105 asks the same "
+        "question and depends on the engine pushing the keys in for you; this "
+        "one asks nothing of the engine, so Fuseki, Comunica and the browser "
+        "editor all return the same four rows. Portability here is not a "
+        "nicety -- it is the difference between a query that works and one "
+        "that works on your engine.",
     ],
     body="""SELECT ?dbp ?population
 WHERE {
@@ -225,9 +261,12 @@ q(
     asks="What happens when the remote endpoint is unreachable, and why does "
          "HOLOS refuse to call one at all?",
     how="SERVICE SILENT tells the engine to carry on with no bindings rather "
-        "than fail when a remote call goes wrong. Fuseki honours it. The "
-        "browser editor raises anyway. HOLOS declines to make the request in "
-        "the first place, and its reason is worth understanding.",
+        "than fail when a remote call goes wrong. Fuseki honours it. HOLOS "
+        "declines to make the request at all, and its reason is worth "
+        "understanding. The browser editor, which now runs HOLOS, refuses "
+        "this endpoint too -- it is not on the editor's allow-list -- and "
+        "then raises rather than shrugging, for a reason that is about the "
+        "protocol between the engine and the page and not about SILENT.",
     diagram="""
     SERVICE SILENT <https://endpoint.invalid/sparql> { ... }
 
@@ -263,8 +302,9 @@ q(
     """,
     learn=[
         "SERVICE SILENT continues with no bindings instead of failing. Fuseki "
-        "honours it; Comunica raises anyway, so do not rely on it in the "
-        "browser.",
+        "honours it. The browser editor refuses the remote call and then "
+        "raises, so SILENT buys you nothing there -- measured, not assumed; "
+        "the NOTE says why that is the protocol's doing.",
         "A public endpoint that follows arbitrary SERVICE IRIs will make "
         "requests to any address a stranger names, including ones only it can "
         "reach. That is SSRF, and it is why HOLOS refuses.",
@@ -286,9 +326,22 @@ ORDER BY ?name
 LIMIT 5""",
     engines=(FUSEKI,),
     network=True,
-    notes="Fuseki only. The browser editor raises rather than honouring "
-          "SILENT, and HOLOS refuses remote SERVICE altogether -- which is "
-          "the point of the query rather than a limitation of it.",
+    notes="Fuseki is the one that actually calls out and shrugs the failure "
+          "off: five rows, no population column, which is SILENT doing "
+          "exactly what it says." + chr(10) * 2 +
+          "The browser editor runs HOLOS in WebAssembly, which has no network "
+          "client, so federation there is a conversation: the engine reports "
+          "the endpoint and query it wants, the page fetches, and the query "
+          "is run again. What the engine reports is the endpoint and the "
+          "query -- and not whether the clause was written SILENT. So when "
+          "the page declines endpoint.invalid, as it declines anything not on "
+          "its allow-list, it cannot tell \"could not call, and the query said "
+          "carry on\" apart from \"could not call, and the answer would be "
+          "wrong without it\", and it raises. Refusing the call is the "
+          "position; raising is the cost of a protocol that does not carry "
+          "the one word that would settle it." + chr(10) * 2 +
+          "Native HOLOS refuses remote SERVICE outright, SILENT or not, which "
+          "is why this query claims only Fuseki.",
 )
 
 
@@ -391,21 +444,23 @@ q(
     measured:
 
       FROM         editor  yes    holos  yes    fuseki  yes
-      FROM NAMED   editor  ERROR  holos  yes    fuseki  yes
+      FROM NAMED   editor  yes    holos  yes    fuseki  yes
 
-    Comunica raises rather than answering: over an in-memory store
-    it has no actor for the pattern a FROM NAMED dataset produces.
-    So in the browser, scope with FROM and load the TriG file; keep
-    FROM NAMED for a real endpoint.
+    Both work in the browser since the editor moved to the HOLOS
+    engine -- two rows, measured. The Comunica build before it raised
+    rather than answering: over an in-memory store it had no actor for
+    the pattern a FROM NAMED dataset produces, so the advice used to be
+    to scope with FROM and keep FROM NAMED for a real endpoint.
     """,
     learn=[
         "FROM NAMED puts a graph in the dataset without merging it, so GRAPH "
         "can still ask which graph a fact is in.",
         "FROM and FROM NAMED are independent. A query can have both, and a "
         "graph named only by FROM NAMED is not in the default graph.",
-        "The browser editor does not support FROM NAMED. Scope with FROM "
-        "there, and check the dataset clauses on the engine you will deploy "
-        "against.",
+        "The browser editor supports FROM NAMED as of its move to the HOLOS "
+        "engine; the Comunica build it used before did not, and errored "
+        "rather than ignoring the clause. Still check the dataset clauses on "
+        "the engine you will deploy against: support is not universal.",
     ],
     body="""SELECT ?graph (COUNT(*) AS ?triples)
 FROM NAMED bt:graph-shops
@@ -416,7 +471,7 @@ WHERE {
 GROUP BY ?graph
 ORDER BY ?graph""",
     data=DTRIG,
-    engines=(HOLOS, FUSEKI),
+    engines=ALL,
     notes="Fuseki and HOLOS. Comunica raises \"none of the configured actors "
           "were able to handle the operation type pattern\" for FROM NAMED "
           "over an in-memory store; FROM on its own (q124) works there.",

@@ -34,11 +34,13 @@ q(
 
     where it works, measured:
 
-      afn:localname        editor  error    holos  yes    fuseki  yes
-      afn:namespace        editor  error    holos  yes    fuseki  yes
+      afn:localname        editor  yes      holos  yes    fuseki  yes
+      afn:namespace        editor  yes      holos  yes    fuseki  yes
 
-    Comunica raises rather than returning nothing, which is the
-    better of the two failure modes: you find out.
+    The editor ran neither until it moved to the HOLOS engine. The
+    Comunica build before it raised rather than returning nothing,
+    which was the better of the two failure modes -- you found out --
+    but it still meant this page could be read and not run.
     """,
     learn=[
         "afn: is ARQ's function library. Jena has it, HOLOS implements it too, "
@@ -57,9 +59,10 @@ WHERE {
 }
 ORDER BY ?localName
 LIMIT 8""",
-    engines=(HOLOS, FUSEKI),
-    notes="Comunica has no afn: functions and raises an error rather than "
-          "returning unbound, so the editor is not claimed here.",
+    engines=ALL,
+    notes="afn: is not in SPARQL, so an engine is entitled to have none of "
+          "it. The editor has it only because it now runs HOLOS, measured at "
+          "eight rows there; Fuseki has it natively, as ARQ's own library.",
 )
 
 q(
@@ -87,11 +90,12 @@ q(
     | Cotton Quarto    |  93.7 km|
     +------------------+---------+
 
-    measured:  afn:sqrt   editor error   holos yes   fuseki yes
+    measured:  afn:sqrt   editor yes   holos yes   fuseki yes
 
-    Note what module 09 bought by not using this: the same query,
-    without the square root, runs in the browser too. That is the
-    trade in one line.
+    The editor answers this since it moved to the HOLOS engine; the
+    Comunica build before it had no afn: at all. Module 09 still
+    bought something by not needing the root: a query that asks for
+    no extension runs on an engine that has none.
     """,
     learn=[
         "afn:sqrt, afn:pi, afn:e, afn:min and afn:max fill the gaps in "
@@ -115,7 +119,7 @@ WHERE {
 ORDER BY ?km
 LIMIT 8""",
     data=DFULL,
-    engines=(HOLOS, FUSEKI),
+    engines=ALL,
 )
 
 q(
@@ -136,16 +140,19 @@ q(
 
     measured, and this is the point of the query:
 
-      spif:trim        editor  ERROR      holos  yes    fuseki  UNBOUND
-      spif:titleCase   editor  ERROR      holos  yes    fuseki  UNBOUND
-      spif:indexOf     editor  ERROR      holos  yes    fuseki  UNBOUND
+      spif:trim        editor  yes        holos  yes    fuseki  UNBOUND
+      spif:titleCase   editor  yes        holos  yes    fuseki  UNBOUND
+      spif:indexOf     editor  yes        holos  yes    fuseki  UNBOUND
 
-    +----------+-------------------------------------------+
-    | Comunica | raises. You find out immediately.          |
-    | Jena     | returns the row, variable unbound, HTTP    |
-    |          | 200. Looks exactly like missing data.      |
-    | HOLOS    | answers.                                   |
-    +----------+-------------------------------------------+
+    The three answers, and two of them are ways of not having it:
+
+    +------------------+-------------------------------------------+
+    | HOLOS, editor    | answers.                                  |
+    | Jena             | returns the row, variable unbound, HTTP   |
+    |                  | 200. Looks exactly like missing data.     |
+    | Comunica, which  | raised. You found out immediately, which  |
+    | the editor ran   | is the better of the two failures.        |
+    +------------------+-------------------------------------------+
 
     Same shape as geof:distance in metres on Jena (q57), and the
     reason the checking harness compares values rather than counting
@@ -153,8 +160,8 @@ q(
     same number of rows.
     """,
     learn=[
-        "spif: is SPIN's function library. HOLOS has it; Jena and Comunica do "
-        "not.",
+        "spif: is SPIN's function library. HOLOS has it, and so the editor "
+        "since it moved to that engine. Jena does not, and nor did Comunica.",
         "An unimplemented function is not guaranteed to be an error. Jena "
         "leaves the variable unbound and returns the row, which is "
         "indistinguishable from the data simply not being there.",
@@ -171,10 +178,11 @@ WHERE {
 }
 ORDER BY ?name
 LIMIT 8""",
-    engines=(HOLOS,),
-    notes="HOLOS only. Jena parses this and returns eight rows with three "
-          "empty columns; Comunica raises. Run it on Fuseki yourself -- "
-          "seeing the blanks is worth more than reading about them.",
+    engines=(EDITOR, HOLOS),
+    notes="HOLOS, and so the editor -- eight rows, measured. Jena parses "
+          "this and returns eight rows with three empty columns. Run it on "
+          "Fuseki yourself: seeing the blanks is worth more than reading "
+          "about them.",
 )
 
 q(
@@ -206,7 +214,7 @@ q(
                                 |  '-- end, not length
                                 '----- counts from zero
 
-    measured:  fn:  editor error   holos yes   fuseki yes
+    measured:  fn:  editor yes   holos yes   fuseki yes
 
     Prefer the built-in every time. It is shorter, it is in the
     specification, and it runs in the browser.
@@ -230,7 +238,7 @@ WHERE {
 }
 ORDER BY ?name
 LIMIT 8""",
-    engines=(HOLOS, FUSEKI),
+    engines=ALL,
 )
 
 q(

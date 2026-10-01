@@ -35,15 +35,19 @@ DFULL = "bookshop-trail-full.ttl"
 DTRIG = "bookshop-trail.trig"
 
 # Engine keys used in the compatibility line.
-EDITOR = "editor"    # Turtle Editor Viewer (Comunica)
+EDITOR = "editor"    # Turtle Editor Viewer (holos-wasm, since it swapped engines)
 HOLOS = "holos"      # HOLOS / new_triplestore_sparql_engine
 FUSEKI = "fuseki"    # Apache Jena Fuseki 6.2.0 / ARQ
-# Comunica the library, as distinct from the editor built on it. Module 17
-# needs the distinction: the library runs SPARQL Update perfectly well, and
-# the editor's SPARQL panel has no way to show the result of one.
-COMUNICA = "comunica"
+# The editor's engine, as distinct from the editor built on it. Module 17 needs
+# the distinction: the engine runs SPARQL Update perfectly well, and the
+# editor's SPARQL panel has no way to show the result of an operation that
+# returns nothing. This used to be spelled "comunica" and had to be renamed
+# when the editor changed engines -- the name of an engine is not the name of
+# the tool, and conflating the two put a claim in the course that no longer
+# matched either.
+HOLOS_WASM = "holos-wasm"
 ALL = (EDITOR, HOLOS, FUSEKI)
-ALL_UPDATE = (COMUNICA, HOLOS, FUSEKI)
+ALL_UPDATE = (HOLOS_WASM, HOLOS, FUSEKI)
 
 # Every prefix the course knows about.  A query declares only the ones it
 # actually uses: ten PREFIX lines above a two-line query is noise, and the
@@ -240,8 +244,20 @@ class Query:
                     for cont in wrapped[1:]:
                         out.append(f"#      {cont}")
             else:
-                for line in textwrap.wrap(content, 70):
-                    out.append(f"#    {line}")
+                # A blank line starts a new paragraph, and a line that arrives
+                # indented is pre-formatted: a query shown as it goes over the
+                # wire keeps its own breaks instead of being reflowed into
+                # prose. Without this an engine caveat had to be a single
+                # paragraph, which is why several of them were being edited in
+                # the generated file afterwards and lost on the next build.
+                for line in content.split(chr(10)):
+                    if not line.strip():
+                        out.append("#")
+                    elif line.startswith((" ", chr(9))):
+                        out.append(f"#  {line}".rstrip())
+                    else:
+                        for wrapped in textwrap.wrap(line, 70):
+                            out.append(f"#    {wrapped}")
             out.append("#")
 
         block("ASKS", self.asks)
@@ -360,15 +376,27 @@ MODULE_INFO = {
         "Geospatial with nothing but arithmetic",
         "Every engine can do geography if the coordinates are plain numbers. "
         "This module builds bounding boxes and a great-circle distance out of "
-        "FILTER and BIND alone -- so it runs in the browser, with no "
-        "GeoSPARQL support of any kind.",
+        "FILTER and BIND alone, so it runs anywhere -- on an engine with no "
+        "GeoSPARQL support of any kind, which is most of them."
+        + chr(10) * 2 +
+        "It is no longer the only geo module the lab can run: the browser "
+        "editor moved to the HOLOS engine and module 10 executes there now. "
+        "Read this one anyway. Knowing what `geof:distance` saves you is "
+        "worth more than being handed it, and the arithmetic here is what you "
+        "fall back on against an endpoint that has no geometry functions.",
     ),
     "10-geosparql": (
         "GeoSPARQL proper",
         "The same questions, asked with geof: functions against WKT "
         "geometries. Shorter, exact, and dependent on an engine that "
-        "implements them. HOLOS and a GeoSPARQL-enabled Fuseki do; the "
-        "browser editor doesn't.",
+        "implements them \u2014 which, as of the editor's move to the HOLOS "
+        "engine, now includes **the browser editor**. HOLOS, the browser "
+        "editor and a GeoSPARQL-enabled Fuseki all run this module; it used "
+        "to be the one chapter you could read but not execute in the lab."
+        + chr(10) * 2 +
+        "That is also why module 09 comes first rather than instead: it is "
+        "there to show what the arithmetic costs you, not because the lab "
+        "could not do better.",
     ),
     "11-sparql-1-2": (
         "SPARQL 1.2 and RDF 1.2",

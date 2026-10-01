@@ -60,8 +60,8 @@
 #      question and depends on the engine pushing the keys in for you;
 #      this one asks nothing of the engine, so Fuseki, Comunica and the
 #      browser editor all return the same four rows. Portability here is
-#      not a nicety -- it is the difference between a query that works and
-#      one that works on your engine.
+#      not a nicety -- it is the difference between a query that works
+#      and one that works on your engine.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

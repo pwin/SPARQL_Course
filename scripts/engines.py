@@ -14,7 +14,8 @@ Environment overrides:
                   Learners never need this: the editor itself is used online
                   at https://semantechs.co.uk/turtle-editor-viewer/ . Without
                   a checkout, run the checker with --engine holos --engine fuseki.
-    NODE_EXE      a Node >= 22; the editor's Comunica needs it
+    NODE_EXE      any Node >= 18. The editor's engine is a WebAssembly module
+                  with no dependencies; the Comunica it replaced needed Node 22.
 """
 from __future__ import annotations
 
@@ -259,97 +260,117 @@ def holos(data_files, query_file) -> Result:
     return _parse_results("holos", body, p.stderr)
 
 
-# ----------------------------------------- Comunica, exactly as the editor uses it
-_COMUNICA_JS = r"""
-import { Parser, Store } from 'n3';
-import { QueryEngine } from '@comunica/query-sparql';
+# ------------------------------------- the editor's engine, as the editor runs it
+#
+# holos-wasm-node is the same WebAssembly binary the browser editor loads, with Node
+# glue instead of browser glue, so what this reports is what the lab shows.  It
+# replaced a Comunica runner that cannot run any more: the editor's checkout dropped
+# Comunica when it moved engines, so `comunica` stopped being an engine this harness
+# could reach.
+_EDITOR_JS = r"""
 import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
+import { Store } from 'holos-wasm-node';
 
-// Comunica pulls in undici the first time a query makes an HTTP request,
-// which for this course means the SERVICE queries in module 08.  The undici
-// bundled with the editor wants worker_threads.markAsUncloneable, which
-// arrived in Node 22; on Node 20 it is missing and the require throws before
-// the query ever runs.  A no-op stands in for it -- undici only uses it to
-// mark an object as unsafe to postMessage, which nothing here does.
-const _require = createRequire(import.meta.url);
-const _wt = _require('node:worker_threads');
-if (typeof _wt.markAsUncloneable !== 'function') _wt.markAsUncloneable = () => {};
+// The hosts the editor's allow-list permits.  Kept in step with
+// src/services/federation.ts by hand: this is a checking harness, and a copy that
+// can drift is better than making the course import the editor's source.
+const ALLOWED_HOSTS = ['dbpedia.org', 'query.wikidata.org', 'www.wikidata.org'];
+const MAX_ROUNDS = 8;
 
 const [queryFile, ...dataFiles] = process.argv.slice(2);
 const store = new Store();
 for (const f of dataFiles) {
-  const p = new Parser({ baseIRI: 'https://example.org/bookshop-trail/' });
-  for (const q of p.parse(readFileSync(f, 'utf8'))) store.addQuad(q);
+  const format = f.endsWith('.trig') ? 'trig' : f.endsWith('.nq') ? 'nquads' : 'turtle';
+  store.load(readFileSync(f, 'utf8'), format, 'https://example.org/bookshop-trail/');
 }
-const engine = new QueryEngine();
-const r = await engine.query(readFileSync(queryFile, 'utf8'), { sources: [store] });
+const query = readFileSync(queryFile, 'utf8');
+
+// SERVICE: the engine has no network client, so it reports the (endpoint, query)
+// pairs it wants and the host fetches them, exactly as the editor's page does.
+async function fetchService(endpoint, text) {
+  const url = new URL(endpoint);
+  if (url.protocol !== 'https:' || !ALLOWED_HOSTS.includes(url.hostname)) {
+    throw new Error(`SERVICE <${endpoint}> refused: not in the editor's allow-list`);
+  }
+  const res = await fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/sparql-query',
+      Accept: 'application/sparql-results+json',
+    },
+    body: text,
+  });
+  if (!res.ok) throw new Error(`SERVICE <${endpoint}> answered HTTP ${res.status}`);
+  return res.text();
+}
+
+async function run() {
+  if (!/\bSERVICE\b/i.test(query)) return store.query(query, undefined);
+  for (let round = 0; round < MAX_ROUNDS; round += 1) {
+    const pass = store.queryFederated(query, undefined);
+    // A pass with anything pending lost rows to the unanswered clause, so it is
+    // never the answer.
+    if (pass.pending.length === 0) return pass.result;
+    for (const p of pass.pending) {
+      store.cacheService(p.endpoint, p.query, await fetchService(p.endpoint, p.query));
+    }
+  }
+  throw new Error(`SERVICE did not settle after ${MAX_ROUNDS} rounds`);
+}
+
+const XSD_STRING = 'http://www.w3.org/2001/XMLSchema#string';
 
 function cell(term) {
   if (term.termType === 'Literal') {
     const out = { type: 'literal', value: term.value };
     if (term.language) out['xml:lang'] = term.language;
-    else if (term.datatype && term.datatype.value !== 'http://www.w3.org/2001/XMLSchema#string')
+    else if (term.datatype && term.datatype.value !== XSD_STRING)
       out.datatype = term.datatype.value;
     return out;
   }
   if (term.termType === 'BlankNode') return { type: 'bnode', value: term.value };
   if (term.termType === 'Quad') {
-    // A triple term.  term.value is empty for these, so emit the nested shape
-    // the SPARQL 1.2 results format uses -- which is exactly what Jena and
-    // HOLOS return, so the three answers become comparable.
-    return { type: 'triple', value: {
-      subject: cell(term.subject),
-      predicate: cell(term.predicate),
-      object: cell(term.object),
-    }};
+    // A triple term, in the nested shape the SPARQL 1.2 results format uses --
+    // which is what Jena and the HOLOS command line emit too, so the three
+    // answers stay comparable.
+    return {
+      type: 'triple',
+      value: {
+        subject: cell(term.subject),
+        predicate: cell(term.predicate),
+        object: cell(term.object),
+      },
+    };
   }
   return { type: 'uri', value: term.value };
 }
 
-if (r.resultType === 'bindings') {
-  const rows = await (await r.execute()).toArray();
-  const out = rows.map(b => {
-    const o = {};
-    for (const [k, v] of b) o[k.value] = cell(v);
-    return o;
-  });
-  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: out } }));
-} else if (r.resultType === 'quads') {
-  const qs = await (await r.execute()).toArray();
-  const nt = t => {
-    if (t.termType === 'Literal') {
-      const esc = t.value
-        .split('\\').join('\\\\')
-        .split('"').join('\\"')
-        .split('\n').join('\\n')
-        .split('\r').join('\\r');
-      let s = '"' + esc + '"';
-      if (t.language) s += '@' + t.language;
-      else if (t.datatype && t.datatype.value !== 'http://www.w3.org/2001/XMLSchema#string')
-        s += '^^<' + t.datatype.value + '>';
-      return s;
-    }
-    if (t.termType === 'BlankNode') return '_:' + t.value;
-    if (t.termType === 'Quad')
-      return '<<( ' + nt(t.subject) + ' ' + nt(t.predicate) + ' '
-                    + nt(t.object) + ' )>>';
-    return '<' + t.value + '>';
-  };
+const out = await run();
+if (typeof out === 'boolean') {
+  console.log(JSON.stringify({ boolean: out }));
+} else if (out.length > 0 && typeof out[0] === 'string') {
+  // CONSTRUCT and DESCRIBE come back as N-Triples with no trailing separator.
   console.log('#NTRIPLES');
-  for (const q of qs) console.log(nt(q.subject) + ' ' + nt(q.predicate) + ' ' + nt(q.object) + ' .');
-} else if (r.resultType === 'boolean') {
-  console.log(JSON.stringify({ boolean: await r.execute() }));
+  for (const line of out) console.log(`${line} .`);
 } else {
-  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: [] } }));
+  // `variables` is the projection as the engine parsed it, so a column unbound in
+  // every row is still named -- which the rows cannot show.
+  const vars = out.variables ?? [];
+  const bindings = out.map((row) => {
+    const encoded = {};
+    for (const v of vars) if (row[v]) encoded[v] = cell(row[v]);
+    return encoded;
+  });
+  console.log(JSON.stringify({ head: { vars }, results: { bindings } }));
 }
 """
 
 
-def comunica(data_files, query_file) -> Result:
+def editor(data_files, query_file) -> Result:
+    """The engine the browser editor runs, driven headlessly."""
     runner = EDITOR_HOME / ".course-runner.mjs"
     try:
-        runner.write_text(_COMUNICA_JS, encoding="utf-8")
+        runner.write_text(_EDITOR_JS, encoding="utf-8")
         cmd = [NODE_EXE, str(runner), str(_abs(query_file))] + [str(_abs(d)) for d in data_files]
         p = _run(cmd, cwd=str(EDITOR_HOME))
         out = (p.stdout or "").strip().splitlines()
@@ -430,66 +451,68 @@ def holos_update(data_files, update_file, verify_file) -> Result:
         return _parse_results("holos", body, p.stderr)
 
 
-_COMUNICA_UPDATE_JS = r"""
-import { Parser, Store } from 'n3';
-import { QueryEngine } from '@comunica/query-sparql';
+_EDITOR_UPDATE_JS = r"""
 import { readFileSync } from 'node:fs';
-import { createRequire } from 'node:module';
-
-// See the note in the query runner: the editor's undici wants a
-// worker_threads export that arrived in Node 22, and the update path reaches
-// it too.
-const _require = createRequire(import.meta.url);
-const _wt = _require('node:worker_threads');
-if (typeof _wt.markAsUncloneable !== 'function') _wt.markAsUncloneable = () => {};
+import { Store } from 'holos-wasm-node';
 
 const [updateFile, verifyFile, ...dataFiles] = process.argv.slice(2);
 const store = new Store();
 for (const f of dataFiles) {
-  const p = new Parser({ baseIRI: 'https://example.org/bookshop-trail/' });
-  for (const q of p.parse(readFileSync(f, 'utf8'))) store.addQuad(q);
+  const format = f.endsWith('.trig') ? 'trig' : f.endsWith('.nq') ? 'nquads' : 'turtle';
+  store.load(readFileSync(f, 'utf8'), format, 'https://example.org/bookshop-trail/');
 }
-const engine = new QueryEngine();
-await engine.queryVoid(readFileSync(updateFile, 'utf8'),
-                       { sources: [store], destination: store });
+store.update(readFileSync(updateFile, 'utf8'), undefined);
+const out = store.query(readFileSync(verifyFile, 'utf8'), undefined);
 
-const r = await engine.query(readFileSync(verifyFile, 'utf8'), { sources: [store] });
+const XSD_STRING = 'http://www.w3.org/2001/XMLSchema#string';
 
 function cell(term) {
   if (term.termType === 'Literal') {
     const out = { type: 'literal', value: term.value };
     if (term.language) out['xml:lang'] = term.language;
-    else if (term.datatype && term.datatype.value !== 'http://www.w3.org/2001/XMLSchema#string')
+    else if (term.datatype && term.datatype.value !== XSD_STRING)
       out.datatype = term.datatype.value;
     return out;
   }
   if (term.termType === 'BlankNode') return { type: 'bnode', value: term.value };
+  if (term.termType === 'Quad') {
+    return {
+      type: 'triple',
+      value: {
+        subject: cell(term.subject),
+        predicate: cell(term.predicate),
+        object: cell(term.object),
+      },
+    };
+  }
   return { type: 'uri', value: term.value };
 }
 
-if (r.resultType === 'bindings') {
-  const rows = await (await r.execute()).toArray();
-  const out = rows.map(b => {
-    const o = {};
-    for (const [k, v] of b) o[k.value] = cell(v);
-    return o;
-  });
-  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: out } }));
-} else if (r.resultType === 'boolean') {
-  console.log(JSON.stringify({ boolean: await r.execute() }));
+if (typeof out === 'boolean') {
+  console.log(JSON.stringify({ boolean: out }));
+} else if (out.length > 0 && typeof out[0] === 'string') {
+  console.log('#NTRIPLES');
+  for (const line of out) console.log(`${line} .`);
 } else {
-  console.log(JSON.stringify({ head: { vars: [] }, results: { bindings: [] } }));
+  const vars = out.variables ?? [];
+  const bindings = out.map((row) => {
+    const encoded = {};
+    for (const v of vars) if (row[v]) encoded[v] = cell(row[v]);
+    return encoded;
+  });
+  console.log(JSON.stringify({ head: { vars }, results: { bindings } }));
 }
 """
 
 
-def comunica_update(data_files, update_file, verify_file) -> Result:
-    """Comunica the library does support update, through queryVoid.  The
-    editor's SPARQL panel does not display a void result, which is a different
-    thing and is why module 17 does not claim the editor."""
+def editor_update(data_files, update_file, verify_file) -> Result:
+    """The editor's engine does support update.  The editor's SPARQL panel has no
+    way to display the result of an operation that returns nothing, which is a
+    different thing and is why module 17 claims `holos-wasm` rather than
+    `editor`."""
     runner = EDITOR_HOME / ".course-update-runner.mjs"
     try:
-        runner.write_text(_COMUNICA_UPDATE_JS, encoding="utf-8")
+        runner.write_text(_EDITOR_UPDATE_JS, encoding="utf-8")
         cmd = ([NODE_EXE, str(runner), str(_abs(update_file)),
                 str(_abs(verify_file))] + [str(_abs(d)) for d in data_files])
         p = _run(cmd, cwd=str(EDITOR_HOME))
@@ -498,15 +521,17 @@ def comunica_update(data_files, update_file, verify_file) -> Result:
             err = [l for l in (p.stderr or "").strip().splitlines() if l.strip()]
             msg = next((l for l in err if not l.startswith((" ", "	"))),
                        f"exit {p.returncode}")
-            return Result("comunica", False, error=msg[:200], raw=p.stderr)
-        return _parse_results("comunica", out[-1], p.stderr)
+            return Result("holos-wasm", False, error=msg[:200], raw=p.stderr)
+        if out[0].startswith("#NTRIPLES"):
+            return _parse_results("holos-wasm", chr(10).join(out[1:]), p.stderr)
+        return _parse_results("holos-wasm", out[-1], p.stderr)
     finally:
         runner.unlink(missing_ok=True)
 
 
 UPDATE_ENGINES = {
-    "comunica": comunica_update,
-    "editor": comunica_update,
+    "holos-wasm": editor_update,
+    "editor": editor_update,
     "holos": holos_update,
     "fuseki": jena_update,
     "jena": jena_update,
@@ -514,19 +539,20 @@ UPDATE_ENGINES = {
 
 
 def run_all_updates(data_files, update_file, verify_file,
-                    engines=("comunica", "holos", "fuseki")):
+                    engines=("holos-wasm", "holos", "fuseki")):
     """Apply one update on several engines and compare what it did."""
     return {e: UPDATE_ENGINES[e](data_files, update_file, verify_file)
             for e in engines}
 
 
 ENGINES = {
-    "editor": comunica,
+    "editor": editor,
     "holos": holos,
     "fuseki": jena,
-    # library names, for when it is the engine rather than the environment
-    # that matters
-    "comunica": comunica,
+    # The editor's engine under its own name, for when it is the engine rather
+    # than the hosted tool that matters -- module 17, where the panel cannot
+    # display what the engine can perfectly well do.
+    "holos-wasm": editor,
     "jena": jena,
 }
 

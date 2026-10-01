@@ -24,11 +24,13 @@
 #
 #        where it works, measured:
 #
-#          afn:localname        editor  error    holos  yes    fuseki  yes
-#          afn:namespace        editor  error    holos  yes    fuseki  yes
+#          afn:localname        editor  yes      holos  yes    fuseki  yes
+#          afn:namespace        editor  yes      holos  yes    fuseki  yes
 #
-#        Comunica raises rather than returning nothing, which is the
-#        better of the two failure modes: you find out.
+#        The editor ran neither until it moved to the HOLOS engine. The
+#        Comunica build before it raised rather than returning nothing,
+#        which was the better of the two failure modes -- you found out --
+#        but it still meant this page could be read and not run.
 #
 #
 #  WHAT TO TAKE AWAY
@@ -40,12 +42,13 @@
 #      have done it. Q104 is the way back out.
 #
 #  NOTE
-#    Comunica has no afn: functions and raises an error rather than
-#    returning unbound, so the editor is not claimed here.
+#    afn: is not in SPARQL, so an engine is entitled to have none of it.
+#    The editor has it only because it now runs HOLOS, measured at eight
+#    rows there; Fuseki has it natively, as ARQ's own library.
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
-#  RUNS ON  holos, fuseki
+#  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query 17.3.1 Operator Extensibility
 #           https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility
 #           SPARQL 1.2 Query 17.6 Extensible Value Testing

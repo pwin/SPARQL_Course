@@ -28,11 +28,12 @@
 #        | Cotton Quarto    |  93.7 km|
 #        +------------------+---------+
 #
-#        measured:  afn:sqrt   editor error   holos yes   fuseki yes
+#        measured:  afn:sqrt   editor yes   holos yes   fuseki yes
 #
-#        Note what module 09 bought by not using this: the same query,
-#        without the square root, runs in the browser too. That is the
-#        trade in one line.
+#        The editor answers this since it moved to the HOLOS engine; the
+#        Comunica build before it had no afn: at all. Module 09 still
+#        bought something by not needing the root: a query that asks for
+#        no extension runs on an engine that has none.
 #
 #
 #  WHAT TO TAKE AWAY
@@ -46,7 +47,7 @@
 #
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
-#  RUNS ON  holos, fuseki
+#  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query 17.3.1 Operator Extensibility
 #           https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility
 #           SPARQL 1.2 Query 17.6 Extensible Value Testing

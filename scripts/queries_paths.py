@@ -888,12 +888,16 @@ q(
         "triples per solution, and several solutions share a parent, so the "
         "same label triple is built more than once.",
     ],
-    notes="engines-differ: 27 triples from the browser editor, 22 from HOLOS "
-          "and Fuseki. The template is instantiated nine times, giving 27 "
-          "triples of which 22 are distinct. HOLOS and Fuseki return the set; "
-          "Comunica returns the stream, duplicates and all. Both are "
-          "defensible -- a graph is a set, but a result stream need not be -- "
-          "and it matters the moment you count rows instead of loading them.",
+    notes="22 triples, on all three engines now. The template is instantiated "
+          "nine times, giving 27 triples of which 22 are distinct, and every "
+          "engine the course uses returns the set." + chr(10) * 2 +
+          "It did not used to. The browser editor returned 27 until it moved "
+          "to the HOLOS engine, because the Comunica build it ran before "
+          "returned the stream, duplicates and all. Worth knowing the "
+          "difference exists: a graph is a set, but a result *stream* need "
+          "not be, and the two part company the moment you count rows "
+          "instead of loading them. If an engine ever hands you 27 here, "
+          "that is what it is doing.",
     body="""CONSTRUCT {
   ?parent bs:hasImprint ?child .
   ?parent rdfs:label    ?parentName .
@@ -966,7 +970,9 @@ q(
     what you get is NOT specified:
       Jena              outgoing statements
       HOLOS             outgoing statements
-      Comunica          outgoing statements
+      browser editor    outgoing statements -- it runs HOLOS, and this
+                        is now a real DESCRIBE rather than a CONSTRUCT
+                        the editor rewrote it into
       another engine    might include incoming ones too
 
     For anything reproducible, write the CONSTRUCT you actually

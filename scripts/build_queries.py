@@ -74,9 +74,21 @@ def load_measured_counts() -> None:
     for item in CATALOGUE:
         got = measured.get(item.qid, {})
         counts = {v["rows"] for v in got.values() if v.get("ok")}
+        # CONSTRUCT and DESCRIBE return a graph, so the unit is triples. Saying
+        # "rows" of a graph invites exactly the stream-versus-set confusion that
+        # q44 and q82 are about.
+        unit = ("triple" if item.body.lstrip().upper().startswith(("CONSTRUCT", "DESCRIBE"))
+                else "row")
+        measured_on = sorted(k for k, v in got.items() if v.get("ok"))
         if len(counts) == 1:
             n = counts.pop()
-            item.expect = f"{n} row{'' if n == 1 else 's'}, on every engine that runs it"
+            # "every engine that runs it" is only true if every engine it claims
+            # was actually measured; otherwise name the ones that were, so a
+            # header never generalises from a single run.
+            where = ("on every engine that runs it"
+                     if set(measured_on) >= set(item.engines)
+                     else "measured on " + ", ".join(measured_on))
+            item.expect = f"{n} {unit}{'' if n == 1 else 's'}, {where}"
         elif counts:
             item.expect = ", ".join(
                 f"{k} {v['rows']}" for k, v in sorted(got.items()) if v.get("ok")

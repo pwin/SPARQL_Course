@@ -40,8 +40,10 @@
 #      there's no implicit default worth relying on.
 #
 #  NOTE
-#    HOLOS only, and for a precise reason. Comunica has no geof: functions
-#    at all. Jena does have them -- run scripts/setup-geosparql.ps1 and the
+#    HOLOS, and so the browser editor since it moved to that engine --
+#    twelve rows, measured. Not Fuseki, for a precise reason, and not the
+#    Comunica build the editor ran before, which had no geof: functions at
+#    all. Jena does have them -- run scripts/setup-geosparql.ps1 and the
 #    whole library appears -- but in this 6.2.0 build every function that
 #    returns a LINEAR measure comes back unbound: geof:distance in metres
 #    or kilometres, geof:area, geof:length. No error, no warning, HTTP 200,
@@ -52,7 +54,7 @@
 #
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
-#  RUNS ON  holos
+#  RUNS ON  editor, holos
 #  SPEC     OGC GeoSPARQL 1.1
 #           https://docs.ogc.org/is/22-047r1/22-047r1.html
 #           SPARQL 1.2 Query 17.6 Extensible Value Testing

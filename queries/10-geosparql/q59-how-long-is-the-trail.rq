@@ -46,7 +46,7 @@
 #
 #  DATA     bookshop-trail-full.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl
-#  RUNS ON  holos
+#  RUNS ON  editor, holos
 #  SPEC     OGC GeoSPARQL 1.1
 #           https://docs.ogc.org/is/22-047r1/22-047r1.html
 #           SPARQL 1.2 Query 17.6 Extensible Value Testing

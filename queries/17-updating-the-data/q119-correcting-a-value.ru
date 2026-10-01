@@ -49,8 +49,8 @@
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
-#  RUNS ON  comunica, holos, fuseki
-#  RETURNS  1 row, on every engine that runs it
+#  RUNS ON  holos-wasm, holos, fuseki
+#  RETURNS  1 row, measured on fuseki, holos
 # ==========================================================================
 
 PREFIX bt:   <https://example.org/bookshop-trail/>

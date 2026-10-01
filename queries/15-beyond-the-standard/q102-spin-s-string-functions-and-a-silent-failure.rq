@@ -20,16 +20,19 @@
 #
 #        measured, and this is the point of the query:
 #
-#          spif:trim        editor  ERROR      holos  yes    fuseki  UNBOUND
-#          spif:titleCase   editor  ERROR      holos  yes    fuseki  UNBOUND
-#          spif:indexOf     editor  ERROR      holos  yes    fuseki  UNBOUND
+#          spif:trim        editor  yes        holos  yes    fuseki  UNBOUND
+#          spif:titleCase   editor  yes        holos  yes    fuseki  UNBOUND
+#          spif:indexOf     editor  yes        holos  yes    fuseki  UNBOUND
 #
-#        +----------+-------------------------------------------+
-#        | Comunica | raises. You find out immediately.          |
-#        | Jena     | returns the row, variable unbound, HTTP    |
-#        |          | 200. Looks exactly like missing data.      |
-#        | HOLOS    | answers.                                   |
-#        +----------+-------------------------------------------+
+#        The three answers, and two of them are ways of not having it:
+#
+#        +------------------+-------------------------------------------+
+#        | HOLOS, editor    | answers.                                  |
+#        | Jena             | returns the row, variable unbound, HTTP   |
+#        |                  | 200. Looks exactly like missing data.     |
+#        | Comunica, which  | raised. You found out immediately, which  |
+#        | the editor ran   | is the better of the two failures.        |
+#        +------------------+-------------------------------------------+
 #
 #        Same shape as geof:distance in metres on Jena (q57), and the
 #        reason the checking harness compares values rather than counting
@@ -38,8 +41,9 @@
 #
 #
 #  WHAT TO TAKE AWAY
-#    - spif: is SPIN's function library. HOLOS has it; Jena and Comunica
-#      do not.
+#    - spif: is SPIN's function library. HOLOS has it, and so the editor
+#      since it moved to that engine. Jena does not, and nor did
+#      Comunica.
 #    - An unimplemented function is not guaranteed to be an error. Jena
 #      leaves the variable unbound and returns the row, which is
 #      indistinguishable from the data simply not being there.
@@ -47,13 +51,13 @@
 #      suspect the data.
 #
 #  NOTE
-#    HOLOS only. Jena parses this and returns eight rows with three empty
-#    columns; Comunica raises. Run it on Fuseki yourself -- seeing the
-#    blanks is worth more than reading about them.
+#    HOLOS, and so the editor -- eight rows, measured. Jena parses this and
+#    returns eight rows with three empty columns. Run it on Fuseki
+#    yourself: seeing the blanks is worth more than reading about them.
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
-#  RUNS ON  holos
+#  RUNS ON  editor, holos
 #  SPEC     SPARQL 1.2 Query 17.3.1 Operator Extensibility
 #           https://www.w3.org/TR/sparql12-query/#x17-3-1-operator-extensibility
 #           SPARQL 1.2 Query 17.6 Extensible Value Testing

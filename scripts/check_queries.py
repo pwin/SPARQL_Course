@@ -86,9 +86,9 @@ def main() -> int:
             got = run_all([DATA / item.data], qfile, engines=tuple(engines))
 
         # The first column is the browser engine under whichever name the
-        # query claims: "editor" for the hosted tool, "comunica" where only
-        # the library can do it.
-        browser = "comunica" if "comunica" in item.engines else "editor"
+        # query claims: "editor" for the hosted tool, "holos-wasm" where only
+        # the engine can do it and the editor's panel cannot show it.
+        browser = "holos-wasm" if "holos-wasm" in item.engines else "editor"
         row, cells, sigs = {}, [], {}
         for name in (browser, "holos", "fuseki"):
             if name not in engines:
@@ -118,9 +118,12 @@ def main() -> int:
                 print("     ", {k: v["value"] for k, v in b.items()})
             print(f"      ({first.rows} rows)")
 
-    # Merge rather than overwrite: a targeted run must not wipe the counts for
-    # the queries it did not touch, because build_queries.py and build_docs.py
-    # quote this file.
+    # Merge rather than overwrite, per engine and not per query: build_queries.py
+    # and build_docs.py quote this file, and a run limited to one engine must
+    # leave the other engines' counts alone.  Replacing a query's whole entry
+    # looked like merging and silently dropped two of the three columns for every
+    # query the run touched -- which then read as "N rows, on every engine that
+    # runs it" off a single engine's measurement.
     out = BUILD / "results.json"
     merged = {}
     if out.exists():
@@ -128,7 +131,8 @@ def main() -> int:
             merged = json.loads(out.read_text(encoding="utf-8"))
         except json.JSONDecodeError:
             merged = {}
-    merged.update(results)
+    for qid, per_engine in results.items():
+        merged.setdefault(qid, {}).update(per_engine)
     out.write_text(json.dumps(dict(sorted(merged.items())), indent=2), encoding="utf-8")
 
     ok = True

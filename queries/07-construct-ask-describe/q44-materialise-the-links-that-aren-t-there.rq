@@ -50,8 +50,8 @@
 #
 #    It did not used to. The browser editor returned 27 until it moved to
 #    the HOLOS engine, because the Comunica build it ran before returned
-#    the stream, duplicates and all. Worth knowing the difference exists:
-#    a graph is a set, but a result *stream* need not be, and the two part
+#    the stream, duplicates and all. Worth knowing the difference exists: a
+#    graph is a set, but a result *stream* need not be, and the two part
 #    company the moment you count rows instead of loading them. If an
 #    engine ever hands you 27 here, that is what it is doing.
 #
@@ -62,7 +62,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x16-query-forms
 #           SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#  RETURNS  editor 27, fuseki 22, holos 22  (see the note above)
+#  RETURNS  22 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:   <https://example.org/bookshop-trail/>

@@ -57,7 +57,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
 #           SPARQL 1.2 Query 2.4 Blank Node Identifiers in Query Results
 #           https://www.w3.org/TR/sparql12-query/#x2-4-blank-node-identifiers-in-query-results
-#  RETURNS  15 rows, on every engine that runs it
+#  RETURNS  15 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:  <https://example.org/bookshop-trail/>

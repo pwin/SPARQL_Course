@@ -491,10 +491,10 @@ WHERE {
 }
 ORDER BY ?town""",
     data=D11,
-    notes="engines-differ: and by design. Jena returns all 33 rows; Comunica "
-          "and HOLOS return the 26 distinct ones. REDUCED permits duplicate "
-          "removal without requiring it, so every one of those answers "
-          "conforms.",
+    notes="engines-differ: and by design. Jena returns all 33 rows; HOLOS -- "
+          "and so the browser editor, which runs it -- returns the 26 "
+          "distinct ones. REDUCED permits duplicate removal without "
+          "requiring it, so every one of those answers conforms.",
 )
 
 q(

@@ -369,12 +369,13 @@ q(
         "explains why that changes the triple count on one engine and not the "
         "other two.",
     ],
-    notes="engines-differ: 26 triples from the browser editor, 25 from HOLOS "
-          "and Fuseki, for the reason set out in q44 -- the template is "
-          "instantiated once per solution, and bt:place-glasgow has two "
-          "labels, so `bt:shop-quire bs:locatedIn bt:place-glasgow` is built "
-          "twice. Comunica returns the stream; the other two return the set. "
-          "Load either into a graph and they are identical.",
+    notes="25 triples, on all three engines now, for the reason set out in "
+          "q44 -- the template is instantiated once per solution, and "
+          "bt:place-glasgow has two labels, so `bt:shop-quire bs:locatedIn "
+          "bt:place-glasgow` is built twice and collapses to one." + chr(10) * 2 +
+          "The browser editor returned 26 until it moved to the HOLOS engine, "
+          "which is the same stream-versus-set difference q44 describes. Load "
+          "either into a graph and they were always identical.",
     body="""CONSTRUCT {
   bt:shop-quire ?p ?o .
   ?o rdfs:label ?oLabel .

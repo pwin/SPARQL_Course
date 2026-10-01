@@ -8,10 +8,12 @@
 #
 #  HOW IT WORKS
 #    SERVICE SILENT tells the engine to carry on with no bindings rather
-#    than fail when a remote call goes wrong. Fuseki honours it. HOLOS --
-#    and so the browser editor, which now runs it -- declines to make the
-#    request in the first place, and its reason is worth understanding.
-#    The editor's previous engine raised instead, honouring neither.
+#    than fail when a remote call goes wrong. Fuseki honours it. HOLOS
+#    declines to make the request at all, and its reason is worth
+#    understanding. The browser editor, which now runs HOLOS, refuses this
+#    endpoint too -- it is not on the editor's allow-list -- and then
+#    raises rather than shrugging, for a reason that is about the protocol
+#    between the engine and the page and not about SILENT.
 #
 #  DIAGRAM
 #        SERVICE SILENT <https://endpoint.invalid/sparql> { ... }
@@ -50,8 +52,8 @@
 #  WHAT TO TAKE AWAY
 #    - SERVICE SILENT continues with no bindings instead of failing.
 #      Fuseki honours it. The browser editor refuses the remote call and
-#      then leaves the local rows standing, which is SILENT doing its job
-#      over a request that was never made.
+#      then raises, so SILENT buys you nothing there -- measured, not
+#      assumed; the NOTE says why that is the protocol's doing.
 #    - A public endpoint that follows arbitrary SERVICE IRIs will make
 #      requests to any address a stranger names, including ones only it
 #      can reach. That is SSRF, and it is why HOLOS refuses.
@@ -59,13 +61,23 @@
 #      it can be slow, it can fail, and it can be a security question.
 #
 #  NOTE
-#    Fuseki is the one that actually calls out and shrugs the failure off.
-#    The browser editor now runs the HOLOS engine, so it behaves as HOLOS
-#    does: it refuses remote SERVICE altogether and SILENT then leaves the
-#    local rows standing -- five shops, no population column. The Comunica
-#    build it used before raised instead, honouring neither the call nor
-#    the SILENT. Refusing is the point of the query rather than a
-#    limitation of it; raising was simply wrong.
+#    Fuseki is the one that actually calls out and shrugs the failure off:
+#    five rows, no population column, which is SILENT doing exactly what it
+#    says.
+#
+#    The browser editor runs HOLOS in WebAssembly, which has no network
+#    client, so federation there is a conversation: the engine reports the
+#    endpoint and query it wants, the page fetches, and the query is run
+#    again. What the engine reports is the endpoint and the query -- and
+#    not whether the clause was written SILENT. So when the page declines
+#    endpoint.invalid, as it declines anything not on its allow-list, it
+#    cannot tell "could not call, and the query said carry on" apart from
+#    "could not call, and the answer would be wrong without it", and it
+#    raises. Refusing the call is the position; raising is the cost of a
+#    protocol that does not carry the one word that would settle it.
+#
+#    Native HOLOS refuses remote SERVICE outright, SILENT or not, which is
+#    why this query claims only Fuseki.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

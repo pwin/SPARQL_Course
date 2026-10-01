@@ -30,12 +30,13 @@
 #        measured:
 #
 #          FROM         editor  yes    holos  yes    fuseki  yes
-#          FROM NAMED   editor  ERROR  holos  yes    fuseki  yes
+#          FROM NAMED   editor  yes    holos  yes    fuseki  yes
 #
-#        Comunica raises rather than answering: over an in-memory store
-#        it has no actor for the pattern a FROM NAMED dataset produces.
-#        So in the browser, scope with FROM and load the TriG file; keep
-#        FROM NAMED for a real endpoint.
+#        Both work in the browser since the editor moved to the HOLOS
+#        engine -- two rows, measured. The Comunica build before it raised
+#        rather than answering: over an in-memory store it had no actor for
+#        the pattern a FROM NAMED dataset produces, so the advice used to be
+#        to scope with FROM and keep FROM NAMED for a real endpoint.
 #
 #
 #  WHAT TO TAKE AWAY
@@ -45,8 +46,8 @@
 #      graph named only by FROM NAMED is not in the default graph.
 #    - The browser editor supports FROM NAMED as of its move to the HOLOS
 #      engine; the Comunica build it used before did not, and errored
-#      rather than ignoring the clause. Still check the dataset clauses on
-#      the engine you will deploy against: support is not universal.
+#      rather than ignoring the clause. Still check the dataset clauses
+#      on the engine you will deploy against: support is not universal.
 #
 #  NOTE
 #    Fuseki and HOLOS. Comunica raises "none of the configured actors were
@@ -55,7 +56,7 @@
 #
 #  DATA     bookshop-trail.trig
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail.trig
-#  RUNS ON  holos, fuseki
+#  RUNS ON  editor, holos, fuseki
 #  SPEC     SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
 #           SPARQL 1.2 Query 13.2 Specifying RDF Datasets

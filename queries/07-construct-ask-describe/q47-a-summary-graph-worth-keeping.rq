@@ -41,7 +41,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x16-query-forms
 #           SPARQL 1.2 Query 16.2 CONSTRUCT
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
-#  RETURNS  165 rows, on every engine that runs it
+#  RETURNS  165 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:   <https://example.org/bookshop-trail/>

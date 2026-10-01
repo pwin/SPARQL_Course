@@ -363,8 +363,10 @@ WHERE {
 ORDER BY ?metres
 LIMIT 12""",
     data=DFULL,
-    engines=(HOLOS,),
-    notes="HOLOS only, and for a precise reason. Comunica has no geof: "
+    engines=(EDITOR, HOLOS),
+    notes="HOLOS, and so the browser editor since it moved to that engine -- "
+          "twelve rows, measured. Not Fuseki, for a precise reason, and not "
+          "the Comunica build the editor ran before, which had no geof: "
           "functions at all. Jena does have them -- run "
           "scripts/setup-geosparql.ps1 and the whole library appears -- but "
           "in this 6.2.0 build every function that returns a LINEAR measure "
@@ -426,7 +428,7 @@ WHERE {
   FILTER( !geof:sfWithin(?point, ?polygon) )
 }""",
     data=DFULL,
-    engines=(HOLOS, FUSEKI),
+    engines=ALL,
     notes="Returns zero rows when the data is sound, which is the point. Runs "
           "on Fuseki as well as HOLOS once scripts/setup-geosparql.ps1 has "
           "been run: Jena's GeoSPARQL handles the topological functions "
@@ -482,7 +484,7 @@ WHERE {
 ORDER BY DESC(?storedKm)
 LIMIT 10""",
     data=DFULL,
-    engines=(HOLOS,),
+    engines=(EDITOR, HOLOS),
     notes="geof:length is a linear measure, so it shares q57's fate on Jena: "
           "registered, callable, and unbound on return. HOLOS answers it.",
 )
@@ -549,7 +551,7 @@ WHERE {
 ORDER BY DESC(?separation)
 LIMIT 10""",
     data=DFULL,
-    engines=(HOLOS,),
+    engines=(EDITOR, HOLOS),
     notes="HOLOS-specific in practice: it's the engine among the three that "
           "reads EPSG:27700. The lesson -- that a CRS URI is part of the "
           "value and must be honoured -- is general.",

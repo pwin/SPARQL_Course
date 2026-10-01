@@ -65,7 +65,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
 #           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
-#  RETURNS  editor 26, fuseki 25, holos 25  (see the note above)
+#  RETURNS  25 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:   <https://example.org/bookshop-trail/>

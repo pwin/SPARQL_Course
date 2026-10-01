@@ -58,7 +58,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x16-2-construct
 #           SPARQL 1.2 Query 16.2.1 Templates with Blank Nodes
 #           https://www.w3.org/TR/sparql12-query/#x16-2-1-templates-with-blank-nodes
-#  RETURNS  380 rows, on every engine that runs it
+#  RETURNS  380 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:  <https://example.org/bookshop-trail/>

@@ -216,6 +216,13 @@ WHERE {
 }
 ORDER BY ?p ?o""",
     data=D12,
+    notes="Four rows on HOLOS and Fuseki. In the hosted browser editor this "
+          "needs holos-wasm 0.20.0 or newer: it selects a triple term, and up "
+          "to 0.19.0 the engine handed one to the page without its subject, "
+          "predicate or object, so the results pane raised instead of showing "
+          "it. Nothing was wrong with the query, and nothing is wrong with it "
+          "now -- it is here because a query that asks for a triple term "
+          "directly is how you find out whether your tooling has one.",
 )
 
 q(

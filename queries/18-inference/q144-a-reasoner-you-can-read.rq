@@ -58,7 +58,7 @@
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
 #  RUNS ON  editor, holos, fuseki
-#  RETURNS  186 rows, on every engine that runs it
+#  RETURNS  186 triples, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt: <https://example.org/bookshop-trail/>
