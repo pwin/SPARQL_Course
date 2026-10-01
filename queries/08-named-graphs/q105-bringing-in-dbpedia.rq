@@ -49,9 +49,27 @@
 #      your query.
 #
 #  NOTE
-#    HOLOS refuses remote SERVICE outright -- see q108, which is about why.
-#    On the other two this returns one row, because DBpedia holds a
+#    On Fuseki and Comunica this returns one row, because DBpedia holds a
 #    population for Sedbergh and not for the other two book towns.
+#
+#    HOLOS refuses remote SERVICE outright -- see q108, which is about why.
+#    The browser editor runs HOLOS and *does* federate, because a browser
+#    is not a server: the request is the reader's own, from their own
+#    machine, and the editor keeps an allow-list of endpoints a shared
+#    query file may reach. It returns **no rows**, and that is this query's
+#    lesson rather than a defect in it.
+#
+#    Why none: ?dbp is bound out here, but the editor sends the SERVICE
+#    pattern to DBpedia as it stands --
+#      SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
+#    -- which asks for every population in DBpedia. DBpedia caps the answer
+#    at ten thousand rows, the three book towns are not among them, and the
+#    join finds nothing. Comunica pushes the three values into the request
+#    instead, which is called a bound join, and gets its one row.
+#
+#    So this is the shape of federation that depends on an optimisation
+#    rather than on the specification. q107 asks the same question without
+#    needing it, and that is the version to copy.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

@@ -48,8 +48,16 @@
 #  NOTE
 #    engines-differ: and the difference is the lesson. Fuseki fills in
 #    Sedbergh's population; the browser editor returns the same three rows
-#    with the column empty, because Comunica does not carry the outer
-#    binding into a SERVICE inside an OPTIONAL.
+#    with the column empty. Both answers conform -- OPTIONAL is what makes
+#    the rows survive either way, which is the point of wrapping it.
+#
+#    The reason the column is empty has changed and the result has not. It
+#    used to be that Comunica did not carry the outer binding into a
+#    SERVICE inside an OPTIONAL. The editor now runs HOLOS, which federates
+#    -- see q105 -- but sends the SERVICE pattern unbound, so DBpedia is
+#    asked a question too broad to answer usefully and the OPTIONAL keeps
+#    the rows with nothing in the column. Same three rows, same empty
+#    column, a different engine behind it.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

@@ -56,6 +56,12 @@
 #    - A self-contained SERVICE block can be tested directly against the
 #      remote endpoint, which is how you tell whose fault an empty result
 #      is.
+#    - And it is the version that runs everywhere. q105 asks the same
+#      question and depends on the engine pushing the keys in for you;
+#      this one asks nothing of the engine, so Fuseki, Comunica and the
+#      browser editor all return the same four rows. Portability here is
+#      not a nicety -- it is the difference between a query that works and
+#      one that works on your engine.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl
