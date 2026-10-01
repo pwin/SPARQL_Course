@@ -43,9 +43,10 @@
 #      GRAPH can still ask which graph a fact is in.
 #    - FROM and FROM NAMED are independent. A query can have both, and a
 #      graph named only by FROM NAMED is not in the default graph.
-#    - The browser editor does not support FROM NAMED. Scope with FROM
-#      there, and check the dataset clauses on the engine you will deploy
-#      against.
+#    - The browser editor supports FROM NAMED as of its move to the HOLOS
+#      engine; the Comunica build it used before did not, and errored
+#      rather than ignoring the clause. Still check the dataset clauses on
+#      the engine you will deploy against: support is not universal.
 #
 #  NOTE
 #    Fuseki and HOLOS. Comunica raises "none of the configured actors were

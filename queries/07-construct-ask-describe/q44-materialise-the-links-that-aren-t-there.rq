@@ -44,12 +44,16 @@
 #      so the same label triple is built more than once.
 #
 #  NOTE
-#    engines-differ: 27 triples from the browser editor, 22 from HOLOS and
-#    Fuseki. The template is instantiated nine times, giving 27 triples of
-#    which 22 are distinct. HOLOS and Fuseki return the set; Comunica
-#    returns the stream, duplicates and all. Both are defensible -- a graph
-#    is a set, but a result stream need not be -- and it matters the moment
-#    you count rows instead of loading them.
+#    22 triples, on all three engines now. The template is instantiated
+#    nine times, giving 27 triples of which 22 are distinct, and every
+#    engine the course uses returns the set.
+#
+#    It did not used to. The browser editor returned 27 until it moved to
+#    the HOLOS engine, because the Comunica build it ran before returned
+#    the stream, duplicates and all. Worth knowing the difference exists:
+#    a graph is a set, but a result *stream* need not be, and the two part
+#    company the moment you count rows instead of loading them. If an
+#    engine ever hands you 27 here, that is what it is doing.
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl

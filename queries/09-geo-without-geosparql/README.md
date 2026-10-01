@@ -1,6 +1,8 @@
 # Module 09 · Geospatial with nothing but arithmetic
 
-Every engine can do geography if the coordinates are plain numbers. This module builds bounding boxes and a great-circle distance out of FILTER and BIND alone -- so it runs in the browser, with no GeoSPARQL support of any kind.
+Every engine can do geography if the coordinates are plain numbers. This module builds bounding boxes and a great-circle distance out of FILTER and BIND alone, so it runs anywhere -- on an engine with no GeoSPARQL support of any kind, which is most of them.
+
+It is no longer the only geo module the lab can run: the browser editor moved to the HOLOS engine and module 10 executes there now. Read this one anyway. Knowing what `geof:distance` saves you is worth more than being handed it, and the arithmetic here is what you fall back on against an endpoint that has no geometry functions.
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 

@@ -129,9 +129,14 @@ That is Q90's table, computed by the engine and applied automatically.
 
 ---
 
-## 3 · The browser editor — Comunica's plans
+## 3 · A third shape of plan — Comunica
 
-Comunica exposes `explain` through its API, in three modes:
+Comunica is no longer what the browser editor runs — it moved to the HOLOS
+engine, so section 2 describes the plans you would get there, once the editor's
+build exposes them. Comunica is still worth a look, because its plan answers a
+question neither of the others does.
+
+It exposes `explain` through its API, in three modes:
 
 ```js
 const engine = new QueryEngine();
@@ -148,9 +153,12 @@ The physical plan is the interesting one: Comunica is built out of actors that
 bid for work, so its plan tells you *which implementation* handled each step —
 which is a different and useful kind of detail from the other two.
 
-The SPARQL panel in the editor does not surface this, so it is a Node
-exercise rather than a browser one. `scripts/engines.py` contains a working
-Comunica harness you can adapt in about five lines.
+A Node exercise rather than a browser one, and now doubly so: no SPARQL panel
+surfaces a plan, and the editor no longer has Comunica in it at all.
+`scripts/engines.py` contains a working harness you can adapt in about five
+lines, and it needs Node 22.19 or newer — Comunica's `undici` dependency calls
+an API that older Node does not have, and fails on import rather than at the
+query.
 
 ---
 

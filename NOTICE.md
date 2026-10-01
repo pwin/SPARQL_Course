@@ -67,7 +67,7 @@ keeps them out.
 | **Apache Jena** and **Fuseki** | Apache-2.0 | installed separately by the user |
 | **Apache Derby** | Apache-2.0 | copied from a local Apache SIS install, or downloaded from Maven Central, by `scripts/setup-geosparql.ps1` |
 | **ROBOT** (OWL 2 profile checking) | BSD-3-Clause | downloaded by the user; the command is in `scripts/check_owl.py` |
-| **Comunica** | MIT | a dependency of the Turtle Editor Viewer |
+| **HOLOS** (`holos-wasm`) | MIT OR Apache-2.0 | the SPARQL 1.2 engine behind the Turtle Editor Viewer |
 | **Turtle Editor Viewer** | MIT | a separate project by the same author |
 | **HOLOS** | see its own repository | a separate project |
 | **pyproj** | MIT | `pip install pyproj` |

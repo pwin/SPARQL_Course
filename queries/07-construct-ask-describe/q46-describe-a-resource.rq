@@ -23,7 +23,9 @@
 #        what you get is NOT specified:
 #          Jena              outgoing statements
 #          HOLOS             outgoing statements
-#          Comunica          outgoing statements
+#          browser editor    outgoing statements -- it runs HOLOS, and this
+#                            is now a real DESCRIBE rather than a CONSTRUCT
+#                            the editor rewrote it into
 #          another engine    might include incoming ones too
 #
 #        For anything reproducible, write the CONSTRUCT you actually

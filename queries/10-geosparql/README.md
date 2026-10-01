@@ -1,6 +1,8 @@
 # Module 10 · GeoSPARQL proper
 
-The same questions, asked with geof: functions against WKT geometries. Shorter, exact, and dependent on an engine that implements them. HOLOS and a GeoSPARQL-enabled Fuseki do; the browser editor doesn't.
+The same questions, asked with geof: functions against WKT geometries. Shorter, exact, and dependent on an engine that implements them — which, as of the editor's move to the HOLOS engine, now includes **the browser editor**. HOLOS, the browser editor and a GeoSPARQL-enabled Fuseki all run this module; it used to be the one chapter you could read but not execute in the lab.
+
+That is also why module 09 comes first rather than instead: it is there to show what the arithmetic costs you, not because the lab could not do better.
 
 Each `.rq` file carries its own explanation: what it asks, how it works, a diagram of the mechanism, and what to take away. Read the header before running the query.
 

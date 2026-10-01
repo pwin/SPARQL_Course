@@ -8,9 +8,10 @@
 #
 #  HOW IT WORKS
 #    SERVICE SILENT tells the engine to carry on with no bindings rather
-#    than fail when a remote call goes wrong. Fuseki honours it. The
-#    browser editor raises anyway. HOLOS declines to make the request in
-#    the first place, and its reason is worth understanding.
+#    than fail when a remote call goes wrong. Fuseki honours it. HOLOS --
+#    and so the browser editor, which now runs it -- declines to make the
+#    request in the first place, and its reason is worth understanding.
+#    The editor's previous engine raised instead, honouring neither.
 #
 #  DIAGRAM
 #        SERVICE SILENT <https://endpoint.invalid/sparql> { ... }
@@ -48,8 +49,9 @@
 #
 #  WHAT TO TAKE AWAY
 #    - SERVICE SILENT continues with no bindings instead of failing.
-#      Fuseki honours it; Comunica raises anyway, so do not rely on it in
-#      the browser.
+#      Fuseki honours it. The browser editor refuses the remote call and
+#      then leaves the local rows standing, which is SILENT doing its job
+#      over a request that was never made.
 #    - A public endpoint that follows arbitrary SERVICE IRIs will make
 #      requests to any address a stranger names, including ones only it
 #      can reach. That is SSRF, and it is why HOLOS refuses.
@@ -57,9 +59,13 @@
 #      it can be slow, it can fail, and it can be a security question.
 #
 #  NOTE
-#    Fuseki only. The browser editor raises rather than honouring SILENT,
-#    and HOLOS refuses remote SERVICE altogether -- which is the point of
-#    the query rather than a limitation of it.
+#    Fuseki is the one that actually calls out and shrugs the failure off.
+#    The browser editor now runs the HOLOS engine, so it behaves as HOLOS
+#    does: it refuses remote SERVICE altogether and SILENT then leaves the
+#    local rows standing -- five shops, no population column. The Comunica
+#    build it used before raised instead, honouring neither the call nor
+#    the SILENT. Refusing is the point of the query rather than a
+#    limitation of it; raising was simply wrong.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

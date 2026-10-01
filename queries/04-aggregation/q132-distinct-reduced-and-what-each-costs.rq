@@ -62,9 +62,10 @@
 #      what you want when counting distinct values.
 #
 #  NOTE
-#    engines-differ: and by design. Jena returns all 33 rows; Comunica and
-#    HOLOS return the 26 distinct ones. REDUCED permits duplicate removal
-#    without requiring it, so every one of those answers conforms.
+#    engines-differ: and by design. Jena returns all 33 rows; HOLOS -- and so
+#    the browser editor, which runs it -- returns the 26 distinct ones.
+#    REDUCED permits duplicate removal without requiring it, so every one of
+#    those answers conforms.
 #
 #  DATA     bookshop-trail-1.1.ttl
 #  LOAD IT  https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-1.1.ttl
