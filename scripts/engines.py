@@ -16,6 +16,11 @@ Environment overrides:
                   a checkout, run the checker with --engine holos --engine fuseki.
     NODE_EXE      any Node >= 18. The editor's engine is a WebAssembly module
                   with no dependencies; the Comunica it replaced needed Node 22.
+    HOLOS_WASM_ENTRY
+                  a built pkg-node/holos_wasm.js, to measure the `editor`
+                  column against an engine that is not published yet. Without
+                  it the editor's own installed package is used, which is what
+                  that column ordinarily means.
 """
 from __future__ import annotations
 
@@ -269,7 +274,11 @@ def holos(data_files, query_file) -> Result:
 # could reach.
 _EDITOR_JS = r"""
 import { readFileSync } from 'node:fs';
-import { Store } from 'holos-wasm-node';
+
+// Resolved at run time, not imported by name, so an engine that is not released yet can be
+// measured: point HOLOS_WASM_ENTRY at a built pkg-node/holos_wasm.js. Without it this is the
+// package the editor itself has installed, which is what the `editor` column should mean.
+const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'holos-wasm-node');
 
 // The hosts the editor's allow-list permits.  Kept in step with
 // src/services/federation.ts by hand: this is a checking harness, and a copy that
@@ -453,7 +462,9 @@ def holos_update(data_files, update_file, verify_file) -> Result:
 
 _EDITOR_UPDATE_JS = r"""
 import { readFileSync } from 'node:fs';
-import { Store } from 'holos-wasm-node';
+
+// See the query runner: resolved at run time so an unreleased build can be measured.
+const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'holos-wasm-node');
 
 const [updateFile, verifyFile, ...dataFiles] = process.argv.slice(2);
 const store = new Store();

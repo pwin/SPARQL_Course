@@ -7,12 +7,12 @@
 #
 #  HOW IT WORKS
 #    The obvious fix for q105 dropping rows is to wrap the SERVICE in an
-#    OPTIONAL, and on Jena that is exactly right. In the browser editor it
-#    returns all three rows and no populations at all -- the OPTIONAL does
-#    its job on the rows and changes nothing about the column, because the
-#    reason the column is empty is the same one q105 has: the SERVICE
-#    pattern goes to DBpedia unbound. Same query, same endpoint, different
-#    answer.
+#    OPTIONAL, and that is exactly right: a town DBpedia has no population
+#    for keeps its row, with the column empty. What the OPTIONAL cannot do
+#    is make the remote call selective -- so on an engine that sends the
+#    clause unbound, as the browser editor did before holos-wasm 0.20.0,
+#    all three rows survive with all three columns empty, and nothing looks
+#    wrong.
 #
 #  DIAGRAM
 #        OPTIONAL {
@@ -25,20 +25,17 @@
 #
 #          +---------+-------+---------------------------------------+
 #          | Fuseki  | 3 rows| Sedbergh 2765, the other two blank  ok |
-#          | editor  | 3 rows| ALL THREE blank                       |
+#          | editor  | 3 rows| Sedbergh 2765, the other two blank  ok |
 #          | HOLOS   |   --  | refuses remote SERVICE entirely       |
 #          +---------+-------+---------------------------------------+
 #
-#        The editor gets the row count right and the data wrong, which is
-#        the hardest kind of difference to notice: nothing looks missing.
+#        Before holos-wasm 0.20.0 the editor returned those same three rows
+#        with the population empty in all of them -- the right row count and
+#        the wrong data, which is the hardest kind of difference to notice.
+#        The OPTIONAL was never what was wrong: take it away and you have
+#        q105, where the same unbound clause returned no rows at all.
 #
-#        The OPTIONAL is not what the engines disagree about. Take it away
-#        and you have q105, where the editor returns no rows at all and
-#        Fuseki returns one -- same cause, one layer down. What the
-#        OPTIONAL decides is whether a row survives an empty answer, and
-#        it decides that correctly on every engine here.
-#
-#        q107 is the shape that works on both.
+#        q107 is the shape that never depended on the engine.
 #
 #
 #  WHAT TO TAKE AWAY
@@ -50,18 +47,17 @@
 #      q107.
 #
 #  NOTE
-#    engines-differ: and the difference is the lesson. Fuseki fills in
-#    Sedbergh's population; the browser editor returns the same three rows
-#    with the column empty. Both answers conform -- OPTIONAL is what makes
-#    the rows survive either way, which is the point of wrapping it.
+#    Three rows, two of them with an empty population, because DBpedia has
+#    one for Sedbergh and not for Hay-on-Wye or Wigtown. That is the
+#    OPTIONAL doing its job: without it those two towns would disappear
+#    rather than appear incomplete.
 #
-#    The reason the column is empty has changed and the result has not. It
-#    used to be that Comunica did not carry the outer binding into a
-#    SERVICE inside an OPTIONAL. The editor now runs HOLOS, which federates
-#    -- see q105 -- but sends the SERVICE pattern unbound, so DBpedia is
-#    asked a question too broad to answer usefully and the OPTIONAL keeps
-#    the rows with nothing in the column. Same three rows, same empty
-#    column, a different engine behind it.
+#    Worth knowing what this used to show. Until holos-wasm 0.20.0 the
+#    browser editor returned all three rows with *every* population empty,
+#    because it sent the SERVICE pattern to DBpedia unbound -- see q105.
+#    Same three rows, same shape of answer, one real value missing from it.
+#    A federated query that returns the row count you expected has told you
+#    nothing about whether it worked.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl

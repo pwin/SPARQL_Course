@@ -77,27 +77,27 @@ ORDER BY ?name""",
     extra_prefixes=("owl", "dbo"),
     engines=(EDITOR, FUSEKI),
     network=True,
-    notes="On Fuseki and Comunica this returns one row, because DBpedia "
-          "holds a population for Sedbergh and not for the other two book "
-          "towns." + chr(10) * 2 +
+    notes="One row on every engine that runs it: DBpedia holds a population for "
+          "Sedbergh and not for the other two book towns." + chr(10) * 2 +
           "HOLOS refuses remote SERVICE outright -- see q108, which is about "
           "why. The browser editor runs HOLOS and *does* federate, because a "
           "browser is not a server: the request is the reader's own, from "
           "their own machine, and the editor keeps an allow-list of endpoints "
-          "a shared query file may reach. It returns **no rows**, and that is "
-          "this query's lesson rather than a defect in it." + chr(10) * 2 +
-          "Why none: ?dbp is bound out here, but the editor sends the SERVICE "
-          "pattern to DBpedia as it stands --" + chr(10) +
-          "  SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }"
-          + chr(10) +
+          "a shared query file may reach." + chr(10) * 2 +
+          "It returned **no rows** until holos-wasm 0.20.0, and the reason is "
+          "worth more than the fix. ?dbp is bound out here, but the editor "
+          "sent the SERVICE pattern to DBpedia as it stood --" + chr(10) +
+          "    SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }" + chr(10) +
           "-- which asks for every population in DBpedia. DBpedia caps the "
-          "answer at ten thousand rows, the three book towns are not among "
-          "them, and the join finds nothing. Comunica pushes the three values "
-          "into the request instead, which is called a bound join, and gets "
-          "its one row." + chr(10) * 2 +
-          "So this is the shape of federation that depends on an optimisation "
-          "rather than on the specification. q107 asks the same question "
-          "without needing it, and that is the version to copy.",
+          "answer at ten thousand rows, the three book towns were not among "
+          "them, and the join found nothing. Correct query, correct engine, "
+          "empty answer." + chr(10) * 2 +
+          "What was missing is called a bound join: sending the keys with the "
+          "question, so the endpoint is asked about three resources instead "
+          "of scanned for all of them. Every engine that answers this query "
+          "does it; q107 is the same question written so that no engine has "
+          "to. If an engine ever hands you nothing here, that is what it is "
+          "not doing.",
 )
 
 q(
@@ -106,12 +106,12 @@ q(
     asks="List all three book towns, with the population where DBpedia has "
          "one.",
     how="The obvious fix for q105 dropping rows is to wrap the SERVICE in an "
-        "OPTIONAL, and on Jena that is exactly right. In the browser editor it "
-        "returns all three rows and no populations at all -- the OPTIONAL does "
-        "its job on the rows and changes nothing about the column, because "
-        "the reason the column is empty is the same one q105 has: the SERVICE "
-        "pattern goes to DBpedia unbound. Same query, same endpoint, "
-        "different answer.",
+        "OPTIONAL, and that is exactly right: a town DBpedia has no population "
+        "for keeps its row, with the column empty. What the OPTIONAL cannot do "
+        "is make the remote call selective -- so on an engine that sends the "
+        "clause unbound, as the browser editor did before holos-wasm 0.20.0, "
+        "all three rows survive with all three columns empty, and nothing "
+        "looks wrong.",
     diagram="""
     OPTIONAL {
       SERVICE <https://dbpedia.org/sparql> {
@@ -123,20 +123,17 @@ q(
 
       +---------+-------+---------------------------------------+
       | Fuseki  | 3 rows| Sedbergh 2765, the other two blank  ok |
-      | editor  | 3 rows| ALL THREE blank                       |
+      | editor  | 3 rows| Sedbergh 2765, the other two blank  ok |
       | HOLOS   |   --  | refuses remote SERVICE entirely       |
       +---------+-------+---------------------------------------+
 
-    The editor gets the row count right and the data wrong, which is
-    the hardest kind of difference to notice: nothing looks missing.
+    Before holos-wasm 0.20.0 the editor returned those same three rows
+    with the population empty in all of them -- the right row count and
+    the wrong data, which is the hardest kind of difference to notice.
+    The OPTIONAL was never what was wrong: take it away and you have
+    q105, where the same unbound clause returned no rows at all.
 
-    The OPTIONAL is not what the engines disagree about. Take it away
-    and you have q105, where the editor returns no rows at all and
-    Fuseki returns one -- same cause, one layer down. What the
-    OPTIONAL decides is whether a row survives an empty answer, and
-    it decides that correctly on every engine here.
-
-    q107 is the shape that works on both.
+    q107 is the shape that never depended on the engine.
     """,
     learn=[
         "OPTIONAL around SERVICE is the usual way to keep rows the remote side "
@@ -163,18 +160,16 @@ ORDER BY ?name""",
     extra_prefixes=("owl", "dbo"),
     engines=(EDITOR, FUSEKI),
     network=True,
-    notes="engines-differ: and the difference is the lesson. Fuseki fills in "
-          "Sedbergh's population; the browser editor returns the same three "
-          "rows with the column empty. Both answers conform -- OPTIONAL is "
-          "what makes the rows survive either way, which is the point of "
-          "wrapping it." + chr(10) * 2 +
-          "The reason the column is empty has changed and the result has not. "
-          "It used to be that Comunica did not carry the outer binding into a "
-          "SERVICE inside an OPTIONAL. The editor now runs HOLOS, which "
-          "federates -- see q105 -- but sends the SERVICE pattern unbound, so "
-          "DBpedia is asked a question too broad to answer usefully and the "
-          "OPTIONAL keeps the rows with nothing in the column. Same three "
-          "rows, same empty column, a different engine behind it.",
+    notes="Three rows, two of them with an empty population, because DBpedia "
+          "has one for Sedbergh and not for Hay-on-Wye or Wigtown. That is "
+          "the OPTIONAL doing its job: without it those two towns would "
+          "disappear rather than appear incomplete." + chr(10) * 2 +
+          "Worth knowing what this used to show. Until holos-wasm 0.20.0 the "
+          "browser editor returned all three rows with *every* population "
+          "empty, because it sent the SERVICE pattern to DBpedia unbound -- "
+          "see q105. Same three rows, same shape of answer, one real value "
+          "missing from it. A federated query that returns the row count you "
+          "expected has told you nothing about whether it worked.",
 )
 
 q(

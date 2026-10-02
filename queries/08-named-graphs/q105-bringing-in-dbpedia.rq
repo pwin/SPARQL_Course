@@ -49,27 +49,28 @@
 #      your query.
 #
 #  NOTE
-#    On Fuseki and Comunica this returns one row, because DBpedia holds a
-#    population for Sedbergh and not for the other two book towns.
+#    One row on every engine that runs it: DBpedia holds a population for
+#    Sedbergh and not for the other two book towns.
 #
 #    HOLOS refuses remote SERVICE outright -- see q108, which is about why.
 #    The browser editor runs HOLOS and *does* federate, because a browser
 #    is not a server: the request is the reader's own, from their own
 #    machine, and the editor keeps an allow-list of endpoints a shared
-#    query file may reach. It returns **no rows**, and that is this query's
-#    lesson rather than a defect in it.
+#    query file may reach.
 #
-#    Why none: ?dbp is bound out here, but the editor sends the SERVICE
-#    pattern to DBpedia as it stands --
-#    SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
+#    It returned **no rows** until holos-wasm 0.20.0, and the reason is
+#    worth more than the fix. ?dbp is bound out here, but the editor sent
+#    the SERVICE pattern to DBpedia as it stood --
+#      SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
 #    -- which asks for every population in DBpedia. DBpedia caps the answer
-#    at ten thousand rows, the three book towns are not among them, and the
-#    join finds nothing. Comunica pushes the three values into the request
-#    instead, which is called a bound join, and gets its one row.
+#    at ten thousand rows, the three book towns were not among them, and
+#    the join found nothing. Correct query, correct engine, empty answer.
 #
-#    So this is the shape of federation that depends on an optimisation
-#    rather than on the specification. q107 asks the same question without
-#    needing it, and that is the version to copy.
+#    What was missing is called a bound join: sending the keys with the
+#    question, so the endpoint is asked about three resources instead of
+#    scanned for all of them. Every engine that answers this query does it;
+#    q107 is the same question written so that no engine has to. If an
+#    engine ever hands you nothing here, that is what it is not doing.
 #
 #  NETWORK  calls a remote endpoint; needs the internet
 #  DATA     bookshop-trail-1.1.ttl
@@ -79,7 +80,7 @@
 #           https://www.w3.org/TR/sparql12-federated-query/
 #           SPARQL 1.2 Query 13. RDF Dataset
 #           https://www.w3.org/TR/sparql12-query/#x13-rdf-dataset
-#  RETURNS  editor 0, fuseki 1  (see the note above)
+#  RETURNS  1 row, on every engine that runs it
 # ==========================================================================
 
 PREFIX bs:   <https://example.org/bookshop-trail/schema#>
