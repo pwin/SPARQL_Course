@@ -378,6 +378,9 @@ footer p { max-width: var(--maxw); }
     <p class="railnote">Every query on this page has been run against the
       browser editor, HOLOS and Fuseki, and the answers compared value by
       value. The badges under each query are measured row counts.</p>
+    <p class="railnote">One of three: the <a href="https://www.semantechs.co.uk/SHACL_Course/">SHACL course</a>
+      checks the same data, and the <a href="https://www.semantechs.co.uk/Ontology_Course/">ontology course</a>
+      builds the vocabulary both use. Lessons cite each other by number.</p>
   </nav>
 
   <main>
@@ -440,31 +443,32 @@ footer p { max-width: var(--maxw); }
 
       <div class="tablewrap">
         <table>
-          <thead><tr><th>Written as</th><th>Editor (Comunica)</th><th>HOLOS</th><th>Fuseki (ARQ)</th></tr></thead>
+          <thead><tr><th>Written as</th><th>Editor and HOLOS</th><th>Fuseki (ARQ)</th></tr></thead>
           <tbody>
             <tr><td><code>xsd:integer(?gYear)</code></td>
-                <td class="no">0 rows, no error</td><td class="no">0 rows, no error</td><td class="yes">works</td></tr>
+                <td class="no">0 rows, no error</td><td class="yes">works</td></tr>
             <tr><td><code>xsd:integer(STR(?gYear))</code></td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>{| ... |}</code> annotation pattern</td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>&lt;&lt;( ?s ?p ?o )&gt;&gt;</code> triple term</td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>&lt;&lt; s p o ~ ?r &gt;&gt;</code> in a query</td>
-                <td class="no">parse error</td><td class="no">parse error</td><td class="no">parse error</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>isTRIPLE</code>, <code>SUBJECT</code>, <code>LANGDIR</code></td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>VERSION()</code></td>
-                <td class="no">parse error</td><td class="no">parse error</td><td class="yes">works</td></tr>
+                <td class="no">parse error</td><td class="yes">works</td></tr>
             <tr><td><code>geof:</code> functions</td>
-                <td class="meh">none at all</td><td class="yes">45 of them</td>
+                <td class="yes">45 of them</td>
                 <td class="no">warns, returns the row, leaves the value unbound</td></tr>
           </tbody>
         </table>
       </div>
-      <p>The first row is the dangerous one. Casting an <code>xsd:gYear</code>
-        straight to an integer returns <b>zero rows</b> on two of the three
-        engines, and raises no error anywhere — it looks exactly like a fact
+      <p>The editor runs HOLOS compiled to WebAssembly, so the two answer
+        alike and share a column. The first row is the dangerous one. Casting
+        an <code>xsd:gYear</code> straight to an integer returns <b>zero
+        rows</b> on two of the three engines, and raises no error anywhere — it looks exactly like a fact
         about your data. Go via <code>STR()</code>. Q07 is built around it.</p>
     </div>
 
@@ -3508,7 +3512,7 @@ ORDER BY ?town
     </pre>
     </figure>
   </div>
-  <div class="callout callout-declared"><b>Engines differ, and that's expected.</b> and by design. Jena returns all 33 rows; Comunica and HOLOS return the 26 distinct ones. REDUCED permits duplicate removal without requiring it, so every one of those answers conforms.</div>
+  <div class="callout callout-declared"><b>Engines differ, and that's expected.</b> and by design. Jena returns all 33 rows; HOLOS -- and so the browser editor, which runs it -- returns the 26 distinct ones. REDUCED permits duplicate removal without requiring it, so every one of those answers conforms.</div>
   <div class="engines"><span class="eng eng-ok">Editor<b>26</b></span><span class="eng eng-ok">HOLOS<b>26</b></span><span class="eng eng-ok">Fuseki<b>33</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
@@ -5277,8 +5281,10 @@ WHERE {
     </pre>
     </figure>
   </div>
-  <div class="callout callout-declared"><b>Engines differ, and that's expected.</b> 27 triples from the browser editor, 22 from HOLOS and Fuseki. The template is instantiated nine times, giving 27 triples of which 22 are distinct. HOLOS and Fuseki return the set; Comunica returns the stream, duplicates and all. Both are defensible -- a graph is a set, but a result stream need not be -- and it matters the moment you count rows instead of loading them.</div>
-  <div class="engines"><span class="eng eng-ok">Editor<b>27</b></span><span class="eng eng-ok">HOLOS<b>22</b></span><span class="eng eng-ok">Fuseki<b>22</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> 22 triples, on all three engines now. The template is instantiated nine times, giving 27 triples of which 22 are distinct, and every engine the course uses returns the set.
+
+It did not used to. The browser editor returned 27 until it moved to the HOLOS engine, because the Comunica build it ran before returned the stream, duplicates and all. Worth knowing the difference exists: a graph is a set, but a result *stream* need not be, and the two part company the moment you count rows instead of loading them. If an engine ever hands you 27 here, that is what it is doing.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>22</b></span><span class="eng eng-ok">HOLOS<b>22</b></span><span class="eng eng-ok">Fuseki<b>22</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
 <article class="query" id="q45">
@@ -5415,7 +5421,9 @@ DESCRIBE bt:shop-quire
     what you get is NOT specified:
       Jena              outgoing statements
       HOLOS             outgoing statements
-      Comunica          outgoing statements
+      browser editor    outgoing statements -- it runs HOLOS, and this
+                        is now a real DESCRIBE rather than a CONSTRUCT
+                        the editor rewrote it into
       another engine    might include incoming ones too
 
     For anything reproducible, write the CONSTRUCT you actually
@@ -6006,7 +6014,7 @@ ORDER BY ?graph
       <h4>How it works</h4>
       <p>FROM NAMED adds a graph to the dataset without merging it, so GRAPH can still name it. This is the pairing that gives you provenance: FROM for the facts you want to treat as one body, FROM NAMED for the ones whose origin matters.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>FROM NAMED puts a graph in the dataset without merging it, so GRAPH can still ask which graph a fact is in.</li><li>FROM and FROM NAMED are independent. A query can have both, and a graph named only by FROM NAMED is not in the default graph.</li><li>The browser editor does not support FROM NAMED. Scope with FROM there, and check the dataset clauses on the engine you will deploy against.</li></ul>
+      <ul class="learn"><li>FROM NAMED puts a graph in the dataset without merging it, so GRAPH can still ask which graph a fact is in.</li><li>FROM and FROM NAMED are independent. A query can have both, and a graph named only by FROM NAMED is not in the default graph.</li><li>The browser editor supports FROM NAMED as of its move to the HOLOS engine; the Comunica build it used before did not, and errored rather than ignoring the clause. Still check the dataset clauses on the engine you will deploy against: support is not universal.</li></ul>
     </div>
     <figure class="diagram">
       <pre>    FROM        merges into the default graph -- origin lost
@@ -6027,17 +6035,18 @@ ORDER BY ?graph
     measured:
 
       FROM         editor  yes    holos  yes    fuseki  yes
-      FROM NAMED   editor  ERROR  holos  yes    fuseki  yes
+      FROM NAMED   editor  yes    holos  yes    fuseki  yes
 
-    Comunica raises rather than answering: over an in-memory store
-    it has no actor for the pattern a FROM NAMED dataset produces.
-    So in the browser, scope with FROM and load the TriG file; keep
-    FROM NAMED for a real endpoint.
+    Both work in the browser since the editor moved to the HOLOS
+    engine -- two rows, measured. The Comunica build before it raised
+    rather than answering: over an in-memory store it had no actor for
+    the pattern a FROM NAMED dataset produces, so the advice used to be
+    to scope with FROM and keep FROM NAMED for a real endpoint.
     </pre>
     </figure>
   </div>
   <div class="callout callout-note"><b>Note.</b> Fuseki and HOLOS. Comunica raises "none of the configured actors were able to handle the operation type pattern" for FROM NAMED over an in-memory store; FROM on its own (q124) works there.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>2</b></span><span class="eng eng-ok">Fuseki<b>2</b></span><span class="datafile">bookshop-trail.trig</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>2</b></span><span class="eng eng-ok">HOLOS<b>2</b></span><span class="eng eng-ok">Fuseki<b>2</b></span><span class="datafile">bookshop-trail.trig</span></div>
 </article>
 
 <article class="query" id="q105">
@@ -6132,7 +6141,15 @@ ORDER BY ?name
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> HOLOS refuses remote SERVICE outright -- see q108, which is about why. On the other two this returns one row, because DBpedia holds a population for Sedbergh and not for the other two book towns.</div>
+  <div class="callout callout-note"><b>Note.</b> One row on every engine that runs it: DBpedia holds a population for Sedbergh and not for the other two book towns.
+
+HOLOS refuses remote SERVICE outright -- see q108, which is about why. The browser editor runs HOLOS and *does* federate, because a browser is not a server: the request is the reader's own, from their own machine, and the editor keeps an allow-list of endpoints a shared query file may reach.
+
+It returned **no rows** until holos-wasm 0.20.0, and the reason is worth more than the fix. ?dbp is bound out here, but the editor sent the SERVICE pattern to DBpedia as it stood --
+    SELECT ?dbp ?population WHERE { ?dbp dbo:populationTotal ?population }
+-- which asks for every population in DBpedia. DBpedia caps the answer at ten thousand rows, the three book towns were not among them, and the join found nothing. Correct query, correct engine, empty answer.
+
+What was missing is called a bound join: sending the keys with the question, so the endpoint is asked about three resources instead of scanned for all of them. Every engine that answers this query does it; q107 is the same question written so that no engine has to. If an engine ever hands you nothing here, that is what it is not doing.</div>
   <div class="engines"><span class="eng eng-ok">Editor<b>1</b></span><span class="eng eng-na" title="not claimed for this engine">HOLOS</span><span class="eng eng-ok">Fuseki<b>1</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
@@ -6201,7 +6218,7 @@ ORDER BY ?name
   <div class="mech">
     <div class="mech-prose">
       <h4>How it works</h4>
-      <p>The obvious fix for q105 dropping rows is to wrap the SERVICE in an OPTIONAL, and on Jena that is exactly right. In the browser editor it returns all three rows and no populations at all: Comunica does not push the outer binding into a SERVICE nested inside an OPTIONAL. Same query, same endpoint, different answer.</p>
+      <p>The obvious fix for q105 dropping rows is to wrap the SERVICE in an OPTIONAL, and that is exactly right: a town DBpedia has no population for keeps its row, with the column empty. What the OPTIONAL cannot do is make the remote call selective -- so on an engine that sends the clause unbound, as the browser editor did before holos-wasm 0.20.0, all three rows survive with all three columns empty, and nothing looks wrong.</p>
       <h4>What to take away</h4>
       <ul class="learn"><li>OPTIONAL around SERVICE is the usual way to keep rows the remote side cannot answer, and it is not portable.</li><li>Check a federated query on the engine you will actually run it on. The row count agreeing proves nothing.</li><li>When it does not work, push the values in explicitly instead -- q107.</li></ul>
     </div>
@@ -6216,22 +6233,23 @@ ORDER BY ?name
 
       +---------+-------+---------------------------------------+
       | Fuseki  | 3 rows| Sedbergh 2765, the other two blank  ok |
-      | editor  | 3 rows| ALL THREE blank                       |
+      | editor  | 3 rows| Sedbergh 2765, the other two blank  ok |
       | HOLOS   |   --  | refuses remote SERVICE entirely       |
       +---------+-------+---------------------------------------+
 
-    Comunica gets the row count right and the data wrong, which is
-    the hardest kind of difference to notice.
+    Before holos-wasm 0.20.0 the editor returned those same three rows
+    with the population empty in all of them -- the right row count and
+    the wrong data, which is the hardest kind of difference to notice.
+    The OPTIONAL was never what was wrong: take it away and you have
+    q105, where the same unbound clause returned no rows at all.
 
-    Without the OPTIONAL (q105) both engines agree, because then the
-    binding goes in as part of an ordinary join. The disagreement is
-    specifically about OPTIONAL wrapping SERVICE.
-
-    q107 is the shape that works on both.
+    q107 is the shape that never depended on the engine.
     </pre>
     </figure>
   </div>
-  <div class="callout callout-declared"><b>Engines differ, and that's expected.</b> and the difference is the lesson. Fuseki fills in Sedbergh's population; the browser editor returns the same three rows with the column empty, because Comunica does not carry the outer binding into a SERVICE inside an OPTIONAL.</div>
+  <div class="callout callout-note"><b>Note.</b> Three rows, two of them with an empty population, because DBpedia has one for Sedbergh and not for Hay-on-Wye or Wigtown. That is the OPTIONAL doing its job: without it those two towns would disappear rather than appear incomplete.
+
+Worth knowing what this used to show. Until holos-wasm 0.20.0 the browser editor returned all three rows with *every* population empty, because it sent the SERVICE pattern to DBpedia unbound -- see q105. Same three rows, same shape of answer, one real value missing from it. A federated query that returns the row count you expected has told you nothing about whether it worked.</div>
   <div class="engines"><span class="eng eng-ok">Editor<b>3</b></span><span class="eng eng-na" title="not claimed for this engine">HOLOS</span><span class="eng eng-ok">Fuseki<b>3</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
@@ -6294,7 +6312,7 @@ ORDER BY DESC(?population)
       <h4>How it works</h4>
       <p>Rather than relying on the engine to push bindings across, put them in the SERVICE block yourself with VALUES. The remote endpoint gets one self-contained query naming exactly the resources you care about, and there is nothing for an engine to get wrong.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>VALUES inside a SERVICE block sends the keys with the question, which is the most portable way to federate.</li><li>One round trip for n resources beats n round trips. Federation is dominated by latency, not by matching.</li><li>A self-contained SERVICE block can be tested directly against the remote endpoint, which is how you tell whose fault an empty result is.</li></ul>
+      <ul class="learn"><li>VALUES inside a SERVICE block sends the keys with the question, which is the most portable way to federate.</li><li>One round trip for n resources beats n round trips. Federation is dominated by latency, not by matching.</li><li>A self-contained SERVICE block can be tested directly against the remote endpoint, which is how you tell whose fault an empty result is.</li><li>And it is the version that runs everywhere. q105 asks the same question and depends on the engine pushing the keys in for you; this one asks nothing of the engine, so Fuseki, Comunica and the browser editor all return the same four rows. Portability here is not a nicety -- it is the difference between a query that works and one that works on your engine.</li></ul>
     </div>
     <figure class="diagram">
       <pre>    SERVICE &lt;https://dbpedia.org/sparql&gt; {
@@ -6394,9 +6412,9 @@ LIMIT 5
   <div class="mech">
     <div class="mech-prose">
       <h4>How it works</h4>
-      <p>SERVICE SILENT tells the engine to carry on with no bindings rather than fail when a remote call goes wrong. Fuseki honours it. The browser editor raises anyway. HOLOS declines to make the request in the first place, and its reason is worth understanding.</p>
+      <p>SERVICE SILENT tells the engine to carry on with no bindings rather than fail when a remote call goes wrong. Fuseki honours it. HOLOS declines to make the request at all, and its reason is worth understanding. The browser editor, which now runs HOLOS, refuses this endpoint too -- it is not on the editor's allow-list -- and then raises rather than shrugging, for a reason that is about the protocol between the engine and the page and not about SILENT.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>SERVICE SILENT continues with no bindings instead of failing. Fuseki honours it; Comunica raises anyway, so do not rely on it in the browser.</li><li>A public endpoint that follows arbitrary SERVICE IRIs will make requests to any address a stranger names, including ones only it can reach. That is SSRF, and it is why HOLOS refuses.</li><li>Federation is a network operation wearing the clothes of a join: it can be slow, it can fail, and it can be a security question.</li></ul>
+      <ul class="learn"><li>SERVICE SILENT continues with no bindings instead of failing. Fuseki honours it. The browser editor refuses the remote call and then raises, so SILENT buys you nothing there -- measured, not assumed; the NOTE says why that is the protocol's doing.</li><li>A public endpoint that follows arbitrary SERVICE IRIs will make requests to any address a stranger names, including ones only it can reach. That is SSRF, and it is why HOLOS refuses.</li><li>Federation is a network operation wearing the clothes of a join: it can be slow, it can fail, and it can be a security question.</li></ul>
     </div>
     <figure class="diagram">
       <pre>    SERVICE SILENT &lt;https://endpoint.invalid/sparql&gt; { ... }
@@ -6433,7 +6451,11 @@ LIMIT 5
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> Fuseki only. The browser editor raises rather than honouring SILENT, and HOLOS refuses remote SERVICE altogether -- which is the point of the query rather than a limitation of it.</div>
+  <div class="callout callout-note"><b>Note.</b> Fuseki is the one that actually calls out and shrugs the failure off: five rows, no population column, which is SILENT doing exactly what it says.
+
+The browser editor runs HOLOS in WebAssembly, which has no network client, so federation there is a conversation: the engine reports the endpoint and query it wants, the page fetches, and the query is run again. What the engine reports is the endpoint and the query -- and not whether the clause was written SILENT. So when the page declines endpoint.invalid, as it declines anything not on its allow-list, it cannot tell "could not call, and the query said carry on" apart from "could not call, and the answer would be wrong without it", and it raises. Refusing the call is the position; raising is the cost of a protocol that does not carry the one word that would settle it.
+
+Native HOLOS refuses remote SERVICE outright, SILENT or not, which is why this query claims only Fuseki.</div>
   <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-na" title="not claimed for this engine">HOLOS</span><span class="eng eng-ok">Fuseki<b>5</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
@@ -6442,7 +6464,9 @@ LIMIT 5
   <div class="module-head">
     <span class="module-num">Module 09</span>
     <h2>Geospatial with nothing but arithmetic</h2>
-    <p class="module-blurb">Every engine can do geography if the coordinates are plain numbers. This module builds bounding boxes and a great-circle distance out of FILTER and BIND alone -- so it runs in the browser, with no GeoSPARQL support of any kind.</p>
+    <p class="module-blurb">Every engine can do geography if the coordinates are plain numbers. This module builds bounding boxes and a great-circle distance out of FILTER and BIND alone, so it runs anywhere -- on an engine with no GeoSPARQL support of any kind, which is most of them.
+
+It is no longer the only geo module the lab can run: the browser editor moved to the HOLOS engine and module 10 executes there now. Read this one anyway. Knowing what `geof:distance` saves you is worth more than being handed it, and the arithmetic here is what you fall back on against an endpoint that has no geometry functions.</p>
     <p class="module-specs"><span>In the standards</span><a href="https://www.w3.org/TR/sparql12-query/#x17-3-operator-mapping" target="_blank" rel="noopener">SPARQL 1.2 Query 17.3 Operator Mapping</a> · <a href="https://www.w3.org/TR/sparql12-query/#x17-4-4-functions-on-numerics" target="_blank" rel="noopener">SPARQL 1.2 Query 17.4.4 Functions on Numerics</a> · <a href="https://www.w3.org/TR/sparql12-query/#x15-1-order-by" target="_blank" rel="noopener">SPARQL 1.2 Query 15.1 ORDER BY</a></p>
     <p class="module-open"><a class="btn btn-open" target="_blank" rel="noopener" href="https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl">Open bookshop-trail-full.ttl in the editor</a></p>
   </div>
@@ -6937,7 +6961,9 @@ ORDER BY ?d2
   <div class="module-head">
     <span class="module-num">Module 10</span>
     <h2>GeoSPARQL proper</h2>
-    <p class="module-blurb">The same questions, asked with geof: functions against WKT geometries. Shorter, exact, and dependent on an engine that implements them. HOLOS and a GeoSPARQL-enabled Fuseki do; the browser editor doesn't.</p>
+    <p class="module-blurb">The same questions, asked with geof: functions against WKT geometries. Shorter, exact, and dependent on an engine that implements them — which, as of the editor's move to the HOLOS engine, now includes **the browser editor**. HOLOS, the browser editor and a GeoSPARQL-enabled Fuseki all run this module; it used to be the one chapter you could read but not execute in the lab.
+
+That is also why module 09 comes first rather than instead: it is there to show what the arithmetic costs you, not because the lab could not do better.</p>
     <p class="module-specs"><span>In the standards</span><a href="https://docs.ogc.org/is/22-047r1/22-047r1.html" target="_blank" rel="noopener">OGC GeoSPARQL 1.1</a> · <a href="https://www.w3.org/TR/sparql12-query/#x17-6-extensible-value-testing" target="_blank" rel="noopener">SPARQL 1.2 Query 17.6 Extensible Value Testing</a> · <a href="https://www.w3.org/TR/sparql12-service-description/" target="_blank" rel="noopener">SPARQL 1.2 Service Description</a></p>
     <p class="module-open"><a class="btn btn-open" target="_blank" rel="noopener" href="https://semantechs.co.uk/turtle-editor-viewer/?dot=https%3A%2F%2Fraw.githubusercontent.com%2Fpwin%2FSPARQL_Course%2Fmain%2Fdata%2Fbookshop-trail-full.ttl">Open bookshop-trail-full.ttl in the editor</a></p>
   </div>
@@ -7025,8 +7051,8 @@ LIMIT 12
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> HOLOS only, and for a precise reason. Comunica has no geof: functions at all. Jena does have them -- run scripts/setup-geosparql.ps1 and the whole library appears -- but in this 6.2.0 build every function that returns a LINEAR measure comes back unbound: geof:distance in metres or kilometres, geof:area, geof:length. No error, no warning, HTTP 200, just an empty column. geof:distance in degrees or radians does work, as do all the topological functions and all the geometry constructors. So q58 runs on Fuseki and this one doesn't. Module 09 answers the same question with arithmetic, on every engine.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>12</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> HOLOS, and so the browser editor since it moved to that engine -- twelve rows, measured. Not Fuseki, for a precise reason, and not the Comunica build the editor ran before, which had no geof: functions at all. Jena does have them -- run scripts/setup-geosparql.ps1 and the whole library appears -- but in this 6.2.0 build every function that returns a LINEAR measure comes back unbound: geof:distance in metres or kilometres, geof:area, geof:length. No error, no warning, HTTP 200, just an empty column. geof:distance in degrees or radians does work, as do all the topological functions and all the geometry constructors. So q58 runs on Fuseki and this one doesn't. Module 09 answers the same question with arithmetic, on every engine.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>12</b></span><span class="eng eng-ok">HOLOS<b>12</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 <article class="query" id="q58">
@@ -7115,7 +7141,7 @@ WHERE {
     </figure>
   </div>
   <div class="callout callout-note"><b>Note.</b> Returns zero rows when the data is sound, which is the point. Runs on Fuseki as well as HOLOS once scripts/setup-geosparql.ps1 has been run: Jena's GeoSPARQL handles the topological functions (sfWithin, sfIntersects, sfContains and the rest) perfectly well. Check it with the positive form -- FILTER(geof:sfWithin(...)) without the negation -- which finds all 30 settlements.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>0</b></span><span class="eng eng-ok">Fuseki<b>0</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>0</b></span><span class="eng eng-ok">HOLOS<b>0</b></span><span class="eng eng-ok">Fuseki<b>0</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 <article class="query" id="q59">
@@ -7197,7 +7223,7 @@ LIMIT 10
     </figure>
   </div>
   <div class="callout callout-note"><b>Note.</b> geof:length is a linear measure, so it shares q57's fate on Jena: registered, callable, and unbound on return. HOLOS answers it.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>10</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>10</b></span><span class="eng eng-ok">HOLOS<b>10</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 <article class="query" id="q60">
@@ -7298,7 +7324,7 @@ LIMIT 10
     </figure>
   </div>
   <div class="callout callout-note"><b>Note.</b> HOLOS-specific in practice: it's the engine among the three that reads EPSG:27700. The lesson -- that a CRS URI is part of the value and must be honoured -- is general.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>10</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>10</b></span><span class="eng eng-ok">HOLOS<b>10</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 </section>
@@ -7726,8 +7752,8 @@ ORDER BY ?p ?o
     </pre>
     </figure>
   </div>
-  
-  <div class="engines"><span class="eng eng-ok">Editor<b>4</b></span><span class="eng eng-ok">HOLOS<b>4</b></span><span class="eng eng-ok">Fuseki<b>4</b></span><span class="datafile">bookshop-trail-1.2.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> Four rows on HOLOS and Fuseki. In the hosted browser editor this needs holos-wasm 0.20.0 or newer: it selects a triple term, and up to 0.19.0 the engine handed one to the page without its subject, predicate or object, so the results pane raised instead of showing it. Nothing was wrong with the query, and nothing is wrong with it now -- it is here because a query that asks for a triple term directly is how you find out whether your tooling has one.</div>
+  <div class="engines"><span class="eng eng-bad">Editor<b>error</b></span><span class="eng eng-ok">HOLOS<b>4</b></span><span class="eng eng-ok">Fuseki<b>4</b></span><span class="datafile">bookshop-trail-1.2.ttl</span></div>
 </article>
 
 <article class="query" id="q65">
@@ -8784,8 +8810,10 @@ WHERE {
     </pre>
     </figure>
   </div>
-  <div class="callout callout-declared"><b>Engines differ, and that's expected.</b> 26 triples from the browser editor, 25 from HOLOS and Fuseki, for the reason set out in q44 -- the template is instantiated once per solution, and bt:place-glasgow has two labels, so `bt:shop-quire bs:locatedIn bt:place-glasgow` is built twice. Comunica returns the stream; the other two return the set. Load either into a graph and they are identical.</div>
-  <div class="engines"><span class="eng eng-ok">Editor<b>26</b></span><span class="eng eng-ok">HOLOS<b>25</b></span><span class="eng eng-ok">Fuseki<b>25</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> 25 triples, on all three engines now, for the reason set out in q44 -- the template is instantiated once per solution, and bt:place-glasgow has two labels, so `bt:shop-quire bs:locatedIn bt:place-glasgow` is built twice and collapses to one.
+
+The browser editor returned 26 until it moved to the HOLOS engine, which is the same stream-versus-set difference q44 describes. Load either into a graph and they were always identical.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>25</b></span><span class="eng eng-ok">HOLOS<b>25</b></span><span class="eng eng-ok">Fuseki<b>25</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
 <article class="query" id="q83">
@@ -9508,9 +9536,10 @@ WHERE {
   <header class="qhead"><span class="qid">13.0</span>
     <h3>Getting the plan out of each engine</h3></header>
   <p class="asks">A query says <em>what</em> you want; the engine decides
-    <em>how</em>. All three will show you what they decided, and the three
+    <em>how</em>. Jena and HOLOS each show you what they decided, and the two
     answers are usefully different because they show different layers of the
-    same idea.</p>
+    same idea: the algebra the specification defines, and the physical plan with
+    its join algorithms and the row count each operator actually produced.</p>
 
   <div class="code-wrap"><pre class="code"><code><span class="t-comment"># the query used throughout this section</span>
 <span class="t-kw">SELECT</span> <span class="t-var">?name</span> <span class="t-var">?site</span> <span class="t-kw">WHERE</span> {
@@ -9527,20 +9556,23 @@ WHERE {
         specification defines; <code>--print=opt</code> shows what Jena will
         actually run. Neither executes anything, which makes Jena the best of
         the three for learning what a query <em>means</em>.</p>
-      <h4>HOLOS &mdash; the physical plan</h4>
+      <h4>HOLOS &mdash; the physical plan, with the counts</h4>
       <p><code>--explain</code> prints the operator tree with the join
-        algorithm and the join keys on every node. Where Jena shows what,
-        HOLOS shows how: which side of each join is built into a hash table
-        and which side probes it. <code>--reorder</code> builds cardinality
-        statistics first and orders each basic graph pattern by estimated
-        selectivity.</p>
-      <h4>The browser editor &mdash; Comunica</h4>
-      <p><code>engine.explain(query, ctx, 'physical')</code> returns the
-        operators it ran and the actor that handled each. Comunica is built
-        out of actors that bid for work, so its plan names the implementation
-        rather than only the operation. The SPARQL panel doesn't surface it,
-        so this one is a Node exercise; <code>scripts/engines.py</code> has a
-        working harness to adapt.</p>
+        algorithm and the join keys on every node, and the number of rows that
+        node produced. Where Jena shows what, HOLOS shows how: which side of
+        each join is built into a hash table and which side probes it, and how
+        far each step narrowed the answer. <code>--reorder</code> builds
+        cardinality statistics first and orders each basic graph pattern by
+        estimated selectivity.</p>
+      <h4>The browser editor &mdash; the same plan</h4>
+      <p>The editor runs HOLOS as WebAssembly, and
+        <code>store.explain(query)</code> returns the same tree with the same
+        counts. The SPARQL panel doesn't surface it yet, so this is a script
+        rather than a click &mdash; but it is the same engine, so nothing about
+        the plan you read on the command line stops being true in a tab.
+        Comunica, which the editor used to run, names the <em>actor</em> that
+        handled each operator rather than only the operation; that is a third
+        shape worth seeing, and the course no longer runs it.</p>
     </div>
     <figure class="diagram"><pre>JENA, as written -- the filter is where you put it
 
@@ -9567,17 +9599,25 @@ JENA, optimised -- the filter has MOVED INWARDS
       (bgp (triple ?shop bs:website ?site))))
 
 HOLOS -- the same pushdown, plus the join algorithms
+and what each operator actually produced
 
-  Project(?name, ?site)
-  +- LeftJoin(HashBuildRightProbeLeft, keys = ?shop)
-     +- LeftJoin(HashBuildLeftProbeRight, keys = ?town)
-     |  +- LeftJoin(HashBuildLeftProbeRight, keys = ?shop)
+  Project(?name, ?site)                              9 rows
+  +- LeftJoin(HashBuildRightProbeLeft, keys = ?shop)  9
+     +- LeftJoin(HashBuildLeftProbeRight, ?town)      9
+     |  +- LeftJoin(HashBuildLeftProbeRight, ?shop)  32
      |  |  +- QuadPattern(?shop rdf:type bs:Bookshop)
-     |  |  +- Filter(STRLEN(?name) &gt; 8)
+     |  |  |                                         33
+     |  |  +- Filter(STRLEN(?name) &gt; 8)           355
      |  |     +- QuadPattern(?shop rdfs:label ?name)
-     |  +- QuadPattern(?shop bs:locatedIn ?town)
+     |  |                                            444
+     |  +- QuadPattern(?shop bs:locatedIn ?town)     46
      |  +- Path(?town (bs:within)+ bt:place-scotland)
-     +- QuadPattern(?shop bs:website ?site)
+     |                                               14
+     +- QuadPattern(?shop bs:website ?site)          27
+
+Read the counts upwards and you have the funnel: 444
+labels, 355 long enough, 32 after the join to a shop,
+9 once the town must be Scottish.
 
 Two independently written optimisers pushing the same
 filter to the same place is a good sign the rewrite is
@@ -11191,16 +11231,18 @@ LIMIT 8
 
     where it works, measured:
 
-      afn:localname        editor  error    holos  yes    fuseki  yes
-      afn:namespace        editor  error    holos  yes    fuseki  yes
+      afn:localname        editor  yes      holos  yes    fuseki  yes
+      afn:namespace        editor  yes      holos  yes    fuseki  yes
 
-    Comunica raises rather than returning nothing, which is the
-    better of the two failure modes: you find out.
+    The editor ran neither until it moved to the HOLOS engine. The
+    Comunica build before it raised rather than returning nothing,
+    which was the better of the two failure modes -- you found out --
+    but it still meant this page could be read and not run.
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> Comunica has no afn: functions and raises an error rather than returning unbound, so the editor is not claimed here.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> afn: is not in SPARQL, so an engine is entitled to have none of it. The editor has it only because it now runs HOLOS, measured at eight rows there; Fuseki has it natively, as ARQ's own library.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>8</b></span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
 <article class="query" id="q101">
@@ -11283,16 +11325,17 @@ LIMIT 8
     | Cotton Quarto    |  93.7 km|
     +------------------+---------+
 
-    measured:  afn:sqrt   editor error   holos yes   fuseki yes
+    measured:  afn:sqrt   editor yes   holos yes   fuseki yes
 
-    Note what module 09 bought by not using this: the same query,
-    without the square root, runs in the browser too. That is the
-    trade in one line.
+    The editor answers this since it moved to the HOLOS engine; the
+    Comunica build before it had no afn: at all. Module 09 still
+    bought something by not needing the root: a query that asks for
+    no extension runs on an engine that has none.
     </pre>
     </figure>
   </div>
   
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>8</b></span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 <article class="query" id="q135">
@@ -11445,7 +11488,7 @@ LIMIT 8
       <h4>How it works</h4>
       <p>SPIN's spif: library has the string helpers SPARQL never grew: trim, titleCase, indexOf, buildString. HOLOS implements them. Jena does not -- and rather than complaining, it returns the row with the variable unbound, which is the failure mode this course keeps warning about.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>spif: is SPIN's function library. HOLOS has it; Jena and Comunica do not.</li><li>An unimplemented function is not guaranteed to be an error. Jena leaves the variable unbound and returns the row, which is indistinguishable from the data simply not being there.</li><li>If a column comes back empty, suspect the function before you suspect the data.</li></ul>
+      <ul class="learn"><li>spif: is SPIN's function library. HOLOS has it, and so the editor since it moved to that engine. Jena does not, and nor did Comunica.</li><li>An unimplemented function is not guaranteed to be an error. Jena leaves the variable unbound and returns the row, which is indistinguishable from the data simply not being there.</li><li>If a column comes back empty, suspect the function before you suspect the data.</li></ul>
     </div>
     <figure class="diagram">
       <pre>    spif:titleCase("the inkwell")   -&gt;  "The Inkwell"
@@ -11455,16 +11498,19 @@ LIMIT 8
 
     measured, and this is the point of the query:
 
-      spif:trim        editor  ERROR      holos  yes    fuseki  UNBOUND
-      spif:titleCase   editor  ERROR      holos  yes    fuseki  UNBOUND
-      spif:indexOf     editor  ERROR      holos  yes    fuseki  UNBOUND
+      spif:trim        editor  yes        holos  yes    fuseki  UNBOUND
+      spif:titleCase   editor  yes        holos  yes    fuseki  UNBOUND
+      spif:indexOf     editor  yes        holos  yes    fuseki  UNBOUND
 
-    +----------+-------------------------------------------+
-    | Comunica | raises. You find out immediately.          |
-    | Jena     | returns the row, variable unbound, HTTP    |
-    |          | 200. Looks exactly like missing data.      |
-    | HOLOS    | answers.                                   |
-    +----------+-------------------------------------------+
+    The three answers, and two of them are ways of not having it:
+
+    +------------------+-------------------------------------------+
+    | HOLOS, editor    | answers.                                  |
+    | Jena             | returns the row, variable unbound, HTTP   |
+    |                  | 200. Looks exactly like missing data.     |
+    | Comunica, which  | raised. You found out immediately, which  |
+    | the editor ran   | is the better of the two failures.        |
+    +------------------+-------------------------------------------+
 
     Same shape as geof:distance in metres on Jena (q57), and the
     reason the checking harness compares values rather than counting
@@ -11473,8 +11519,8 @@ LIMIT 8
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> HOLOS only. Jena parses this and returns eight rows with three empty columns; Comunica raises. Run it on Fuseki yourself -- seeing the blanks is worth more than reading about them.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> HOLOS, and so the editor -- eight rows, measured. Jena parses this and returns eight rows with three empty columns. Run it on Fuseki yourself: seeing the blanks is worth more than reading about them.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>8</b></span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-na" title="not claimed for this engine">Fuseki</span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
 <article class="query" id="q103">
@@ -11554,7 +11600,7 @@ LIMIT 8
                                 |  '-- end, not length
                                 '----- counts from zero
 
-    measured:  fn:  editor error   holos yes   fuseki yes
+    measured:  fn:  editor yes   holos yes   fuseki yes
 
     Prefer the built-in every time. It is shorter, it is in the
     specification, and it runs in the browser.
@@ -11562,7 +11608,7 @@ LIMIT 8
     </figure>
   </div>
   
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>8</b></span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-1.1.ttl</span></div>
 </article>
 
 <article class="query" id="q104">

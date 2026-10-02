@@ -850,6 +850,9 @@ footer p {{ max-width: var(--maxw); }}
     <p class="railnote">Every query on this page has been run against the
       browser editor, HOLOS and Fuseki, and the answers compared value by
       value. The badges under each query are measured row counts.</p>
+    <p class="railnote">One of three: the <a href="https://www.semantechs.co.uk/SHACL_Course/">SHACL course</a>
+      checks the same data, and the <a href="https://www.semantechs.co.uk/Ontology_Course/">ontology course</a>
+      builds the vocabulary both use. Lessons cite each other by number.</p>
   </nav>
 
   <main>
@@ -912,31 +915,32 @@ footer p {{ max-width: var(--maxw); }}
 
       <div class="tablewrap">
         <table>
-          <thead><tr><th>Written as</th><th>Editor (Comunica)</th><th>HOLOS</th><th>Fuseki (ARQ)</th></tr></thead>
+          <thead><tr><th>Written as</th><th>Editor and HOLOS</th><th>Fuseki (ARQ)</th></tr></thead>
           <tbody>
             <tr><td><code>xsd:integer(?gYear)</code></td>
-                <td class="no">0 rows, no error</td><td class="no">0 rows, no error</td><td class="yes">works</td></tr>
+                <td class="no">0 rows, no error</td><td class="yes">works</td></tr>
             <tr><td><code>xsd:integer(STR(?gYear))</code></td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>{{| ... |}}</code> annotation pattern</td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>&lt;&lt;( ?s ?p ?o )&gt;&gt;</code> triple term</td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>&lt;&lt; s p o ~ ?r &gt;&gt;</code> in a query</td>
-                <td class="no">parse error</td><td class="no">parse error</td><td class="no">parse error</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>isTRIPLE</code>, <code>SUBJECT</code>, <code>LANGDIR</code></td>
-                <td class="yes">works</td><td class="yes">works</td><td class="yes">works</td></tr>
+                <td class="yes">works</td><td class="yes">works</td></tr>
             <tr><td><code>VERSION()</code></td>
-                <td class="no">parse error</td><td class="no">parse error</td><td class="yes">works</td></tr>
+                <td class="no">parse error</td><td class="yes">works</td></tr>
             <tr><td><code>geof:</code> functions</td>
-                <td class="meh">none at all</td><td class="yes">45 of them</td>
+                <td class="yes">45 of them</td>
                 <td class="no">warns, returns the row, leaves the value unbound</td></tr>
           </tbody>
         </table>
       </div>
-      <p>The first row is the dangerous one. Casting an <code>xsd:gYear</code>
-        straight to an integer returns <b>zero rows</b> on two of the three
-        engines, and raises no error anywhere — it looks exactly like a fact
+      <p>The editor runs HOLOS compiled to WebAssembly, so the two answer
+        alike and share a column. The first row is the dangerous one. Casting
+        an <code>xsd:gYear</code> straight to an integer returns <b>zero
+        rows</b> on two of the three engines, and raises no error anywhere — it looks exactly like a fact
         about your data. Go via <code>STR()</code>. Q07 is built around it.</p>
     </div>
 

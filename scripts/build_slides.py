@@ -510,8 +510,8 @@ HOLOS -- the same pushdown, plus the algorithms
         +- Filter(STRLEN(?name) > 8)
            +- QuadPattern(?shop rdfs:label ?name)
 """) + """
-    <p class="note">Jena shows <em>what</em>; HOLOS shows <em>how</em>.
-      Comunica names the actor that handled each operator.</p>
+    <p class="note">Jena shows <em>what</em>; HOLOS shows <em>how</em>,
+      and the engine behind the browser editor returns the same tree.</p>
     <p class="take"><b>Take away.</b> Two independently written optimisers
       pushing the same filter to the same place is a good sign the rewrite is
       the right one. If yours has <em>not</em> moved, it usually can't.</p>
@@ -742,8 +742,8 @@ three habits that prevent it:
   3  back up before a migration, not
      after noticing
 """) + """
-    <p class="take"><b>The browser editor cannot run these.</b> Comunica the
-      library can; the editor's SPARQL panel has no way to display a result
+    <p class="take"><b>The browser editor cannot run these.</b> The engine
+      behind it can; the editor's SPARQL panel has no way to display a result
       that is empty by definition. Use Fuseki or HOLOS.</p>
   </div>
 </div>

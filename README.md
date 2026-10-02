@@ -10,16 +10,21 @@ A teaching dataset in RDF, and 145 worked queries that take a beginner from
 `SELECT ?s ?p ?o` to property paths, nested aggregation, geospatial work and
 RDF 1.2 statement annotation — quickly, and without toy data.
 
-It has a companion: **[The Bookshop Trail — a SHACL course](https://github.com/pwin/SHACL_Course)**,
-seventy shapes graphs on the same data in the same editor. Where a query here
-asks a question, a shape there says what the answer should be, and the two
-courses cite each other by number.
+It has two companions. **[The Bookshop Trail — a SHACL course](https://www.semantechs.co.uk/SHACL_Course/)**
+is seventy shapes graphs on the same data in the same editor: where a query
+here asks a question, a shape there says what the answer should be.
+**[The Bookshop Trail — an ontology course](https://www.semantechs.co.uk/Ontology_Course/)**
+is seventy-six lessons that build the vocabulary both of them use, from the
+words in a brief to an OWL 2 DL schema a reasoner has agreed with. The three
+courses cite each other by number: a query is `q28`, a shape is `s20`, a
+lesson is `o52`. This course is hosted at
+<https://www.semantechs.co.uk/SPARQL_Course/>.
 
 Everything here runs in three environments:
 
 | Environment | What it is | Where it comes from | Script |
 |---|---|---|---|
-| **Turtle Editor Viewer** | Browser editor, graph visualiser and SPARQL panel (Comunica). The course is built around this one — you can *see* the graph you are querying. | **[semantechs.co.uk/turtle-editor-viewer](https://semantechs.co.uk/turtle-editor-viewer/)** — used online. Nothing to install, and no local copy needed. | [`open-editor.ps1`](scripts/open-editor.ps1) opens it with a chosen file already loaded |
+| **Turtle Editor Viewer** | Browser editor, graph visualiser and SPARQL panel (HOLOS, with GeoSPARQL). The course is built around this one — you can *see* the graph you are querying. | **[semantechs.co.uk/turtle-editor-viewer](https://semantechs.co.uk/turtle-editor-viewer/)** — used online. Nothing to install, and no local copy needed. | [`open-editor.ps1`](scripts/open-editor.ps1) opens it with a chosen file already loaded |
 | **Apache Jena Fuseki** | The reference server, for when you want a real endpoint over HTTP. Needs [Java 17+](https://adoptium.net). | [jena.apache.org/download](https://jena.apache.org/download/index.cgi) — or the script fetches [Jena](https://dlcdn.apache.org/jena/binaries/apache-jena-6.2.0.zip) and [Fuseki](https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.2.0.zip) and checks their published SHA-512 | [`setup-fuseki.ps1 -Install`](scripts/setup-fuseki.ps1) |
 | **HOLOS** | RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL functions. The only one of the three that answers module 10 in full. | [github.com/pwin/triplestore](https://github.com/pwin/triplestore) — no binary release, so it is built from source; needs [Rust](https://rustup.rs) 1.87+ | [`setup-holos.ps1 -Install`](scripts/setup-holos.ps1) clones and builds it |
 | *GeoSPARQL for Jena* | Not an environment — the add-on that gives Fuseki its coordinate reference systems. Needed only for module 10. | Apache Derby, and the [EPSG dataset](https://epsg.org/terms-of-use.html) from Maven Central under its own terms | [`setup-geosparql.ps1 -AcceptEpsgTerms`](scripts/setup-geosparql.ps1) |
@@ -262,12 +267,18 @@ which engines run it. Read the file; do not just run it.
 | [18](queries/18-inference/) | **Inference** | what a reasoner would derive, written as SPARQL — and what each of the three engines actually does when you switch one on |
 
 Modules 01–07, 12–14 and 16 run in **all three** environments. Module 09 does
-too — that is its point. Module 11 needs an RDF 1.2 engine, and all three
-qualify. Three do not run everywhere, each for its own reason: module 15 is
-about what each engine adds beyond the specification; the four federated
-queries at the end of module 08 are refused by HOLOS on purpose, and q108 is
-about why; and module 17 needs a write endpoint, which the browser editor does
-not have — Comunica the library runs updates perfectly well, but the editor's
+too — that is its point. Module 10 does now as well: the browser editor moved to
+the HOLOS engine and has GeoSPARQL, where it previously had none. Module 11
+needs an RDF 1.2 engine, and all three qualify.
+
+Three still do not run everywhere, each for its own reason: module 15 is about
+what each engine adds beyond the specification; the federated queries at the end
+of module 08 are refused by a HOLOS *server* on purpose and q108 is about why,
+while the browser editor federates because a browser is not a server — the
+request is the reader's own, and the editor keeps an allow-list of endpoints a
+shared query file may reach, so q107 returns the same four rows there as
+anywhere and q105 is a lesson in why q107 is the version to copy; and module 17
+needs a write endpoint, which the browser editor does not have — the engine behind it runs updates perfectly well, but the editor's
 SPARQL panel has no way to display a result that is empty by definition. Start
 Fuseki with `-Writable` to follow module 17 against a server.
 
@@ -563,20 +574,23 @@ generalisation of that experience.
 
 Worth knowing before you write your own queries against a mixed estate:
 
-| | editor | HOLOS | Fuseki |
-|---|---|---|---|
-| `xsd:integer(?gYear)` directly | 0 rows | 0 rows | works |
-| `xsd:integer(STR(?gYear))` | works | works | works |
-| `<< s p o ~ ?r >>` in a query | parse error | parse error | parse error |
-| `{\| ... \|}` annotation in a query | works | works | works |
-| `<<( ?s ?p ?o )>>` triple-term pattern | works | works | works |
-| `isTRIPLE`, `SUBJECT`, `PREDICATE`, `OBJECT` | works | works | works |
-| `LANGDIR`, `hasLANGDIR`, `STRLANGDIR` | works | works | works |
-| `VERSION()` | parse error | parse error | works |
-| `geof:` functions | none at all | 45 of them | warns, returns the row, leaves the value **unbound** |
-| `afn:` (ARQ) and `fn:` (XPath) | error | works | works |
-| `spif:` (SPIN) | error | works | returns the row, value **unbound** |
-| `math:` (XPath) | error | error | works |
+| | editor and HOLOS | Fuseki |
+|---|---|---|
+| `xsd:integer(?gYear)` directly | 0 rows | works |
+| `xsd:integer(STR(?gYear))` | works | works |
+| `<< s p o ~ ?r >>` in a query | works | works |
+| `{\| ... \|}` annotation in a query | works | works |
+| `<<( ?s ?p ?o )>>` triple-term pattern | works | works |
+| `isTRIPLE`, `SUBJECT`, `PREDICATE`, `OBJECT` | works | works |
+| `LANGDIR`, `hasLANGDIR`, `STRLANGDIR` | works | works |
+| `VERSION()` | parse error | works |
+| `geof:` functions | 45 of them | warns, returns the row, leaves the value **unbound** |
+| `afn:` (ARQ) and `fn:` (XPath) | works | works |
+| `spif:` (SPIN) | works | returns the row, value **unbound** |
+| `math:` (XPath) | error | works |
+
+The editor runs HOLOS compiled to WebAssembly, so the two answer alike and
+share a column.
 
 The first row is the dangerous one: casting a `gYear` straight to an integer
 returns **zero rows** on two of the three engines and no error anywhere. Go via
