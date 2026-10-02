@@ -1,8 +1,12 @@
 # Getting the plan out of each engine
 
-A SPARQL query says *what* you want. The engine decides *how*. All three of
-this course's engines will show you what they decided — and the three answers
-are usefully different, because they show different layers of the same idea.
+A SPARQL query says *what* you want. The engine decides *how*. Jena and HOLOS
+will each show you what they decided, and the two answers are usefully different
+because they show different layers of the same idea: the algebra the
+specification defines, and the physical plan with its join algorithms and the
+row count each operator actually produced. The HOLOS plan is reachable from a
+browser too. Comunica's is a third shape worth seeing, though the course no
+longer runs it.
 
 The query used throughout below is `build/plan.rq`:
 
@@ -90,21 +94,33 @@ cannot prove is bound at that point.
 & holos.exe query --data data\bookshop-trail-1.1.ttl --query-file build\plan.rq --explain
 ```
 
-HOLOS prints JSON. Formatted, and with the IRIs shortened:
+HOLOS prints JSON. Formatted, with the IRIs shortened, and with each operator's
+own row count and time beside it:
 
 ```
-Project(?name, ?site)
-└── LeftJoin(HashBuildRightProbeLeft, keys = ?shop, expression = true)
-    ├── LeftJoin(HashBuildLeftProbeRight, keys = ?town)
-    │   ├── LeftJoin(HashBuildLeftProbeRight, keys = ?shop)
-    │   │   ├── LeftJoin(HashBuildLeftProbeRight, keys = ?shop)
-    │   │   │   ├── QuadPattern(?shop rdf:type bs:Bookshop)
-    │   │   │   └── Filter(STRLEN(?name) > 8)
-    │   │   │       └── QuadPattern(?shop rdfs:label ?name)
-    │   │   └── QuadPattern(?shop bs:locatedIn ?town)
-    │   └── Path(?town (bs:within)+ bt:place-scotland)
-    └── QuadPattern(?shop bs:website ?site)
+Project(?name, ?site)                                            9 rows
+└── LeftJoin(HashBuildRightProbeLeft, keys = ?shop, …)            9 rows
+    ├── LeftJoin(HashBuildLeftProbeRight, keys = ?town)           9 rows
+    │   ├── LeftJoin(HashBuildLeftProbeRight, keys = ?shop)      32 rows
+    │   │   ├── LeftJoin(HashBuildLeftProbeRight, keys = ?shop)  32 rows
+    │   │   │   ├── QuadPattern(?shop rdf:type bs:Bookshop)      33 rows
+    │   │   │   └── Filter(STRLEN(?name) > 8)                   355 rows
+    │   │   │       └── QuadPattern(?shop rdfs:label ?name)     444 rows
+    │   │   └── QuadPattern(?shop bs:locatedIn ?town)            46 rows
+    │   └── Path(?town (bs:within)+ bt:place-scotland)           14 rows
+    └── QuadPattern(?shop bs:website ?site)                      27 rows
 ```
+
+Read the counts from the bottom up and you have the whole query's funnel: 444
+labels in the data, 355 of them longer than eight characters, 32 rows after the
+join to a shop, 9 after the Scottish towns are required. Every node also carries
+a `duration in seconds`; the shape is worth more than the numbers, which move
+between runs and between machines.
+
+That funnel is the thing to look at first. A step that barely narrows is a step
+the engine did for nothing, and a step that *widens* is where a join multiplied
+your rows -- Q92's problem, visible here as a number rather than as a wrong total
+at the end.
 
 Where Jena shows *what*, HOLOS shows *how*:
 
@@ -129,12 +145,40 @@ That is Q90's table, computed by the engine and applied automatically.
 
 ---
 
-## 3 · A third shape of plan — Comunica
+## 3 · The same plan, in a browser
 
-Comunica is no longer what the browser editor runs — it moved to the HOLOS
-engine, so section 2 describes the plans you would get there, once the editor's
-build exposes them. Comunica is still worth a look, because its plan answers a
-question neither of the others does.
+The browser editor runs the HOLOS engine as WebAssembly, and since `holos-wasm`
+0.19.0 the plan is reachable from there too — so this chapter is no longer a
+command-line-only exercise. The editor's SPARQL panel does not surface it yet,
+but a page or a script holding the engine can ask:
+
+```js
+import { Store } from 'holos-wasm-node';          // or 'holos-wasm' in a bundler
+import { readFileSync } from 'node:fs';
+
+const store = new Store();
+store.load(readFileSync('data/bookshop-trail-1.1.ttl', 'utf8'), 'turtle', undefined);
+const plan = JSON.parse(store.explain(readFileSync('build/plan.rq', 'utf8'), undefined));
+
+(function walk(node, depth = 0) {
+  console.log('  '.repeat(depth) + node.name + '   ' + node['number of results'] + ' rows');
+  for (const child of node.children ?? []) walk(child, depth + 1);
+})(plan.plan);
+```
+
+Same tree, same counts as section 2 — it is the same engine. One thing to know:
+`explain` *evaluates*. The statistics are gathered as rows flow through the
+operators, so the results are drained before the plan is written, and asking for
+a plan costs a full run of the query.
+
+---
+
+## 4 · A third shape of plan — Comunica
+
+Comunica is worth a look even though the course no longer runs it: its plan
+answers a question neither of the others does. You will have to install it
+yourself, and it needs Node 22.19 or newer — its `undici` dependency calls an API
+older Node does not have, and fails on import rather than at the query.
 
 It exposes `explain` through its API, in three modes:
 
@@ -151,18 +195,15 @@ console.log(JSON.stringify(r.data, null, 2));
 
 The physical plan is the interesting one: Comunica is built out of actors that
 bid for work, so its plan tells you *which implementation* handled each step —
-which is a different and useful kind of detail from the other two.
+a different and useful kind of detail from the other two.
 
-A Node exercise rather than a browser one, and now doubly so: no SPARQL panel
-surfaces a plan, and the editor no longer has Comunica in it at all.
-`scripts/engines.py` contains a working harness you can adapt in about five
-lines, and it needs Node 22.19 or newer — Comunica's `undici` dependency calls
-an API that older Node does not have, and fails on import rather than at the
-query.
+It used to be the browser editor's engine, and `scripts/engines.py` used to drive
+it as the course's third column. Both moved to HOLOS, so neither is a place to
+copy from any more.
 
 ---
 
-## 4 · Reading any plan: the vocabulary
+## 5 · Reading any plan: the vocabulary
 
 | In a plan | Written in SPARQL as | Watch for |
 |---|---|---|
@@ -178,7 +219,7 @@ query.
 
 ---
 
-## 5 · The debugging playbook
+## 6 · The debugging playbook
 
 **The result is empty.** In the order that pays off:
 

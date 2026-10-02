@@ -11,9 +11,10 @@ PLANS_PREAMBLE = """
   <header class="qhead"><span class="qid">13.0</span>
     <h3>Getting the plan out of each engine</h3></header>
   <p class="asks">A query says <em>what</em> you want; the engine decides
-    <em>how</em>. All three will show you what they decided, and the three
+    <em>how</em>. Jena and HOLOS each show you what they decided, and the two
     answers are usefully different because they show different layers of the
-    same idea.</p>
+    same idea: the algebra the specification defines, and the physical plan with
+    its join algorithms and the row count each operator actually produced.</p>
 
   <div class="code-wrap"><pre class="code"><code><span class="t-comment"># the query used throughout this section</span>
 <span class="t-kw">SELECT</span> <span class="t-var">?name</span> <span class="t-var">?site</span> <span class="t-kw">WHERE</span> {
@@ -30,20 +31,23 @@ PLANS_PREAMBLE = """
         specification defines; <code>--print=opt</code> shows what Jena will
         actually run. Neither executes anything, which makes Jena the best of
         the three for learning what a query <em>means</em>.</p>
-      <h4>HOLOS &mdash; the physical plan</h4>
+      <h4>HOLOS &mdash; the physical plan, with the counts</h4>
       <p><code>--explain</code> prints the operator tree with the join
-        algorithm and the join keys on every node. Where Jena shows what,
-        HOLOS shows how: which side of each join is built into a hash table
-        and which side probes it. <code>--reorder</code> builds cardinality
-        statistics first and orders each basic graph pattern by estimated
-        selectivity.</p>
-      <h4>The browser editor &mdash; Comunica</h4>
-      <p><code>engine.explain(query, ctx, 'physical')</code> returns the
-        operators it ran and the actor that handled each. Comunica is built
-        out of actors that bid for work, so its plan names the implementation
-        rather than only the operation. The SPARQL panel doesn't surface it,
-        so this one is a Node exercise; <code>scripts/engines.py</code> has a
-        working harness to adapt.</p>
+        algorithm and the join keys on every node, and the number of rows that
+        node produced. Where Jena shows what, HOLOS shows how: which side of
+        each join is built into a hash table and which side probes it, and how
+        far each step narrowed the answer. <code>--reorder</code> builds
+        cardinality statistics first and orders each basic graph pattern by
+        estimated selectivity.</p>
+      <h4>The browser editor &mdash; the same plan</h4>
+      <p>The editor runs HOLOS as WebAssembly, and
+        <code>store.explain(query)</code> returns the same tree with the same
+        counts. The SPARQL panel doesn't surface it yet, so this is a script
+        rather than a click &mdash; but it is the same engine, so nothing about
+        the plan you read on the command line stops being true in a tab.
+        Comunica, which the editor used to run, names the <em>actor</em> that
+        handled each operator rather than only the operation; that is a third
+        shape worth seeing, and the course no longer runs it.</p>
     </div>
     <figure class="diagram"><pre>JENA, as written -- the filter is where you put it
 
@@ -70,17 +74,25 @@ JENA, optimised -- the filter has MOVED INWARDS
       (bgp (triple ?shop bs:website ?site))))
 
 HOLOS -- the same pushdown, plus the join algorithms
+and what each operator actually produced
 
-  Project(?name, ?site)
-  +- LeftJoin(HashBuildRightProbeLeft, keys = ?shop)
-     +- LeftJoin(HashBuildLeftProbeRight, keys = ?town)
-     |  +- LeftJoin(HashBuildLeftProbeRight, keys = ?shop)
+  Project(?name, ?site)                              9 rows
+  +- LeftJoin(HashBuildRightProbeLeft, keys = ?shop)  9
+     +- LeftJoin(HashBuildLeftProbeRight, ?town)      9
+     |  +- LeftJoin(HashBuildLeftProbeRight, ?shop)  32
      |  |  +- QuadPattern(?shop rdf:type bs:Bookshop)
-     |  |  +- Filter(STRLEN(?name) &gt; 8)
+     |  |  |                                         33
+     |  |  +- Filter(STRLEN(?name) &gt; 8)           355
      |  |     +- QuadPattern(?shop rdfs:label ?name)
-     |  +- QuadPattern(?shop bs:locatedIn ?town)
+     |  |                                            444
+     |  +- QuadPattern(?shop bs:locatedIn ?town)     46
      |  +- Path(?town (bs:within)+ bt:place-scotland)
-     +- QuadPattern(?shop bs:website ?site)
+     |                                               14
+     +- QuadPattern(?shop bs:website ?site)          27
+
+Read the counts upwards and you have the funnel: 444
+labels, 355 long enough, 32 after the join to a shop,
+9 once the town must be Scottish.
 
 Two independently written optimisers pushing the same
 filter to the same place is a good sign the rewrite is
