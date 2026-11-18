@@ -286,8 +286,8 @@ q(
     how="A xsd:dateTime or xsd:date can be taken apart with YEAR, MONTH, DAY "
         "and, where there is a time, HOURS, MINUTES, SECONDS and TIMEZONE. "
         "They return plain numbers, which is what makes grouping by month "
-        "possible at all -- there is no date arithmetic in SPARQL beyond "
-        "this.",
+        "possible at all. SPARQL 1.1 has no date arithmetic beyond this; all "
+        "three engines here add some, as the diagram shows.",
     diagram="""
     "2024-06-15"^^xsd:date
 
@@ -303,31 +303,37 @@ q(
       FILTER( YEAR(?d) = 2024 )    a year's worth
       ?d < NOW()                   in the past
 
-    what you cannot do:
+    what SPARQL 1.1 does not have, and the engines here do, measured:
 
-      ?d + "P1M"^^xsd:duration     no duration arithmetic
-      DATEDIFF(?a, ?b)             no such function
+      ?d + "P1M"^^xsd:duration     all three   2025-03-08 -> 2025-04-08
+      "P1M"^^xsd:duration + ?d     editor, holos 2025-04-08   fuseki UNBOUND
+      ?a - ?b  (two dates)         all three   a duration, P730D
+      DATEDIFF(?a, ?b)             no such function anywhere
 
-    and one thing that is not portable, measured:
+    Date arithmetic is SEP-0002, a proposal for SPARQL 1.2, not 1.1, so
+    an engine without it raises an error and leaves the variable
+    unbound. Put the date first: the other order is not portable even
+    among these three.
 
-      YEAR( "2025-03-08"^^xsd:date )       editor 2025  fuseki 2025
-                                           holos  UNBOUND
+    and one thing that was not portable until recently, measured:
+
+      YEAR( "2025-03-08"^^xsd:date )       all three   2025
+                                           (holos UNBOUND up to 0.26.2)
       YEAR( "...T00:00:00"^^xsd:dateTime ) all three   2025
 
-    HOLOS implements the date functions for xsd:dateTime only, and
-    returns the row with the variable unbound rather than raising --
-    the failure mode module 15 keeps warning about. So this query
-    promotes the date first:
+    SPARQL 1.1 defines the date functions on xsd:dateTime. HOLOS took
+    an xsd:date only from 0.26.3; before that it returned the row with
+    the variable unbound rather than raising -- the failure mode module
+    15 keeps warning about. So this query still promotes the date first:
 
       STRDT( CONCAT( STR(?date), "T00:00:00" ), xsd:dateTime )
 
-    which is the portable way to widen a date, and incidentally the
+    which works on an engine of any age, and is incidentally the
     clearest use of STRDT there is.
 
-    Subtracting two xsd:dateTime values gives an xsd:duration on
-    engines that support it and an error on those that do not, so
-    q13 computes an age from YEAR() alone. That is the portable
-    way, and it is off by up to a year -- which the query says.
+    q13 computes an age from YEAR() alone rather than subtracting
+    dates. That works on every engine, SEP-0002 or not, and it is off
+    by up to a year -- which the query says.
 
     +----------------------------------------------------------+
     |  MONTH returns 6, not "June" and not "06". Formatting a   |
@@ -337,10 +343,12 @@ q(
     """,
     learn=[
         "YEAR, MONTH, DAY, HOURS, MINUTES, SECONDS and TIMEZONE take a date "
-        "apart into numbers -- reliably, on all three engines, only for "
-        "xsd:dateTime. STRDT is how you widen an xsd:date to one.",
-        "There is no date arithmetic and no formatting. Grouping and "
-        "comparison are what the parts are for.",
+        "apart into numbers. SPARQL 1.1 promises them only for xsd:dateTime; "
+        "all three engines here take an xsd:date as well (HOLOS from 0.26.3), "
+        "and STRDT widens a date for any engine that does not.",
+        "Date arithmetic is not SPARQL 1.1: all three engines here add and "
+        "subtract dates and durations, date first, under SEP-0002. There is no "
+        "formatting. Grouping and comparison are what the parts are for.",
         "NOW() is fixed for the whole query, so two calls in one query always "
         "agree -- which is what makes it usable at all.",
     ],
