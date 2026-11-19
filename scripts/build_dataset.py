@@ -1096,8 +1096,7 @@ def count_triples(path: Path) -> int | None:
     import shutil as _shutil
     import subprocess
 
-    holos = Path(os.environ.get(
-        "HOLOS_EXE", r"C:/repos/new_triplestore_sparql_engine/target/release/holos.exe"))
+    from engines import HOLOS_EXE as holos
     if holos.exists():
         p = subprocess.run(
             [str(holos), "query", "--data", str(path),

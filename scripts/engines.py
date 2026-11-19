@@ -8,7 +8,9 @@ course can state precisely which engines agree.
 Environment overrides:
 
     JENA_HOME     default C:/apache-jena-6.2.0
-    HOLOS_EXE     default C:/repos/new_triplestore_sparql_engine/target/release/holos.exe
+    HOLOS_EXE     default: the release scripts/setup-holos.ps1 -Install unpacks
+                  under lib/holos/, else a source build at
+                  C:/repos/new_triplestore_sparql_engine/target/release/holos.exe
     EDITOR_HOME   a checkout of the Turtle Editor Viewer, used ONLY to borrow
                   its node_modules so Comunica can be run headless here.
                   Learners never need this: the editor itself is used online
@@ -33,8 +35,19 @@ import tempfile
 from pathlib import Path
 
 JENA_HOME = Path(os.environ.get("JENA_HOME", r"C:/apache-jena-6.2.0"))
-HOLOS_EXE = Path(os.environ.get(
-    "HOLOS_EXE", r"C:/repos/new_triplestore_sparql_engine/target/release/holos.exe"))
+
+
+def default_holos_exe() -> Path:
+    """The holos.exe that scripts/setup-holos.ps1 -Install unpacks under lib/holos/
+    (it keeps one version there), else a source build of HOLOS."""
+    unpacked = sorted((Path(__file__).resolve().parent.parent / "lib" / "holos")
+                      .glob("holos-*/holos.exe"))
+    if unpacked:
+        return unpacked[-1]
+    return Path(r"C:/repos/new_triplestore_sparql_engine/target/release/holos.exe")
+
+
+HOLOS_EXE = Path(os.environ.get("HOLOS_EXE") or default_holos_exe())
 EDITOR_HOME = Path(os.environ.get("EDITOR_HOME", r"C:/repos/turtle-editor-viewer"))
 NODE_EXE = os.environ.get("NODE_EXE") or shutil.which("node") or "node"
 
