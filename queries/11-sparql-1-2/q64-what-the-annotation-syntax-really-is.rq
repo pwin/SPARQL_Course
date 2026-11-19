@@ -59,7 +59,7 @@
 #           https://www.w3.org/TR/sparql12-query/#x17-4-6-functions-on-triple-terms
 #           SPARQL 1.2 Query 17.4.2.9 LANGDIR
 #           https://www.w3.org/TR/sparql12-query/#x17-4-2-9-langdir
-#  RETURNS  4 rows, measured on fuseki, holos
+#  RETURNS  4 rows, on every engine that runs it
 # ==========================================================================
 
 PREFIX bt:  <https://example.org/bookshop-trail/>
