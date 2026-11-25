@@ -5,9 +5,11 @@
 
 .DESCRIPTION
     HOLOS is an RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL
-    functions. With -Install this script downloads the Windows release from
-    GitHub (about 10 MB), checks it against the SHA256SUMS published with the
-    release, and unpacks holos.exe and holos-server.exe under lib\holos\.
+    functions. It is part of SemOps System (https://github.com/pwin/SemopsSystem),
+    the same engine the Turtle Editor Viewer runs in the browser. With -Install
+    this script downloads the Windows release from GitHub (about 11 MB), checks
+    it against the SHA256SUMS published with the release, and unpacks holos.exe
+    and holos-server.exe under lib\holos\.
     Nothing is installed system-wide: deleting lib\holos undoes it.
 
     Once installed, HOLOS answers a query straight from a Turtle file with no
@@ -29,12 +31,16 @@
     removed, so scripts\check_queries.py finds the one this script installed.
 
 .PARAMETER Version
-    The HOLOS release to install. Releases, with builds for macOS and Linux
-    too, are listed at https://github.com/pwin/triplestore/releases.
+    The HOLOS release to install: a SemOps System release, which carries the
+    holos binaries beside semops, shacl and tarka. Releases, with builds for
+    macOS and Linux too, are listed at https://github.com/pwin/SemopsSystem/releases.
+    Keep it at the version the editor runs, so the editor and HOLOS columns
+    measure one engine.
 
 .PARAMETER FromSource
-    With -Install, clone and build HOLOS instead of downloading it. Needs
-    Rust 1.87 or newer -- https://rustup.rs -- and a C toolchain for RocksDB;
+    With -Install, clone the SemOps System workspace and build HOLOS from it
+    instead of downloading it. Needs Rust 1.90 or newer -- https://rustup.rs --
+    and a C toolchain for RocksDB;
     on Windows, the Visual Studio Build Tools with the C++ workload. Expect
     five to fifteen minutes for a first release build.
 
@@ -45,15 +51,15 @@
     ./scripts/setup-holos.ps1 -Query queries\05-property-paths\q31-walking-the-trail-in-either-direction.rq
 #>
 param(
-    [string]$Version   = "0.26.4",
+    [string]$Version   = "0.31.0",
     [string]$InstallTo,
     [string]$HolosExe,
     [string]$Data      = "bookshop-trail-full.ttl",
     [string]$Query,
     [switch]$Install,
     [switch]$FromSource,
-    [string]$HolosRepo = "https://github.com/pwin/triplestore.git",
-    [string]$HolosSrc  = "C:\repos\new_triplestore_sparql_engine",
+    [string]$HolosRepo = "https://github.com/pwin/SemopsSystem.git",
+    [string]$HolosSrc  = "C:\repos\SemopsSystem",
     [switch]$Serve,
     [int]$Port = 7878
 )
@@ -81,7 +87,7 @@ function Install-Release {
     Write-Host "Installing HOLOS $Version" -ForegroundColor Cyan
     Write-Host ""
 
-    $base  = "https://github.com/pwin/triplestore/releases/download/v$Version"
+    $base  = "https://github.com/pwin/SemopsSystem/releases/download/v$Version"
     $asset = "$stem.zip"
     # Invoke-WebRequest's progress bar slows Windows PowerShell's downloads
     # many times over.
@@ -90,7 +96,7 @@ function Install-Release {
     try {
         $sums = (Invoke-WebRequest -Uri "$base/SHA256SUMS" -UseBasicParsing).Content
     } catch {
-        throw "Could not fetch $base/SHA256SUMS. Is v$Version a HOLOS release? They are listed at https://github.com/pwin/triplestore/releases."
+        throw "Could not fetch $base/SHA256SUMS. Is v$Version a SemOps System release? They are listed at https://github.com/pwin/SemopsSystem/releases."
     }
     if ($sums -is [byte[]]) { $sums = [System.Text.Encoding]::UTF8.GetString($sums) }
     $line = $sums -split "`n" | Where-Object { $_.Trim().EndsWith($asset) } | Select-Object -First 1
@@ -142,7 +148,7 @@ function Install-FromSource {
     Write-Host ""
 
     if (-not (Get-Command cargo -ErrorAction SilentlyContinue)) {
-        throw "No cargo on PATH. Install a Rust toolchain from https://rustup.rs (1.87 or newer), open a new shell, and run this again -- or drop -FromSource to download the release instead."
+        throw "No cargo on PATH. Install a Rust toolchain from https://rustup.rs (1.90 or newer), open a new shell, and run this again -- or drop -FromSource to download the release instead."
     }
     $rustc = (& rustc --version) -replace '^rustc\s+([0-9.]+).*', '$1'
     Say "rust                $rustc" "Green"
@@ -160,10 +166,12 @@ function Install-FromSource {
         Say "source              already at $HolosSrc" "Green"
     }
 
-    Say "cargo build --release  (several minutes on a first run)" "Yellow"
+    Say "cargo build --release -p holos-cli -p holos-server  (several minutes on a first run)" "Yellow"
     Push-Location $HolosSrc
     try {
-        & cargo build --release
+        # The workspace builds every engine; these two packages are holos.exe
+        # and holos-server.exe.
+        & cargo build --release -p holos-cli -p holos-server
         if ($LASTEXITCODE -ne 0) {
             throw "cargo build failed with exit code $LASTEXITCODE. RocksDB needs a C toolchain; on Windows that means the Visual Studio Build Tools with the C++ workload."
         }

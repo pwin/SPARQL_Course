@@ -40,8 +40,8 @@
 #    - afn:sqrt, afn:pi, afn:e, afn:min and afn:max fill the gaps in
 #      SPARQL's arithmetic.
 #    - Fuseki also has the XPath math: library -- math:sqrt, math:pow,
-#      math:log -- which HOLOS does not. Two engines, two different sets
-#      of extras.
+#      math:log -- and so does HOLOS from 0.31.0 (q135). The extras still
+#      differ: spif: is HOLOS's alone.
 #    - A ranking rarely needs the root. Take it only when you are going
 #      to show the number to somebody.
 #

@@ -644,7 +644,8 @@ q(
     title="The XPath maths library",
     asks="Compute a distance with math:sqrt and a growth figure with "
          "math:pow.",
-    how="math: is the XPath 3.1 maths library, and Jena registers it. It "
+    how="math: is the XPath 3.1 maths library. Jena registers it, and so "
+        "does HOLOS from 0.31.0, and with it the editor. It "
         "covers what afn: covers and rather more -- pow, log, exp, the "
         "trigonometric functions -- and unlike afn: it is at least a "
         "published specification, even if not one SPARQL requires.",
@@ -655,13 +656,15 @@ q(
 
     measured on the three engines:
 
-      math:sqrt   editor  error   holos  error   fuseki  yes
-      math:pow    editor  error   holos  error   fuseki  yes
+      math:sqrt   editor  yes     holos  yes     fuseki  yes
+      math:pow    editor  yes     holos  yes     fuseki  yes
 
-    So this is the narrowest of the extension libraries in this
-    course: one engine of the three. afn:sqrt (q101) covers the
-    same ground on two of them, which makes afn: the better bet
-    if you are going to depend on an extension at all.
+    It used to be the narrowest of the extension libraries in
+    this course: Fuseki alone, until HOLOS took it on in 0.31.0
+    (SemOps System's function library), and the editor with it.
+    Now all three answer, and value for value. afn:sqrt (q101)
+    covers the square root on all three too; math: has the
+    better claim, because it is a published specification.
 
     +----------------------------------------------------------+
     |  What to take from module 15 as a whole: there are four   |
@@ -674,9 +677,10 @@ q(
     """,
     learn=[
         "math: is the XPath maths library: sqrt, pow, log, exp and the "
-        "trigonometric functions. Jena has it; the other two do not.",
-        "It overlaps afn: without replacing it, and afn: is available on more "
-        "of these engines.",
+        "trigonometric functions. Jena has it, and HOLOS and the editor have "
+        "it from 0.31.0.",
+        "It overlaps afn: without replacing it. Both run on all three engines "
+        "here; an engine you have not measured may have neither.",
         "Four libraries, three engines, no agreement. That is the state of "
         "extension functions, and it is why the portable rewrite matters.",
     ],
@@ -694,10 +698,10 @@ WHERE {
 ORDER BY ?km
 LIMIT 8""",
     data=DFULL,
-    engines=(FUSEKI,),
-    notes="Fuseki only. Comunica and HOLOS both raise on math:, so the "
-          "portable version of this is q104 and the two-engine version is "
-          "q101.",
+    engines=(EDITOR, HOLOS, FUSEKI),
+    notes="All three engines from HOLOS 0.31.0, which is the editor's "
+          "engine too; before that HOLOS and the editor raised on math:, "
+          "and only Fuseki answered. The portable version of this is q104.",
 )
 
 q(

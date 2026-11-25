@@ -8,9 +8,9 @@ course can state precisely which engines agree.
 Environment overrides:
 
     JENA_HOME     default C:/apache-jena-6.2.0
-    HOLOS_EXE     default: the release scripts/setup-holos.ps1 -Install unpacks
-                  under lib/holos/, else a source build at
-                  C:/repos/new_triplestore_sparql_engine/target/release/holos.exe
+    HOLOS_EXE     default: the SemOps System release scripts/setup-holos.ps1
+                  -Install unpacks under lib/holos/, else a source build of the
+                  workspace at C:/repos/SemopsSystem/target/release/holos.exe
     EDITOR_HOME   a checkout of the Turtle Editor Viewer, used ONLY to borrow
                   its node_modules so Comunica can be run headless here.
                   Learners never need this: the editor itself is used online
@@ -19,10 +19,10 @@ Environment overrides:
     NODE_EXE      any Node >= 18. The editor's engine is a WebAssembly module
                   with no dependencies; the Comunica it replaced needed Node 22.
     HOLOS_WASM_ENTRY
-                  a built pkg-node/holos_wasm.js, to measure the `editor`
-                  column against an engine that is not published yet. Without
-                  it the editor's own installed package is used, which is what
-                  that column ordinarily means.
+                  a built pkg-node/semops_wasm.js (or holos_wasm.js), to measure
+                  the `editor` column against an engine that is not published
+                  yet. Without it the editor's own installed package is used,
+                  semops-wasm-node, which is what that column ordinarily means.
 """
 from __future__ import annotations
 
@@ -39,12 +39,12 @@ JENA_HOME = Path(os.environ.get("JENA_HOME", r"C:/apache-jena-6.2.0"))
 
 def default_holos_exe() -> Path:
     """The holos.exe that scripts/setup-holos.ps1 -Install unpacks under lib/holos/
-    (it keeps one version there), else a source build of HOLOS."""
+    (it keeps one version there), else a source build of the SemOps System workspace."""
     unpacked = sorted((Path(__file__).resolve().parent.parent / "lib" / "holos")
                       .glob("holos-*/holos.exe"))
     if unpacked:
         return unpacked[-1]
-    return Path(r"C:/repos/new_triplestore_sparql_engine/target/release/holos.exe")
+    return Path(r"C:/repos/SemopsSystem/target/release/holos.exe")
 
 
 HOLOS_EXE = Path(os.environ.get("HOLOS_EXE") or default_holos_exe())
@@ -280,8 +280,9 @@ def holos(data_files, query_file) -> Result:
 
 # ------------------------------------- the editor's engine, as the editor runs it
 #
-# holos-wasm-node is the same WebAssembly binary the browser editor loads, with Node
-# glue instead of browser glue, so what this reports is what the lab shows.  It
+# semops-wasm-node is the same WebAssembly binary the browser editor loads (SemOps
+# System's, holding HOLOS and the SHACL engine), with Node glue instead of browser
+# glue, so what this reports is what the lab shows.  It
 # replaced a Comunica runner that cannot run any more: the editor's checkout dropped
 # Comunica when it moved engines, so `comunica` stopped being an engine this harness
 # could reach.
@@ -289,9 +290,9 @@ _EDITOR_JS = r"""
 import { readFileSync } from 'node:fs';
 
 // Resolved at run time, not imported by name, so an engine that is not released yet can be
-// measured: point HOLOS_WASM_ENTRY at a built pkg-node/holos_wasm.js. Without it this is the
+// measured: point HOLOS_WASM_ENTRY at a built pkg-node/semops_wasm.js. Without it this is the
 // package the editor itself has installed, which is what the `editor` column should mean.
-const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'holos-wasm-node');
+const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'semops-wasm-node');
 
 // The hosts the editor's allow-list permits.  Kept in step with
 // src/services/federation.ts by hand: this is a checking harness, and a copy that
@@ -477,7 +478,7 @@ _EDITOR_UPDATE_JS = r"""
 import { readFileSync } from 'node:fs';
 
 // See the query runner: resolved at run time so an unreleased build can be measured.
-const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'holos-wasm-node');
+const { Store } = await import(process.env.HOLOS_WASM_ENTRY || 'semops-wasm-node');
 
 const [updateFile, verifyFile, ...dataFiles] = process.argv.slice(2);
 const store = new Store();

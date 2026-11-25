@@ -26,7 +26,7 @@ Everything here runs in three environments:
 |---|---|---|---|
 | **Turtle Editor Viewer** | Browser editor, graph visualiser and SPARQL panel (HOLOS, with GeoSPARQL). The course is built around this one — you can *see* the graph you are querying. | **[semantechs.co.uk/turtle-editor-viewer](https://semantechs.co.uk/turtle-editor-viewer/)** — used online. Nothing to install, and no local copy needed. | [`open-editor.ps1`](scripts/open-editor.ps1) opens it with a chosen file already loaded |
 | **Apache Jena Fuseki** | The reference server, for when you want a real endpoint over HTTP. Needs [Java 17+](https://adoptium.net). | [jena.apache.org/download](https://jena.apache.org/download/index.cgi) — or the script fetches [Jena](https://dlcdn.apache.org/jena/binaries/apache-jena-6.2.0.zip) and [Fuseki](https://dlcdn.apache.org/jena/binaries/apache-jena-fuseki-6.2.0.zip) and checks their published SHA-512 | [`setup-fuseki.ps1 -Install`](scripts/setup-fuseki.ps1) |
-| **HOLOS** | RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL functions. The only one of the three that answers module 10 in full. | [github.com/pwin/triplestore](https://github.com/pwin/triplestore) — [release binaries](https://github.com/pwin/triplestore/releases) for Windows, macOS and Linux | [`setup-holos.ps1 -Install`](scripts/setup-holos.ps1) downloads the Windows release and checks its SHA-256 |
+| **HOLOS** | RDF 1.2 triplestore with SPARQL 1.2 and 45 GeoSPARQL functions. The only one of the three that answers module 10 in full. | Part of [SemOps System](https://github.com/pwin/SemopsSystem), with the editor's engine — [release binaries](https://github.com/pwin/SemopsSystem/releases) for Windows, macOS and Linux | [`setup-holos.ps1 -Install`](scripts/setup-holos.ps1) downloads the Windows release and checks its SHA-256 |
 | *GeoSPARQL for Jena* | Not an environment — the add-on that gives Fuseki its coordinate reference systems. Needed only for module 10. | Apache Derby, and the [EPSG dataset](https://epsg.org/terms-of-use.html) from Maven Central under its own terms | [`setup-geosparql.ps1 -AcceptEpsgTerms`](scripts/setup-geosparql.ps1) |
 
 Only the first is needed to do the course. Modules 01–09 and 11–14 all run in
@@ -100,10 +100,12 @@ need the
 [Microsoft Visual C++ Redistributable](https://aka.ms/vs/17/release/vc_redist.x64.exe).
 Most Windows machines have it already; the script checks that `holos.exe` starts
 and says so if it does not. To build HOLOS from source instead, add
-`-FromSource`, which needs [Rust](https://rustup.rs) 1.87 or newer and, for
-RocksDB, the Visual Studio Build Tools with the C++ workload. The
-[releases page](https://github.com/pwin/triplestore/releases) has builds for
-macOS and Linux too.
+`-FromSource`, which builds it from the SemOps System workspace and needs
+[Rust](https://rustup.rs) 1.90 or newer and, for RocksDB, the Visual Studio
+Build Tools with the C++ workload. The
+[releases page](https://github.com/pwin/SemopsSystem/releases) has builds for macOS and Linux too. The
+script installs the same release the editor runs, 0.31.0, so the two columns
+below measure one engine.
 
 HOLOS will answer a query straight from a Turtle file with no server at all,
 which is the quickest way to try one:
@@ -594,7 +596,7 @@ Worth knowing before you write your own queries against a mixed estate:
 | `geof:` functions | 45 of them | warns, returns the row, leaves the value **unbound** |
 | `afn:` (ARQ) and `fn:` (XPath) | works | works |
 | `spif:` (SPIN) | works | returns the row, value **unbound** |
-| `math:` (XPath) | error | works |
+| `math:` (XPath) | works (from 0.31.0; error before) | works |
 
 The editor runs HOLOS compiled to WebAssembly, so the two answer alike and
 share a column.

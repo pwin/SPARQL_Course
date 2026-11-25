@@ -147,13 +147,15 @@ That is Q90's table, computed by the engine and applied automatically.
 
 ## 3 · The same plan, in a browser
 
-The browser editor runs the HOLOS engine as WebAssembly, and since `holos-wasm`
-0.19.0 the plan is reachable from there too — so this chapter is no longer a
-command-line-only exercise. The editor's SPARQL panel does not surface it yet,
-but a page or a script holding the engine can ask:
+The browser editor runs the HOLOS engine as WebAssembly (SemOps System's
+`semops-wasm`), so the plan is reachable from there too, and this chapter is no
+longer a command-line-only exercise. The SPARQL panel's **Explain** button runs
+the query and draws this tree in the diagram pane, with the rows and the time at
+each step and the step that emptied the query marked. A page or a script holding
+the engine can ask for the same thing:
 
 ```js
-import { Store } from 'holos-wasm-node';          // or 'holos-wasm' in a bundler
+import { Store } from 'semops-wasm-node';         // or 'semops-wasm' in a bundler
 import { readFileSync } from 'node:fs';
 
 const store = new Store();

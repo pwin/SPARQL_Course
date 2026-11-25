@@ -40,11 +40,13 @@ PLANS_PREAMBLE = """
         cardinality statistics first and orders each basic graph pattern by
         estimated selectivity.</p>
       <h4>The browser editor &mdash; the same plan</h4>
-      <p>The editor runs HOLOS as WebAssembly, and
-        <code>store.explain(query)</code> returns the same tree with the same
-        counts. The SPARQL panel doesn't surface it yet, so this is a script
-        rather than a click &mdash; but it is the same engine, so nothing about
-        the plan you read on the command line stops being true in a tab.
+      <p>The editor runs HOLOS as WebAssembly (SemOps System's
+        <code>semops-wasm</code>), and <code>store.explain(query)</code> returns
+        the same tree with the same counts. The SPARQL panel's <b>Explain</b>
+        button draws it in the diagram pane, with the rows and time at each step
+        and the step that emptied the query marked. It is the same engine, so
+        nothing about the plan you read on the command line stops being true in
+        a tab.
         Comunica, which the editor used to run, names the <em>actor</em> that
         handled each operator rather than only the operation; that is a third
         shape worth seeing, and the course no longer runs it.</p>

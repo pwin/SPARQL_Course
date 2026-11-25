@@ -35,8 +35,8 @@ DFULL = "bookshop-trail-full.ttl"
 DTRIG = "bookshop-trail.trig"
 
 # Engine keys used in the compatibility line.
-EDITOR = "editor"    # Turtle Editor Viewer (holos-wasm, since it swapped engines)
-HOLOS = "holos"      # HOLOS / new_triplestore_sparql_engine
+EDITOR = "editor"    # Turtle Editor Viewer (semops-wasm: HOLOS and the SHACL engine)
+HOLOS = "holos"      # HOLOS, the binary from the SemOps System releases
 FUSEKI = "fuseki"    # Apache Jena Fuseki 6.2.0 / ARQ
 # The editor's engine, as distinct from the editor built on it. Module 17 needs
 # the distinction: the engine runs SPARQL Update perfectly well, and the

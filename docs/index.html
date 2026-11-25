@@ -9571,11 +9571,13 @@ WHERE {
         cardinality statistics first and orders each basic graph pattern by
         estimated selectivity.</p>
       <h4>The browser editor &mdash; the same plan</h4>
-      <p>The editor runs HOLOS as WebAssembly, and
-        <code>store.explain(query)</code> returns the same tree with the same
-        counts. The SPARQL panel doesn't surface it yet, so this is a script
-        rather than a click &mdash; but it is the same engine, so nothing about
-        the plan you read on the command line stops being true in a tab.
+      <p>The editor runs HOLOS as WebAssembly (SemOps System's
+        <code>semops-wasm</code>), and <code>store.explain(query)</code> returns
+        the same tree with the same counts. The SPARQL panel's <b>Explain</b>
+        button draws it in the diagram pane, with the rows and time at each step
+        and the step that emptied the query marked. It is the same engine, so
+        nothing about the plan you read on the command line stops being true in
+        a tab.
         Comunica, which the editor used to run, names the <em>actor</em> that
         handled each operator rather than only the operation; that is a third
         shape worth seeing, and the course no longer runs it.</p>
@@ -11312,7 +11314,7 @@ LIMIT 8
       <h4>How it works</h4>
       <p>Module 09 ranked shops by squared distance because SPARQL 1.1 has no square root. afn:sqrt supplies one. The arithmetic is the same as q56's; the only difference is that the answer is now a distance rather than an ordering.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>afn:sqrt, afn:pi, afn:e, afn:min and afn:max fill the gaps in SPARQL's arithmetic.</li><li>Fuseki also has the XPath math: library -- math:sqrt, math:pow, math:log -- which HOLOS does not. Two engines, two different sets of extras.</li><li>A ranking rarely needs the root. Take it only when you are going to show the number to somebody.</li></ul>
+      <ul class="learn"><li>afn:sqrt, afn:pi, afn:e, afn:min and afn:max fill the gaps in SPARQL's arithmetic.</li><li>Fuseki also has the XPath math: library -- math:sqrt, math:pow, math:log -- and so does HOLOS from 0.31.0 (q135). The extras still differ: spif: is HOLOS's alone.</li><li>A ranking rarely needs the root. Take it only when you are going to show the number to somebody.</li></ul>
     </div>
     <figure class="diagram">
       <pre>    module 09, portable:            here, with an extension:
@@ -11405,9 +11407,9 @@ LIMIT 8
   <div class="mech">
     <div class="mech-prose">
       <h4>How it works</h4>
-      <p>math: is the XPath 3.1 maths library, and Jena registers it. It covers what afn: covers and rather more -- pow, log, exp, the trigonometric functions -- and unlike afn: it is at least a published specification, even if not one SPARQL requires.</p>
+      <p>math: is the XPath 3.1 maths library. Jena registers it, and so does HOLOS from 0.31.0, and with it the editor. It covers what afn: covers and rather more -- pow, log, exp, the trigonometric functions -- and unlike afn: it is at least a published specification, even if not one SPARQL requires.</p>
       <h4>What to take away</h4>
-      <ul class="learn"><li>math: is the XPath maths library: sqrt, pow, log, exp and the trigonometric functions. Jena has it; the other two do not.</li><li>It overlaps afn: without replacing it, and afn: is available on more of these engines.</li><li>Four libraries, three engines, no agreement. That is the state of extension functions, and it is why the portable rewrite matters.</li></ul>
+      <ul class="learn"><li>math: is the XPath maths library: sqrt, pow, log, exp and the trigonometric functions. Jena has it, and HOLOS and the editor have it from 0.31.0.</li><li>It overlaps afn: without replacing it. Both run on all three engines here; an engine you have not measured may have neither.</li><li>Four libraries, three engines, no agreement. That is the state of extension functions, and it is why the portable rewrite matters.</li></ul>
     </div>
     <figure class="diagram">
       <pre>      math:sqrt(x)        math:pow(x, y)      math:exp(x)
@@ -11416,13 +11418,15 @@ LIMIT 8
 
     measured on the three engines:
 
-      math:sqrt   editor  error   holos  error   fuseki  yes
-      math:pow    editor  error   holos  error   fuseki  yes
+      math:sqrt   editor  yes     holos  yes     fuseki  yes
+      math:pow    editor  yes     holos  yes     fuseki  yes
 
-    So this is the narrowest of the extension libraries in this
-    course: one engine of the three. afn:sqrt (q101) covers the
-    same ground on two of them, which makes afn: the better bet
-    if you are going to depend on an extension at all.
+    It used to be the narrowest of the extension libraries in
+    this course: Fuseki alone, until HOLOS took it on in 0.31.0
+    (SemOps System's function library), and the editor with it.
+    Now all three answer, and value for value. afn:sqrt (q101)
+    covers the square root on all three too; math: has the
+    better claim, because it is a published specification.
 
     +----------------------------------------------------------+
     |  What to take from module 15 as a whole: there are four   |
@@ -11435,8 +11439,8 @@ LIMIT 8
     </pre>
     </figure>
   </div>
-  <div class="callout callout-note"><b>Note.</b> Fuseki only. Comunica and HOLOS both raise on math:, so the portable version of this is q104 and the two-engine version is q101.</div>
-  <div class="engines"><span class="eng eng-na" title="not claimed for this engine">Editor</span><span class="eng eng-na" title="not claimed for this engine">HOLOS</span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
+  <div class="callout callout-note"><b>Note.</b> All three engines from HOLOS 0.31.0, which is the editor's engine too; before that HOLOS and the editor raised on math:, and only Fuseki answered. The portable version of this is q104.</div>
+  <div class="engines"><span class="eng eng-ok">Editor<b>8</b></span><span class="eng eng-ok">HOLOS<b>8</b></span><span class="eng eng-ok">Fuseki<b>8</b></span><span class="datafile">bookshop-trail-full.ttl</span></div>
 </article>
 
 <article class="query" id="q102">
